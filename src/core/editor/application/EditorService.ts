@@ -1,5 +1,5 @@
 import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject } from "sparkengineweb";
-import { MouseClickEvent, MouseDragEvent, Optional } from "../../common";
+import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
 import { SceneRepository } from "../../scene";
@@ -145,6 +145,10 @@ export class EditorService {
 
             this.updateCurrentEntityPosition(new Vec2(transform.position.x + event.deltaX, transform.position.y + event.deltaY));
         }
+    }
+
+    public handleMouseWheel(event: MouseWheelEvent): void {
+        this.contextualUiService.zoomBy(event.scrollY * 0.01);
     }
 
     public selectEntity(entity: IEntity): void {

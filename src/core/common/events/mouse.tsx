@@ -10,3 +10,8 @@ export interface MouseDragEvent extends MouseClickEvent {
     deltaX: number;
     deltaY: number;
 }
+
+export interface MouseWheelEvent {
+    scrollX: number;
+    scrollY: number;
+}

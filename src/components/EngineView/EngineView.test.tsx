@@ -326,6 +326,24 @@ describe('EngineView', () => {
         });
     });
 
+    describe('.onMouseWheel()', () => {
+        it('Should execute when the mouse wheel is scrolled', async () => {
+            const onMouseWheel = jest.fn();
+            const onEngineReady = jest.fn();
+
+            const engineView = <EngineView onEngineViewReady={onEngineReady} onMouseWheel={onMouseWheel} />;
+            render(engineView);
+
+            const canvas = await screen.findByTestId('EngineView.canvas');
+            fireEvent.wheel(canvas, { deltaX: 100, deltaY: 200 });
+
+            expect(onMouseWheel).toHaveBeenCalledWith(expect.objectContaining({
+                scrollX: 100,
+                scrollY: 200
+            }));
+        });
+    });
+
     describe('grab cursor', () => {
         it('Should show the grab mouse cursor if the space bar is pressed while hovering the element', async () => {
             const onEngineReady = jest.fn();

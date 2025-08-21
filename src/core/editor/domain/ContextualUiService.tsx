@@ -60,6 +60,12 @@ export class ContextualUiService {
         }
     }
 
+    public zoomBy(factor: number): void {
+        console.log(this._editorCamera.camera.transform.scale)
+        this._editorCamera.camera.transform.scale += factor;
+        console.log(`Camera zoom changed to: ${this._editorCamera.camera.transform.scale}`);
+    }
+
     public loseFocus(): void {
         this.currentEntityOriginPivot.transform.size = { width: 0, height: 0 };
         this.currentEntityOutline.transform.size = { width: 0, height: 0 };

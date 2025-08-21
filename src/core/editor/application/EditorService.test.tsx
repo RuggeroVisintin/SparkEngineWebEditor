@@ -367,7 +367,22 @@ describe('EditorService', () => {
                 expect(gameObject.transform.position).toEqual(new Vec2(50, 50));
             });
         })
-    })
+    });
+
+    describe('.handleMouseWheel()', () => {
+        it('Should zoom the editor camera by the given factor', () => {
+            const resolution = { width: 800, height: 600 };
+            editorService.start(context, resolution);
+
+
+            editorService.handleMouseWheel({
+                scrollX: 0,
+                scrollY: 100
+            });
+
+            expect(editorService.editorCamera.camera.transform.scale).toEqual(2);
+        });
+    });
 
     describe('.selectEntity()', () => {
         it('Should set the given entity as the current entity', () => {

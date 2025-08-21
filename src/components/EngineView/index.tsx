@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import { Box } from '../../primitives';
 import styled from 'styled-components';
 import { Function } from '../../core/common';
-import { MouseClickEvent, MouseDragEvent } from '../../core/common/events/mouse';
+import { MouseClickEvent, MouseDragEvent, MouseWheelEvent } from '../../core/common/events/mouse';
 
 export interface OnEngineViewReadyCBProps {
     context: CanvasRenderingContext2D;
@@ -16,7 +16,8 @@ interface EngineViewProps {
     onClick?: Function<MouseClickEvent>;
     onMouseDragging?: Function<MouseDragEvent>;
     onMouseDragStart?: Function<MouseDragEvent>;
-    onMouseDown?: Function<MouseClickEvent>
+    onMouseDown?: Function<MouseClickEvent>;
+    onMouseWheel?: Function<MouseWheelEvent>;
 }
 
 interface RenderingCanvasProps {
@@ -39,7 +40,7 @@ const RenderingCanvas = styled.canvas<RenderingCanvasProps>`
     `}
 `;
 
-export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, onMouseDragStart, onMouseDown }: EngineViewProps) => {
+export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, onMouseDragStart, onMouseDown, onMouseWheel }: EngineViewProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [currentModifierButtons, setCurrentModifierButtons] = React.useState<ModifierButtons>(new Map<string, boolean>());
     const [isMouseDragging, setIsMouseDragging] = React.useState(false);
@@ -135,6 +136,10 @@ export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, o
                 data-testid="EngineView.canvas"
                 width={width}
                 height={height}
+                onWheel={(e) => {
+                    console.log('onMouseWheel', e.deltaX, e.deltaY);
+                    onMouseWheel?.({ scrollX: e.deltaX, scrollY: e.deltaY })
+                }}
                 onMouseDown={(e) => {
                     setLastMouseButton(e.button);
                     onMouseDown?.(mouseEventToMouseClickEvent(e.nativeEvent, currentModifierButtons));

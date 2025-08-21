@@ -72,7 +72,7 @@ describe('core/editor/ContextualUiService', () => {
             const cameraPosition = service.editorCamera.getComponent<CameraComponent>('CameraComponent')?.transform.position;
             expect(cameraPosition).toEqual(entity.transform.position);
         });
-    })
+    });
 
     describe('.loseFocus()', () => {
         beforeAll(() => {
@@ -94,5 +94,30 @@ describe('core/editor/ContextualUiService', () => {
 
             expect(service.currentEntityOutline.transform.size).toEqual({ width: 0, height: 0 });
         });
-    })
+    });
+
+    describe('.zoomBy()', () => {
+        it('Should zoom the camera by the given factor', () => {
+            const initialZoom = 1;
+            const zoomFactor = 2;
+
+            service.zoomBy(zoomFactor);
+
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
+            expect(cameraComponent?.transform.scale).toBe(initialZoom + zoomFactor);
+        });
+
+        it('Should compensate the scaling factor on all other UI elements to keep them the same size', () => {
+            const initialZoom = 1;
+            const zoomFactor = 0.5;
+
+            service.zoomBy(zoomFactor);
+
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
+            expect(cameraComponent?.transform.scale).toBe(initialZoom + zoomFactor);
+
+            expect(service.spawnPivot.transform.scale).toBe(initialZoom - zoomFactor);
+            expect(service.currentEntityOutline.transform.scale).toBe(initialZoom - zoomFactor);
+        });
+    });
 });
