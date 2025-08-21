@@ -61,9 +61,13 @@ export class ContextualUiService {
     }
 
     public zoomBy(factor: number): void {
-        console.log(this._editorCamera.camera.transform.scale)
+        const previousScale = this._editorCamera.camera.transform.scale;
+
         this._editorCamera.camera.transform.scale += factor;
-        console.log(`Camera zoom changed to: ${this._editorCamera.camera.transform.scale}`);
+
+        if (this._editorCamera.camera.transform.scale < 0.1) {
+            this._editorCamera.camera.transform.scale = 0.1; // Prevent zooming out
+        }
     }
 
     public loseFocus(): void {

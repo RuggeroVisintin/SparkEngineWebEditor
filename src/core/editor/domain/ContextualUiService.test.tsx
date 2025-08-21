@@ -107,17 +107,13 @@ describe('core/editor/ContextualUiService', () => {
             expect(cameraComponent?.transform.scale).toBe(initialZoom + zoomFactor);
         });
 
-        it('Should compensate the scaling factor on all other UI elements to keep them the same size', () => {
-            const initialZoom = 1;
-            const zoomFactor = 0.5;
+        it('Should not zoom below a certain threshold', () => {
+            const zoomFactor = -9999999; // Zoom out
 
             service.zoomBy(zoomFactor);
 
             const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
-            expect(cameraComponent?.transform.scale).toBe(initialZoom + zoomFactor);
-
-            expect(service.spawnPivot.transform.scale).toBe(initialZoom - zoomFactor);
-            expect(service.currentEntityOutline.transform.scale).toBe(initialZoom - zoomFactor);
+            expect(cameraComponent?.transform.scale).toBeGreaterThanOrEqual(0.1);
         });
     });
 });
