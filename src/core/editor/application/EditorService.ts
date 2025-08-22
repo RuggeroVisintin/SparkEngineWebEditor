@@ -140,10 +140,13 @@ export class EditorService {
             );
         } else if (event.button === 0 && this._currentEntity) {
             const transform = this._currentEntity.getComponent<TransformComponent>('TransformComponent');
-
             if (!transform) return;
 
-            this.updateCurrentEntityPosition(new Vec2(transform.position.x + event.deltaX, transform.position.y + event.deltaY));
+            const scale = this.editorCamera.camera.transform.scale;
+            const delta = new Vec2(event.deltaX / scale, event.deltaY / scale);
+
+            // TODO: there is still some weird glitch when zoooming out
+            this.updateCurrentEntityPosition(new Vec2(transform.position.x + delta.x, transform.position.y + delta.y));
         }
     }
 

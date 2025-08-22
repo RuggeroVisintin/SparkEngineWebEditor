@@ -45,6 +45,7 @@ export class ContextualUiService {
         const entityTransform = entity.getComponent<TransformComponent>("TransformComponent");
         const cameraTransform = this._editorCamera.getComponent<CameraComponent>("CameraComponent")?.transform;
 
+        // TODO: should take current camera zoom into account
         if (entityTransform && cameraTransform && !isCollision(toTopLeftAABB([
             entityTransform.position.x,
             entityTransform.position.y,

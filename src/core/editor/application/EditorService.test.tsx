@@ -324,6 +324,27 @@ describe('EditorService', () => {
 
                 expect(gameObject.transform.position).toEqual(new Vec2(50, 50));
             });
+
+            it('Should compensate for current camera zoom when updating the position', () => {
+                const resolution = { width: 800, height: 600 };
+                const gameObject = new GameObject();
+                gameObject.transform.position = new Vec2(50, 50);
+                editorService.start(context, resolution);
+                editorService.selectEntity(gameObject);
+
+                editorService.editorCamera.camera.transform.scale = 2;
+
+                editorService.handleMouseDrag({
+                    targetX: 100,
+                    targetY: 100,
+                    button: 0,
+                    modifiers: {},
+                    deltaX: 20,
+                    deltaY: 20
+                });
+
+                expect(gameObject.transform.position).toEqual(new Vec2(60, 60));
+            });
         });
 
         describe('on left mouse and spacebar modifier pressed', () => {
