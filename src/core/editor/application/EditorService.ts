@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject } from "sparkengineweb";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject, toRounded } from "sparkengineweb";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
@@ -151,7 +151,8 @@ export class EditorService {
     }
 
     public handleMouseWheel(event: MouseWheelEvent): void {
-        this.contextualUiService.zoomBy(event.scrollY * 0.01);
+        const cappedScrollY = Math.max(Math.min(event.scrollY, 10), -10);
+        this.contextualUiService.zoomBy(toRounded(cappedScrollY, 5));
     }
 
     public selectEntity(entity: IEntity): void {

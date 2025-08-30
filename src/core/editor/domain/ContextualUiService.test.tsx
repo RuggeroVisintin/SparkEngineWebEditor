@@ -1,4 +1,4 @@
-import { CameraComponent, GameObject, Scene, TransformComponent, Vec2 } from "sparkengineweb";
+import { CameraComponent, GameObject, Scene, toRounded, TransformComponent, Vec2 } from "sparkengineweb";
 import { ContextualUiService } from "./ContextualUiService";
 
 describe('core/editor/ContextualUiService', () => {
@@ -143,16 +143,29 @@ describe('core/editor/ContextualUiService', () => {
             service.zoomBy(zoomFactor);
 
             const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
-            expect(cameraComponent?.transform.scale).toBe(initialZoom + zoomFactor);
+            expect(cameraComponent?.transform.scale).toBe(toRounded(initialZoom / (1 + zoomFactor * 0.01), 6));
         });
 
-        it('Should not zoom below a certain threshold', () => {
-            const zoomFactor = -9999999; // Zoom out
+        it('Should cap the minimum scale', () => {
+            const zoomFactor = 99; // Zoom in
 
-            service.zoomBy(zoomFactor);
+            for (let i = 0; i < 10; i++) {
+                service.zoomBy(zoomFactor);
+            }
 
             const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
-            expect(cameraComponent?.transform.scale).toBeGreaterThanOrEqual(0.1);
+            expect(cameraComponent?.transform.scale).toBeGreaterThanOrEqual(0.00001);
         });
+
+        it('Should cap the maximum scale', () => {
+            const zoomFactor = -99; // Zoom out
+
+            for (let i = 0; i < 10; i++) {
+                service.zoomBy(zoomFactor);
+            }
+
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>("CameraComponent");
+            expect(cameraComponent?.transform.scale).toBeLessThanOrEqual(10000);
+        })
     });
 });

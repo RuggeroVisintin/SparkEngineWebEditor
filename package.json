@@ -34,7 +34,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.1.1",
     "react-router": "^7.8.2",
-    "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.0/sparkengineweb-v0.17.0-lib.tar.gz",
+    "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.2/sparkengineweb-v0.17.2-lib.tar.gz",
     "styled-components": "^6.1.19",
     "text-encoding": "^0.7.0",
     "uuid": "^11.1.0",

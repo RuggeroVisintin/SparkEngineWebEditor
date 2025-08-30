@@ -395,13 +395,12 @@ describe('EditorService', () => {
             const resolution = { width: 800, height: 600 };
             editorService.start(context, resolution);
 
-
             editorService.handleMouseWheel({
                 scrollX: 0,
-                scrollY: 100
+                scrollY: 1.2
             });
 
-            expect(editorService.editorCamera.camera.transform.scale).toEqual(2);
+            expect(editorService.editorCamera.camera.transform.scale).toEqual(0.988142);
         });
     });
 

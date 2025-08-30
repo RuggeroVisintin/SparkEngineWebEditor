@@ -1,4 +1,4 @@
-import { CameraComponent, GameEngine, IEntity, isCollision, Rgb, Scene, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
+import { CameraComponent, GameEngine, IEntity, isCollision, Rgb, Scene, toRounded, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
 import { EntityOutline } from "./entities";
 import Pivot from "./entities/Pivot";
 import { EditorCamera } from "./entities/EditrorCamera";
@@ -72,10 +72,14 @@ export class ContextualUiService {
     }
 
     public zoomBy(factor: number): void {
-        this._editorCamera.camera.transform.scale += factor;
+        this._editorCamera.camera.transform.scale /= (1 + factor * 0.01);
 
-        if (this._editorCamera.camera.transform.scale < 0.1) {
-            this._editorCamera.camera.transform.scale = 0.1; // Prevent zooming out
+        this._editorCamera.camera.transform.scale = toRounded(this._editorCamera.camera.transform.scale, 6);
+
+        if (this._editorCamera.camera.transform.scale < 0.00001) {
+            this._editorCamera.camera.transform.scale = 0.00001;
+        } else if (this._editorCamera.camera.transform.scale > 10000) {
+            this._editorCamera.camera.transform.scale = 10000;
         }
     }
 
