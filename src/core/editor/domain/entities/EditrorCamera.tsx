@@ -14,8 +14,6 @@ export class EditorCamera extends BaseEntity {
             }
         });
 
-        console.log('This CAmera', this.camera);
-
         this.addComponent(this.camera);
         this.addComponent(this.camera.transform);
     }

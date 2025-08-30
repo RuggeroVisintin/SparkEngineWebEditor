@@ -45,25 +45,33 @@ export class ContextualUiService {
         const entityTransform = entity.getComponent<TransformComponent>("TransformComponent");
         const cameraTransform = this._editorCamera.getComponent<CameraComponent>("CameraComponent")?.transform;
 
-        // TODO: should take current camera zoom into account
-        if (entityTransform && cameraTransform && !isCollision(toTopLeftAABB([
-            entityTransform.position.x,
-            entityTransform.position.y,
-            entityTransform.size.width,
-            entityTransform.size.height
-        ]), toTopLeftAABB([
-            cameraTransform.position.x,
-            cameraTransform.position.y,
-            cameraTransform.size.width,
-            cameraTransform.size.height
-        ]))) {
-            cameraTransform.position = Vec2.from(entityTransform.position);
+        // Compensate for camera zoom (scale)
+        if (entityTransform && cameraTransform) {
+            const scale = cameraTransform.scale ?? 1;
+
+            const visibleCameraWidth = cameraTransform.size.width / scale;
+            const visibleCameraHeight = cameraTransform.size.height / scale;
+
+            const cameraAABB = toTopLeftAABB([
+                cameraTransform.position.x,
+                cameraTransform.position.y,
+                visibleCameraWidth,
+                visibleCameraHeight
+            ]);
+            const entityAABB = toTopLeftAABB([
+                entityTransform.position.x,
+                entityTransform.position.y,
+                entityTransform.size.width,
+                entityTransform.size.height
+            ]);
+
+            if (!isCollision(entityAABB, cameraAABB)) {
+                cameraTransform.position = Vec2.from(entityTransform.position);
+            }
         }
     }
 
     public zoomBy(factor: number): void {
-        const previousScale = this._editorCamera.camera.transform.scale;
-
         this._editorCamera.camera.transform.scale += factor;
 
         if (this._editorCamera.camera.transform.scale < 0.1) {

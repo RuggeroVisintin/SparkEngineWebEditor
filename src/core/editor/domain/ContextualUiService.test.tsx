@@ -72,6 +72,45 @@ describe('core/editor/ContextualUiService', () => {
             const cameraPosition = service.editorCamera.getComponent<CameraComponent>('CameraComponent')?.transform.position;
             expect(cameraPosition).toEqual(entity.transform.position);
         });
+
+        it('Should compensate for camera zoom when checking viewport collision', () => {
+            // Set up camera zoom
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
+
+            cameraComponent.transform.scale = 2;
+            cameraComponent.transform.size = { width: 100, height: 100 };
+            cameraComponent.transform.position = new Vec2(0, 0);
+
+            const entityOutside = new GameObject();
+            entityOutside.transform.position = new Vec2(210, 210);
+            entityOutside.transform.size = { width: 10, height: 10 };
+
+            service.focusOnEntity(entityOutside);
+            expect(cameraComponent.transform.position).toEqual(entityOutside.transform.position);
+        });
+
+        it.each([[
+            1,
+            new Vec2(-449, -47),
+            { width: 30, height: 30 }
+        ], [
+            1,
+            new Vec2(782, 286),
+            { width: 30, height: 30 }
+        ]])('Should not move the camera if the entity is already in viewport', (cameraScale, entityPosition, entitySize) => {
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
+
+            cameraComponent.transform.scale = cameraScale;
+            cameraComponent.transform.size = { width: 1920, height: 1080 };
+            cameraComponent.transform.position = new Vec2(0, 0);
+
+            const entityInside = new GameObject();
+            entityInside.transform.position = entityPosition;
+            entityInside.transform.size = entitySize;
+
+            service.focusOnEntity(entityInside);
+            expect(cameraComponent.transform.position).toEqual(new Vec2(0, 0));
+        });
     });
 
     describe('.loseFocus()', () => {
