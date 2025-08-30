@@ -18,7 +18,8 @@
                     "velocity": {
                         "x": 0,
                         "y": 0
-                    }
+                    },
+                    "scale": 1
                 },
                 {
                     "__type": "ShapeComponent",
@@ -36,7 +37,8 @@
                         "velocity": {
                             "x": 0,
                             "y": 0
-                        }
+                        },
+                        "scale": 1
                     },
                     "shapeType": 0,
                     "isWireframe": false
@@ -82,7 +84,8 @@
                     "velocity": {
                         "x": 0,
                         "y": 0
-                    }
+                    },
+                    "scale": 1
                 },
                 {
                     "__type": "ShapeComponent",
@@ -100,7 +103,8 @@
                         "velocity": {
                             "x": 0,
                             "y": 0
-                        }
+                        },
+                        "scale": 1
                     },
                     "shapeType": 0,
                     "isWireframe": false
@@ -134,7 +138,8 @@
                     "velocity": {
                         "x": 0,
                         "y": 0
-                    }
+                    },
+                    "scale": 1
                 },
                 {
                     "__type": "ShapeComponent",
@@ -152,7 +157,8 @@
                         "velocity": {
                             "x": 0,
                             "y": 0
-                        }
+                        },
+                        "scale": 1
                     },
                     "shapeType": 0,
                     "isWireframe": false
