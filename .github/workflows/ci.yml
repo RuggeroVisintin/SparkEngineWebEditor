@@ -53,6 +53,7 @@ jobs:
             name: coverage-badge-artifact
             path: .github/pages/badges/coverage.badge.svg
     code_scan:
+      name: "Code Scan"
       uses: './.github/workflows/codeql.yml'
       permissions:
         security-events: write
