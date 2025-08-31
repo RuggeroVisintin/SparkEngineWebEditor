@@ -1,5 +1,5 @@
 repository:
-  name: SparkEngineWeb - Editor
+  name: SparkEngineWebEditor
   description: Web Editor for SparkEngineWeb
   private: false
   has_issues: true
