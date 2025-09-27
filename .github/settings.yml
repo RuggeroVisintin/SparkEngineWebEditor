@@ -25,7 +25,7 @@ branches:
         strict: true
         contexts:
           - "Build"
-          - "Code scanning results / CodeQL"
+          - "Code Scan / Analyze (javascript-typescript)"
           - "Unit Tests"
 
       enforce_admins: false
