@@ -49,8 +49,8 @@ export class ContextualUiService {
         if (entityTransform && cameraTransform) {
             const scale = cameraTransform.scale ?? 1;
 
-            const visibleCameraWidth = cameraTransform.size.width / scale;
-            const visibleCameraHeight = cameraTransform.size.height / scale;
+            const visibleCameraWidth = cameraTransform.size.width * scale;
+            const visibleCameraHeight = cameraTransform.size.height * scale;
 
             const cameraAABB = toTopLeftAABB([
                 cameraTransform.position.x,
@@ -64,6 +64,9 @@ export class ContextualUiService {
                 entityTransform.size.width,
                 entityTransform.size.height
             ]);
+
+            console.log('Camera AABB', cameraAABB);
+            console.log('Entity AABB', entityAABB);
 
             if (!isCollision(entityAABB, cameraAABB)) {
                 cameraTransform.position = Vec2.from(entityTransform.position);
