@@ -73,6 +73,7 @@ export class ContextualUiService {
 
     public zoomBy(factor: number): void {
         this._editorCamera.camera.transform.scale /= (1 + factor * 0.01);
+        console.log('scale', this._editorCamera.camera.transform.scale);
 
         this._editorCamera.camera.transform.scale = toRounded(this._editorCamera.camera.transform.scale, 6);
 

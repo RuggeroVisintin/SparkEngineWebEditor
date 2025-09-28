@@ -71,13 +71,13 @@ describe('core/editor/ContextualUiService', () => {
                 { width: 30, height: 30 }
             ],
             [
-                'camera zoom in',
+                'camera zoom out',
                 2,
                 new Vec2(210, 210),
                 { width: 10, height: 10 }
             ],
             [
-                'camera zoom out',
+                'camera zoom in',
                 0.5,
                 new Vec2(60, 60),
                 { width: 10, height: 10 }
@@ -106,6 +106,16 @@ describe('core/editor/ContextualUiService', () => {
             1,
             new Vec2(782, 286),
             { width: 30, height: 30 }
+        ], [
+            // zoom out
+            2,
+            new Vec2(-149, -47),
+            { width: 10, height: 10 }
+        ], [
+            // zoom in
+            0.5,
+            new Vec2(5, 5),
+            { width: 10, height: 10 }
         ]])('Should not move the camera if the entity is already in viewport', (cameraScale, entityPosition, entitySize) => {
             const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
 

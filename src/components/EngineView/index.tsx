@@ -137,7 +137,6 @@ export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, o
                 width={width}
                 height={height}
                 onWheel={(e) => {
-                    console.log('onMouseWheel', e.deltaX, e.deltaY);
                     onMouseWheel?.({ scrollX: e.deltaX, scrollY: e.deltaY })
                 }}
                 onMouseDown={(e) => {
