@@ -63,46 +63,39 @@ describe('core/editor/ContextualUiService', () => {
             expect(service.currentEntityOriginPivot.transform.size).toEqual({ width: 10, height: 10 });
         });
 
-        it('Should center the camera on the entity if not in viewport', () => {
+        it.each([
+            [
+                'no camera zoom',
+                1,
+                new Vec2(2000, 2000),
+                { width: 30, height: 30 }
+            ],
+            [
+                'camera zoom in',
+                2,
+                new Vec2(210, 210),
+                { width: 10, height: 10 }
+            ],
+            [
+                'camera zoom out',
+                0.5,
+                new Vec2(60, 60),
+                { width: 10, height: 10 }
+            ]
+        ])('Should center the camera on the entity if not in viewport (%s)', (__, cameraScale, entityPosition, entitySize) => {
+            const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
+
+            cameraComponent.transform.scale = cameraScale;
+            cameraComponent.transform.size = { width: 100, height: 100 };
+            cameraComponent.transform.position = new Vec2(0, 0);
+
             const entity = new GameObject();
-            entity.transform.position = new Vec2(2000, 2000);
+            entity.transform.position = entityPosition;
+            entity.transform.size = entitySize;
 
             service.focusOnEntity(entity);
 
-            const cameraPosition = service.editorCamera.getComponent<CameraComponent>('CameraComponent')?.transform.position;
-            expect(cameraPosition).toEqual(entity.transform.position);
-        });
-
-        it('Should compensate for camera zoom in when focusing on entity', () => {
-            // Set up camera zoom
-            const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
-
-            cameraComponent.transform.scale = 2;
-            cameraComponent.transform.size = { width: 100, height: 100 };
-            cameraComponent.transform.position = new Vec2(0, 0);
-
-            const entityOutside = new GameObject();
-            entityOutside.transform.position = new Vec2(210, 210);
-            entityOutside.transform.size = { width: 10, height: 10 };
-
-            service.focusOnEntity(entityOutside);
-            expect(cameraComponent.transform.position).toEqual(entityOutside.transform.position);
-        });
-
-        it('Should compensate for camera zoom in when foucing on entity', () => {
-            // Set up camera zoom
-            const cameraComponent = service.editorCamera.getComponent<CameraComponent>('CameraComponent')!;
-
-            cameraComponent.transform.scale = 0.5;
-            cameraComponent.transform.size = { width: 100, height: 100 };
-            cameraComponent.transform.position = new Vec2(0, 0);
-
-            const entityOutside = new GameObject();
-            entityOutside.transform.position = new Vec2(60, 60);
-            entityOutside.transform.size = { width: 10, height: 10 };
-
-            service.focusOnEntity(entityOutside);
-            expect(cameraComponent.transform.position).toEqual(entityOutside.transform.position);
+            expect(cameraComponent.transform.position).toEqual(entityPosition);
         });
 
         it.each([[

@@ -65,9 +65,6 @@ export class ContextualUiService {
                 entityTransform.size.height
             ]);
 
-            console.log('Camera AABB', cameraAABB);
-            console.log('Entity AABB', entityAABB);
-
             if (!isCollision(entityAABB, cameraAABB)) {
                 cameraTransform.position = Vec2.from(entityTransform.position);
             }
