@@ -254,31 +254,17 @@ describe('EditorService', () => {
         describe('right mouse button', () => {
             it('Should set the origin pivot position to the given coordinates', () => {
                 const resolution = { width: 800, height: 600 };
+                const target = new Vec2(100, 200)
 
                 editorService.start(context, resolution);
                 editorService.handleMouseClick({
-                    targetX: 100,
-                    targetY: 200,
+                    targetX: target.x,
+                    targetY: target.y,
                     modifiers: {},
                     button: 2
                 });
 
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(contextualUiServiceDouble.currentSpawnPosition);
-            });
-
-            it('Should account for the editor camera position when setting the origin pivot position', () => {
-                const resolution = { width: 800, height: 600 };
-                editorService.start(context, resolution);
-                editorService.editorCamera.getComponent<TransformComponent>('TransformComponent')!.position = new Vec2(50, 50);
-
-                editorService.handleMouseClick({
-                    targetX: 100,
-                    targetY: 200,
-                    modifiers: {},
-                    button: 2
-                });
-
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(contextualUiServiceDouble.currentSpawnPosition);
+                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(target);
             });
         });
     });

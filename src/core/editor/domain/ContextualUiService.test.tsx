@@ -26,7 +26,7 @@ describe('core/editor/ContextualUiService', () => {
         it.each([
             {
                 cameraPosition: new Vec2(0, 0),
-                expectedPosition: new Vec2(100, 200)
+                expectedPosition: new Vec2(100, 200),
             },
             {
                 cameraPosition: new Vec2(50, 50),
@@ -41,6 +41,25 @@ describe('core/editor/ContextualUiService', () => {
 
             expect(service.spawnPivot.position).toEqual(expectedPosition);
         });
+
+        it.each([{
+            cameraScale: 2,
+            expectedPosition: new Vec2(250, 450),
+            initialPosition: new Vec2(100, 200),
+        }, {
+            cameraScale: 0.5,
+            expectedPosition: new Vec2(100, 150),
+            initialPosition: new Vec2(100, 200),
+        }])('Should account for camera zoom', ({ initialPosition, cameraScale, expectedPosition }) => {
+            const service = new ContextualUiService();
+
+            service.editorCamera.camera.transform.position = new Vec2(50, 50);
+            service.editorCamera.camera.transform.scale = cameraScale;
+
+            service.moveSpawnOrigin(initialPosition, { width: 0, height: 0 });
+
+            expect(service.spawnPivot.position).toEqual(expectedPosition);
+        })
     });
 
     describe('.focusOnEntity()', () => {

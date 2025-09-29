@@ -34,8 +34,9 @@ export class ContextualUiService {
 
     public moveSpawnOrigin(screenSpacePosition: Vec2, engineResolution: { width: number, height: number }): void {
         const editorCameraPosition = this._editorCamera.getComponent<TransformComponent>('TransformComponent')?.position ?? new Vec2(0, 0);
+        const editorCameraScale = this._editorCamera.getComponent<TransformComponent>('TransformComponent')?.scale ?? 1;
 
-        this._spawnPivot.position = new Vec2(screenSpacePosition.x + editorCameraPosition.x, screenSpacePosition.y + editorCameraPosition.y).toScreenSpace(engineResolution)
+        this._spawnPivot.position = new Vec2(screenSpacePosition.x + editorCameraPosition.x / editorCameraScale, screenSpacePosition.y + editorCameraPosition.y / editorCameraScale).toScreenSpace(engineResolution).multiply(editorCameraScale);
     }
 
     public focusOnEntity(entity: IEntity): void {
