@@ -116,10 +116,10 @@ export class EditorService {
                 this.deselectCurrentEntity();
             }
         } else if (event.button === 2) {
-            const { targetX, targetY } = event;
-            const engineResolution = this._engine?.renderer.resolution || { width: 0, height: 0 };
-
-            this.contextualUiService.moveSpawnOrigin(new Vec2(targetX, targetY), engineResolution);
+            this.contextualUiService.moveSpawnOrigin(
+                new Vec2(event.targetX, event.targetX),
+                this._engine?.renderer.resolution || { width: 0, height: 0 }
+            );
 
             this.stateRepository.update({
                 spawnPoint: this.contextualUiService.spawnPivot.position,
