@@ -139,13 +139,13 @@ export class EditorService {
                 editorCameraTransform.position.y - event.deltaY
             );
         } else if (event.button === 0 && this._currentEntity) {
+            // Entity drag
             const transform = this._currentEntity.getComponent<TransformComponent>('TransformComponent');
             if (!transform) return;
 
             const scale = this.editorCamera.camera.transform.scale;
-            const delta = new Vec2(event.deltaX / scale, event.deltaY / scale);
+            const delta = new Vec2(event.deltaX * scale, event.deltaY * scale);
 
-            // TODO: there is still some weird glitch when zoooming out
             this.updateCurrentEntityPosition(new Vec2(transform.position.x + delta.x, transform.position.y + delta.y));
         }
     }
