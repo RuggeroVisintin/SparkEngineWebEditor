@@ -43,6 +43,7 @@ yarn-error.log*
 .github/pages
 /coverage
 
-/test-results/
+/test-results
 /reports
+/vendors
 
