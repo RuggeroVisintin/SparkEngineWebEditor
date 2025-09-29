@@ -1,4 +1,4 @@
-import { CameraComponent, GameEngine, IEntity, isCollision, Rgb, Scene, toRounded, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
+import { CameraComponent, IEntity, isCollision, Rgb, Scene, toRounded, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
 import { EntityOutline } from "./entities";
 import Pivot from "./entities/Pivot";
 import { EditorCamera } from "./entities/EditrorCamera";

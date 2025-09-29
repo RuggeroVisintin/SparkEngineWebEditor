@@ -105,7 +105,7 @@ export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, o
             });
         }
 
-    }, [canvasRef, onEngineViewReady, onClick]);
+    }, [canvasRef, onEngineViewReady, onClick, currentModifierButtons]);
 
 
     useEffect(() => {
