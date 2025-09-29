@@ -1,4 +1,4 @@
-import { CameraComponent, GameEngine, IEntity, isCollision, Rgb, Scene, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
+import { CameraComponent, IEntity, isCollision, Rgb, Scene, toRounded, toTopLeftAABB, TransformComponent, Vec2 } from "sparkengineweb";
 import { EntityOutline } from "./entities";
 import Pivot from "./entities/Pivot";
 import { EditorCamera } from "./entities/EditrorCamera";
@@ -32,8 +32,11 @@ export class ContextualUiService {
         contextualUiScene.registerEntity(this._editorCamera);
     }
 
-    public moveSpawnOrigin(position: Vec2): void {
-        this._spawnPivot.position = position;
+    public moveSpawnOrigin(screenSpacePosition: Vec2, engineResolution: { width: number, height: number }): void {
+        const editorCameraPosition = this._editorCamera.getComponent<TransformComponent>('TransformComponent')?.position ?? new Vec2(0, 0);
+        const editorCameraScale = this._editorCamera.getComponent<TransformComponent>('TransformComponent')?.scale ?? 1;
+
+        this._spawnPivot.position = new Vec2(screenSpacePosition.x + editorCameraPosition.x / editorCameraScale, screenSpacePosition.y + editorCameraPosition.y / editorCameraScale).toScreenSpace(engineResolution).multiply(editorCameraScale);
     }
 
     public focusOnEntity(entity: IEntity): void {
@@ -45,18 +48,41 @@ export class ContextualUiService {
         const entityTransform = entity.getComponent<TransformComponent>("TransformComponent");
         const cameraTransform = this._editorCamera.getComponent<CameraComponent>("CameraComponent")?.transform;
 
-        if (entityTransform && cameraTransform && !isCollision(toTopLeftAABB([
-            entityTransform.position.x,
-            entityTransform.position.y,
-            entityTransform.size.width,
-            entityTransform.size.height
-        ]), toTopLeftAABB([
-            cameraTransform.position.x,
-            cameraTransform.position.y,
-            cameraTransform.size.width,
-            cameraTransform.size.height
-        ]))) {
-            cameraTransform.position = Vec2.from(entityTransform.position);
+        // Check if object is inside camera view compensating for camera zoom (inverse scale)
+        if (entityTransform && cameraTransform) {
+            const scale = cameraTransform.scale ?? 1;
+
+            const visibleCameraWidth = cameraTransform.size.width * scale;
+            const visibleCameraHeight = cameraTransform.size.height * scale;
+
+            const cameraAABB = toTopLeftAABB([
+                cameraTransform.position.x,
+                cameraTransform.position.y,
+                visibleCameraWidth,
+                visibleCameraHeight
+            ]);
+            const entityAABB = toTopLeftAABB([
+                entityTransform.position.x,
+                entityTransform.position.y,
+                entityTransform.size.width,
+                entityTransform.size.height
+            ]);
+
+            if (!isCollision(entityAABB, cameraAABB)) {
+                cameraTransform.position = Vec2.from(entityTransform.position);
+            }
+        }
+    }
+
+    public zoomBy(factor: number): void {
+        this._editorCamera.camera.transform.scale /= (1 + factor * 0.01);
+
+        this._editorCamera.camera.transform.scale = toRounded(this._editorCamera.camera.transform.scale, 6);
+
+        if (this._editorCamera.camera.transform.scale < 0.00001) {
+            this._editorCamera.camera.transform.scale = 0.00001;
+        } else if (this._editorCamera.camera.transform.scale > 10000) {
+            this._editorCamera.camera.transform.scale = 10000;
         }
     }
 

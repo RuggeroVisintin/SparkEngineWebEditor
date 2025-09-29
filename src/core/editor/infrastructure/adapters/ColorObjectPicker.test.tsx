@@ -42,8 +42,8 @@ describe('core/editor/adapters/ColorObjectPicker', () => {
             expect(renderer.renderCommands).toStrictEqual([
                 new SetBlendingMethodCommand(BlendMethod.BM_Overwrite),
                 new SetTransformMatrixCommand([-0, -0]),
-                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject.transform.position.x, gameObject.transform.position.y], [gameObject.transform.size.width, gameObject.transform.size.height], true, uuidToRgb(gameObject.uuid).toRgbaString()),
-                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject2.transform.position.x, gameObject2.transform.position.y], [gameObject2.transform.size.width, gameObject2.transform.size.height], true, uuidToRgb(gameObject2.uuid).toRgbaString()),
+                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject.transform.position.x, gameObject.transform.position.y], [gameObject.transform.size.width, gameObject.transform.size.height], gameObject.transform.scale, true, uuidToRgb(gameObject.uuid).toRgbaString()),
+                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject2.transform.position.x, gameObject2.transform.position.y], [gameObject2.transform.size.width, gameObject2.transform.size.height], gameObject.transform.scale, true, uuidToRgb(gameObject2.uuid).toRgbaString()),
             ]);
         });
 
@@ -61,8 +61,8 @@ describe('core/editor/adapters/ColorObjectPicker', () => {
             expect(renderer.renderCommands).toStrictEqual([
                 new SetBlendingMethodCommand(BlendMethod.BM_Overwrite),
                 new SetTransformMatrixCommand([-0, -0]),
-                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject2.transform.position.x, gameObject2.transform.position.y], [gameObject2.transform.size.width, gameObject2.transform.size.height], true, uuidToRgb(gameObject2.uuid).toRgbaString()),
-                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject.transform.position.x, gameObject.transform.position.y], [gameObject.transform.size.width, gameObject.transform.size.height], true, uuidToRgb(gameObject.uuid).toRgbaString()),
+                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject2.transform.position.x, gameObject2.transform.position.y], [gameObject2.transform.size.width, gameObject2.transform.size.height], gameObject.transform.scale, true, uuidToRgb(gameObject2.uuid).toRgbaString()),
+                new DrawPrimitiveCommand(PrimitiveType.Rectangle, [gameObject.transform.position.x, gameObject.transform.position.y], [gameObject.transform.size.width, gameObject.transform.size.height], gameObject.transform.scale, true, uuidToRgb(gameObject.uuid).toRgbaString()),
             ]);
         });
 

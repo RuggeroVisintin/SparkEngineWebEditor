@@ -1,5 +1,5 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject } from "sparkengineweb";
-import { MouseClickEvent, MouseDragEvent, Optional } from "../../common";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject, toRounded } from "sparkengineweb";
+import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
 import { SceneRepository } from "../../scene";
@@ -116,11 +116,8 @@ export class EditorService {
                 this.deselectCurrentEntity();
             }
         } else if (event.button === 2) {
-            const { targetX, targetY } = event;
-            const editorCameraPosition = this.editorCamera.getComponent<TransformComponent>('TransformComponent')?.position ?? new Vec2(0, 0);
-            const engineResolution = this._engine?.renderer.resolution || { width: 0, height: 0 };
-
-            this.contextualUiService.moveSpawnOrigin(new Vec2(targetX + editorCameraPosition.x, targetY + editorCameraPosition.y).toScreenSpace(engineResolution));
+            this.contextualUiService.moveSpawnOrigin(new Vec2(event.targetX, event.targetY),
+                this._engine?.renderer.resolution || { width: 0, height: 0 });
 
             this.stateRepository.update({
                 spawnPoint: this.contextualUiService.spawnPivot.position,
@@ -139,12 +136,20 @@ export class EditorService {
                 editorCameraTransform.position.y - event.deltaY
             );
         } else if (event.button === 0 && this._currentEntity) {
+            // Entity drag
             const transform = this._currentEntity.getComponent<TransformComponent>('TransformComponent');
-
             if (!transform) return;
 
-            this.updateCurrentEntityPosition(new Vec2(transform.position.x + event.deltaX, transform.position.y + event.deltaY));
+            const scale = this.editorCamera.camera.transform.scale;
+            const delta = new Vec2(event.deltaX * scale, event.deltaY * scale);
+
+            this.updateCurrentEntityPosition(new Vec2(transform.position.x + delta.x, transform.position.y + delta.y));
         }
+    }
+
+    public handleMouseWheel(event: MouseWheelEvent): void {
+        const cappedScrollY = Math.max(Math.min(event.scrollY, 10), -10);
+        this.contextualUiService.zoomBy(toRounded(cappedScrollY, 5));
     }
 
     public selectEntity(entity: IEntity): void {

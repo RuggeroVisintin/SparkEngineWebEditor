@@ -53,6 +53,7 @@ export class ColorObjectPicker extends RenderSystem implements ObjectPicker {
                     PrimitiveType.Rectangle,
                     [component.transform.position.x, component.transform.position.y],
                     [component.transform.size.width, component.transform.size.height],
+                    component.transform.scale,
                     true,
                     color.toRgbaString()
                 ));

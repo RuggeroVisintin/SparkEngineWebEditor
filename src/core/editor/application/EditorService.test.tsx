@@ -254,43 +254,37 @@ describe('EditorService', () => {
         describe('right mouse button', () => {
             it('Should set the origin pivot position to the given coordinates', () => {
                 const resolution = { width: 800, height: 600 };
+                const target = new Vec2(100, 200)
 
                 editorService.start(context, resolution);
                 editorService.handleMouseClick({
-                    targetX: 100,
-                    targetY: 200,
+                    targetX: target.x,
+                    targetY: target.y,
                     modifiers: {},
                     button: 2
                 });
 
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(new Vec2(100, 200).toScreenSpace(resolution));
-            });
-
-            it('Should account for the editor camera position when setting the origin pivot position', () => {
-                const resolution = { width: 800, height: 600 };
-                editorService.start(context, resolution);
-                editorService.editorCamera.getComponent<TransformComponent>('TransformComponent')!.position = new Vec2(50, 50);
-
-                editorService.handleMouseClick({
-                    targetX: 100,
-                    targetY: 200,
-                    modifiers: {},
-                    button: 2
-                });
-
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(new Vec2(150, 250).toScreenSpace(resolution));
+                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(target);
             });
         });
     });
 
     describe('.handleMouseDrag()', () => {
         describe('on left mouse button pressed', () => {
-            it('Should update the position of the current entity', () => {
+            it.each([
+                // zoom-in
+                { initialScale: 0.5, expectedPosition: new Vec2(60, 60) },
+                // no zoom
+                { initialScale: 1, expectedPosition: new Vec2(70, 70) },
+                // zoom-out
+                { initialScale: 1.5, expectedPosition: new Vec2(80, 80) },
+            ])('Should update the position of the current entity', ({ initialScale, expectedPosition }) => {
                 const resolution = { width: 800, height: 600 };
                 const gameObject = new GameObject();
                 gameObject.transform.position = new Vec2(50, 50);
 
                 editorService.start(context, resolution);
+                editorService.editorCamera.camera.transform.scale = initialScale;
                 editorService.selectEntity(gameObject);
 
                 editorService.handleMouseDrag({
@@ -302,7 +296,7 @@ describe('EditorService', () => {
                     deltaY: 20
                 });
 
-                expect(gameObject.transform.position).toEqual(new Vec2(70, 70));
+                expect(gameObject.transform.position).toEqual(expectedPosition);
             });
 
             it('Should not update the position when not using left mouse button', () => {
@@ -367,7 +361,21 @@ describe('EditorService', () => {
                 expect(gameObject.transform.position).toEqual(new Vec2(50, 50));
             });
         })
-    })
+    });
+
+    describe('.handleMouseWheel()', () => {
+        it('Should zoom the editor camera by the given factor', () => {
+            const resolution = { width: 800, height: 600 };
+            editorService.start(context, resolution);
+
+            editorService.handleMouseWheel({
+                scrollX: 0,
+                scrollY: 1.2
+            });
+
+            expect(editorService.editorCamera.camera.transform.scale).toEqual(0.988142);
+        });
+    });
 
     describe('.selectEntity()', () => {
         it('Should set the given entity as the current entity', () => {

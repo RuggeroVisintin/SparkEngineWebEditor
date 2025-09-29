@@ -36,6 +36,7 @@ export const Editor = () => {
                     onClick={(e) => editorService.handleMouseClick(e)}
                     onMouseDown={(e) => editorService.handleMouseClick(e)}
                     onMouseDragging={(e) => editorService.handleMouseDrag(e)}
+                    onMouseWheel={(e) => editorService.handleMouseWheel(e)}
                 />
                 <Box $size={0.25}>
                     <FlexBox $fill={true}>
