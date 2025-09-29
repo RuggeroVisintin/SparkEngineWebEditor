@@ -23,13 +23,23 @@ describe('core/editor/ContextualUiService', () => {
     });
 
     describe('.moveSpawnPoint()', () => {
-        it('Should move the spawn pivot to the given position', () => {
+        it.each([
+            {
+                cameraPosition: new Vec2(0, 0),
+                expectedPosition: new Vec2(100, 200)
+            },
+            {
+                cameraPosition: new Vec2(50, 50),
+                expectedPosition: new Vec2(150, 250)
+            }
+        ])('Should move the spawn pivot to the world space coordinates', ({ cameraPosition, expectedPosition }) => {
             const service = new ContextualUiService();
             const position = new Vec2(100, 200);
 
-            service.moveSpawnOrigin(position);
+            service.editorCamera.camera.transform.position = cameraPosition;
+            service.moveSpawnOrigin(position, { width: 0, height: 0 });
 
-            expect(service.spawnPivot.position).toEqual(position);
+            expect(service.spawnPivot.position).toEqual(expectedPosition);
         });
     });
 

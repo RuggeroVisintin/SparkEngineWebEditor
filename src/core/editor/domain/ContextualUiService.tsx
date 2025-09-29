@@ -32,8 +32,10 @@ export class ContextualUiService {
         contextualUiScene.registerEntity(this._editorCamera);
     }
 
-    public moveSpawnOrigin(position: Vec2): void {
-        this._spawnPivot.position = position;
+    public moveSpawnOrigin(screenSpacePosition: Vec2, engineResolution: { width: number, height: number }): void {
+        const editorCameraPosition = this._editorCamera.getComponent<TransformComponent>('TransformComponent')?.position ?? new Vec2(0, 0);
+
+        this._spawnPivot.position = new Vec2(screenSpacePosition.x + editorCameraPosition.x, screenSpacePosition.y + editorCameraPosition.y).toScreenSpace(engineResolution)
     }
 
     public focusOnEntity(entity: IEntity): void {

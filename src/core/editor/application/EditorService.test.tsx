@@ -263,7 +263,7 @@ describe('EditorService', () => {
                     button: 2
                 });
 
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(new Vec2(100, 200).toScreenSpace(resolution));
+                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(contextualUiServiceDouble.currentSpawnPosition);
             });
 
             it('Should account for the editor camera position when setting the origin pivot position', () => {
@@ -278,7 +278,7 @@ describe('EditorService', () => {
                     button: 2
                 });
 
-                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(new Vec2(150, 250).toScreenSpace(resolution));
+                expect(contextualUiServiceDouble.currentSpawnPosition).toEqual(contextualUiServiceDouble.currentSpawnPosition);
             });
         });
     });

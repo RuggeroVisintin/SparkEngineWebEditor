@@ -117,10 +117,9 @@ export class EditorService {
             }
         } else if (event.button === 2) {
             const { targetX, targetY } = event;
-            const editorCameraPosition = this.editorCamera.getComponent<TransformComponent>('TransformComponent')?.position ?? new Vec2(0, 0);
             const engineResolution = this._engine?.renderer.resolution || { width: 0, height: 0 };
 
-            this.contextualUiService.moveSpawnOrigin(new Vec2(targetX + editorCameraPosition.x, targetY + editorCameraPosition.y).toScreenSpace(engineResolution));
+            this.contextualUiService.moveSpawnOrigin(new Vec2(targetX, targetY), engineResolution);
 
             this.stateRepository.update({
                 spawnPoint: this.contextualUiService.spawnPivot.position,
