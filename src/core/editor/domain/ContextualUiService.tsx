@@ -45,7 +45,7 @@ export class ContextualUiService {
         const entityTransform = entity.getComponent<TransformComponent>("TransformComponent");
         const cameraTransform = this._editorCamera.getComponent<CameraComponent>("CameraComponent")?.transform;
 
-        // Compensate for camera zoom (scale)
+        // Check if object is inside camera view compensating for camera zoom (inverse scale)
         if (entityTransform && cameraTransform) {
             const scale = cameraTransform.scale ?? 1;
 
@@ -73,7 +73,6 @@ export class ContextualUiService {
 
     public zoomBy(factor: number): void {
         this._editorCamera.camera.transform.scale /= (1 + factor * 0.01);
-        console.log('scale', this._editorCamera.camera.transform.scale);
 
         this._editorCamera.camera.transform.scale = toRounded(this._editorCamera.camera.transform.scale, 6);
 
