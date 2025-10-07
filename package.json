@@ -31,7 +31,7 @@
     "eslint-linter-browserify": "^9.37.0",
     "globals": "^16.4.0",
     "monaco-editor": "^0.54.0",
-    "react": "^19.0.0",
+    "react": "^19.2.0",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.3",
     "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.3/sparkengineweb-v0.17.3-lib.tar.gz",
