@@ -87,7 +87,9 @@ export class EditorService {
         const newScene = this._project.scenes[0];
 
         this._currentScene?.dispose();
-        this._editorScene?.hide();
+        // FIXME: hiding the scene causes the camera to no longer being added to the renderer loop
+        // call ContextualUiService.loseFocus instead to avoid issues for now
+        this.contextualUiService.loseFocus();
 
         this._engine && newScene?.draw(this._engine);
 
