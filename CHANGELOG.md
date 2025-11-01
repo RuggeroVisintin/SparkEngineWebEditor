@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.13](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.12...sparkenginewebeditor-v0.0.13) (2025-10-26)
+
+
+### Features
+
+* **editor:** add editor camera movements ([#194](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/194)) ([4ed4a73](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/4ed4a732728ebdd71946e938c27208ecc7c729ed))
+* **editor:** add editor camera zoom in/out ([#204](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/204)) ([bda37d6](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/bda37d66b0a9a9838dc95c1687e3a7cbf92a1c76))
+* **editor:** make focused entity visible in screen when not in viewport ([811110a](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/811110a6b2e5381d3451075ffd7c4d69294085c5))
+* **editor:** switch to centered coordinate system ([#200](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/200)) ([31c1d61](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/31c1d61971337b507974588a9f69dffab1440d25))
+* **editor:** switch to centered coordinate system ([#201](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/201)) ([38af1df](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/38af1dfdeaa503206d7194d027d67095d22a195f))
+
+
+### Bug Fixes
+
+* **editor:** fix frozen camera when loading an existing project ([#241](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/241)) ([e2aba07](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/e2aba07c8e8383a8e0ddc77e784d8b4dc5d04617))
+
 ## [0.0.12](https://github.com/RuggeroVisintin/spark-engine-web-editor/compare/sparkenginewebeditor-v0.0.11...sparkenginewebeditor-v0.0.12) (2025-08-05)
 
 
