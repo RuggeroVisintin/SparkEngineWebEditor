@@ -4,6 +4,7 @@ import { FormInput } from "../../components";
 import { Box, Button, Spacing } from "../../primitives";
 import { InputRow } from "../../primitives/InputRow";
 import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
+import { ExpandablePanel } from "../../components/ExpandablePanel";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -77,29 +78,40 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
     const material = currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 
     return (
-        <Box $size={1} $scroll $divide $spacing={Spacing.lg}>
-            {transform && <TransformPropsGroup
-                transform={transform} onUpdatePosition={onUpdatePosition} onUpdateSize={onUpdateSize}></TransformPropsGroup>}
-            <hr />
-            {material && <MaterialPropsGroup
-                material={material}
-                onMaterialUpdate={onMaterialUpdate}
-            />}
+        <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
+            {transform &&
+                <ExpandablePanel title="Transform">
+                    <TransformPropsGroup
+                        transform={transform} onUpdatePosition={onUpdatePosition} onUpdateSize={onUpdateSize}></TransformPropsGroup>
+                </ExpandablePanel>
+            }
+            {material &&
+                <ExpandablePanel title="Material" $divide>
+                    <MaterialPropsGroup
+                        material={material}
+                        onMaterialUpdate={onMaterialUpdate}
+                    />
+                </ExpandablePanel>
+            }
             {typeOf(currentEntity) === 'TriggerEntity' && (
-                <Box data-testid="EntityPropsPanel.TriggerEntity.ScriptingProp">
-                    <Button
-                        data-testid="EntityPropsPanel.TriggerEntity.ScriptingLink"
-                        onClick={() => {
-                            const namedWindow = window.open(`/scripting/${currentEntity?.uuid}`, 'scripting');
+                // TODO: scripting should be done at a component level
+                <ExpandablePanel title="Scripting" $divide>
+                    <Box data-testid="EntityPropsPanel.TriggerEntity.ScriptingProp">
+                        <Button
+                            data-testid="EntityPropsPanel.TriggerEntity.ScriptingLink"
+                            onClick={() => {
+                                const namedWindow = window.open(`/scripting/${currentEntity?.uuid}`, 'scripting');
 
-                            if (namedWindow) {
-                                namedWindow.focus();
-                            }
-                        }}
-                    >
-                        <Box> Open Scripting </Box>
-                    </Button>
-                </Box>
+                                if (namedWindow) {
+                                    namedWindow.focus();
+                                }
+                            }}
+                        >
+                            <Box> Open Scripting </Box>
+                        </Button>
+                    </Box>
+                </ExpandablePanel>
+
             )
             }
         </Box >

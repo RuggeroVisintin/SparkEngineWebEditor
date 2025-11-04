@@ -17,6 +17,7 @@ describe('EntityPropsPanel', () => {
                 entity.transform.position[prop] = 1;
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputFieldX = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
 
@@ -32,6 +33,7 @@ describe('EntityPropsPanel', () => {
                 const newEntity = new GameObject();
 
                 rerender(<EntityPropsPanel currentEntity={newEntity} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
                 expect(inputField).toHaveValue(newEntity.transform.position[prop]);
@@ -46,6 +48,7 @@ describe('EntityPropsPanel', () => {
                 const cb = jest.fn();
 
                 render(<EntityPropsPanel currentEntity={entity} onUpdatePosition={cb} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
                 fireEvent.change(inputField, { target: { value: '23' } })
@@ -62,8 +65,10 @@ describe('EntityPropsPanel', () => {
                 entity.transform.size[prop] = 1;
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
+
 
                 expect(inputField).toHaveValue(entity.transform.size[prop]);
             });
@@ -77,6 +82,7 @@ describe('EntityPropsPanel', () => {
                 const newEntity = new GameObject();
 
                 rerender(<EntityPropsPanel currentEntity={newEntity} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
 
@@ -93,6 +99,7 @@ describe('EntityPropsPanel', () => {
                 const cb = jest.fn();
 
                 render(<EntityPropsPanel currentEntity={entity} onUpdateSize={cb} />);
+                fireEvent.click(screen.getByText('Transform'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
                 fireEvent.change(inputField, { target: { value: '23' } })
@@ -111,6 +118,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.diffuseColor = new Rgb(123, 233, 111);
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const inputFieldX = screen.getByTestId(`EntityPropsPanel.DiffuseColor.InputField`);
 
@@ -122,6 +130,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.diffuseColor = new Rgb(123, 233, 111);
 
                 const { rerender } = render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const newEntity = new GameObject();
                 newEntity.material.diffuseColor = new Rgb(222, 111, 121);
@@ -142,6 +151,8 @@ describe('EntityPropsPanel', () => {
                 const cb = jest.fn();
 
                 render(<EntityPropsPanel currentEntity={entity} onMaterialUpdate={cb} />);
+                fireEvent.click(screen.getByText('Material'));
+
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.DiffuseColor.InputField`);
                 fireEvent.change(inputField, { target: { value: result.toHexString() } })
@@ -156,6 +167,7 @@ describe('EntityPropsPanel', () => {
                 const cb = jest.fn();
 
                 render(<EntityPropsPanel currentEntity={entity} onMaterialUpdate={cb} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const button = screen.getByTestId(`EntityPropsPanel.RemoveDiffuseColor`);
                 fireEvent.click(button);
@@ -170,6 +182,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.opacity = 0.5;
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.Opacity.InputField`);
 
@@ -181,6 +194,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.opacity = 0.5;
 
                 const { rerender } = render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const newEntity = new GameObject();
                 newEntity.material.opacity = 50;
@@ -198,6 +212,8 @@ describe('EntityPropsPanel', () => {
                 const cb = jest.fn();
 
                 render(<EntityPropsPanel currentEntity={entity} onMaterialUpdate={cb} />);
+                fireEvent.click(screen.getByText('Material'));
+
                 const inputField = screen.getByTestId(`EntityPropsPanel.Opacity.InputField`);
 
                 expect(inputField).toHaveValue(entity.material.opacity);
@@ -212,6 +228,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.diffuseTexturePath = 'test.png';
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.DiffuseTexture.InputField`);
 
@@ -224,6 +241,7 @@ describe('EntityPropsPanel', () => {
                 entity.material.diffuseTexture = new ImageAsset(new FakeBitmap(), 'test.png');
 
                 render(<EntityPropsPanel currentEntity={entity} />);
+                fireEvent.click(screen.getByText('Material'));
 
                 const inputField = screen.getByTestId(`EntityPropsPanel.DiffuseTexture.InputField`);
 
@@ -242,6 +260,9 @@ describe('EntityPropsPanel', () => {
                         resolve(null);
                     }} />);
 
+                    fireEvent.click(screen.getByText('Material'));
+
+
                     const inputField = screen.getByTestId(`EntityPropsPanel.DiffuseTexture.InputField`);
                     inputField.click();
                 })
@@ -258,6 +279,7 @@ describe('EntityPropsPanel', () => {
             render(
                 WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
             );
+            fireEvent.click(screen.getByText('Scripting'));
 
             const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
             expect(scriptingPanel).toBeInTheDocument();
@@ -271,6 +293,7 @@ describe('EntityPropsPanel', () => {
             render(
                 WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />, onNavigate)
             );
+            fireEvent.click(screen.getByText('Scripting'));
 
             fireEvent.click(screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingLink'));
 
