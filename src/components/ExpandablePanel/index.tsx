@@ -1,5 +1,5 @@
 import React from "react"
-import { BackgroundColor, Box, BoxProps, Spacing } from "../../primitives"
+import { BackgroundColor, Box, BoxProps, FlexBox, Spacing } from "../../primitives"
 
 interface ExpandablePanelProps extends BoxProps {
     children?: React.ReactNode;
@@ -16,8 +16,13 @@ export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePane
                 $background={BackgroundColor.Secondary}
                 $spacing={Spacing.xs}
                 $hSpacing={Spacing.sm}
+                $clickable
             >
-                {title}
+                <FlexBox $direction="row">
+                    <FlexBox $fill>{title}</FlexBox>
+                    <FlexBox>{isExpanded ? '-' : '+'}</FlexBox>
+                </FlexBox>
+
             </Box>
             {isExpanded &&
                 <Box
