@@ -304,4 +304,34 @@ describe('EntityPropsPanel', () => {
             expect(getWindowCurrentUrl('scripting')).toBe(`/scripting/${entity.uuid}`);
         });
     });
+
+    describe('Add Component', () => {
+        it('Should have an "Add component" button', () => {
+            const entity = new GameObject();
+
+            render(
+                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+            );
+
+            const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
+            expect(addComponentButton).toBeVisible();
+        });
+
+        it('Should invoke the "onAddComponent" callback', () => {
+            const entity = new GameObject();
+            const cb = jest.fn();
+
+            render(
+                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} onAddComponent={cb} />)
+            );
+            const addComponentButton = screen.getByRole('button', { name: 'Add Component' });
+            fireEvent.click(addComponentButton);
+
+            expect(cb).toHaveBeenCalled();
+        });
+
+        it.todo('Should add the selected component to the entity when a component is selected from the list');
+        it.todo('Should close the list of available components when clicking outside the component list');
+        it.todo('Should close the list of available components when a component is selected from the list');
+    });
 })

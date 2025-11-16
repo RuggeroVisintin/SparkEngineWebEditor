@@ -165,7 +165,6 @@ export class EditorService {
         });
     }
 
-
     public addEntity(entity: IEntity): void {
         this._currentScene?.registerEntity(entity);
         this.selectEntity(entity);
@@ -233,6 +232,12 @@ export class EditorService {
 
         this.stateRepository.update({
             currentEntity: this._currentEntity
+        });
+    }
+
+    public openComponentsSelection(): void {
+        this.stateRepository.update({
+            isComponentsPanelOpen: true
         });
     }
 

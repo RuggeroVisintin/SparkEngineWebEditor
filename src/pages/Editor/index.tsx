@@ -10,7 +10,6 @@ import { useEditorService } from '../../hooks/useEditorService';
 
 export const Editor = () => {
     const engine = useRef<GameEngine>();
-
     const [editorService, editorState] = useEditorService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
@@ -38,6 +37,13 @@ export const Editor = () => {
                     onMouseDragging={(e) => editorService.handleMouseDrag(e)}
                     onMouseWheel={(e) => editorService.handleMouseWheel(e)}
                 />
+                {editorState.isComponentsPanelOpen && <Box $size={0.25}>
+                    <FlexBox>
+                        <Box>
+                            Material Component
+                        </Box>
+                    </FlexBox>
+                </Box>}
                 <Box $size={0.25}>
                     <FlexBox $fill={true}>
                         <ScenePanel
@@ -52,6 +58,7 @@ export const Editor = () => {
                                 onUpdatePosition={({ newPosition }: { newPosition: Vec2 }) => editorService.updateCurrentEntityPosition(newPosition)}
                                 onUpdateSize={({ newSize }: { newSize: { width: number, height: number } }) => editorService.updateCurrentEntitySize(newSize)}
                                 onMaterialUpdate={(materialProps: any) => editorService.updateCurrentEntityMaterial(materialProps)}
+                                onAddComponent={() => editorService.openComponentsSelection()}
                             ></EntityPropsPanel>}
                     </FlexBox>
                 </Box>
