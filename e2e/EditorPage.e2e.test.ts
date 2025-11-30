@@ -14,7 +14,8 @@ describe('Editor Page - Components Panel', () => {
         const addComponentButton = page.getByText(/Add Component/i);
         await addComponentButton.click();
 
-        await expect(await page.getByText('Material Component')).toBeVisible();
+        // TODO: use RigidBodyComponent instead
+        await expect(await page.getByText('Rigid Body Component')).toBeVisible();
     });
 
     // test('Should open components panel when Add Component button is clicked', async ({ page }) => {
