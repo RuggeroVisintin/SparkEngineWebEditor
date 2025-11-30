@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, FlexBox } from "../../../primitives";
+import { Box } from "../../../primitives";
+import { ListItem } from "../../../components";
 
 interface ComponentPanelProps {
     components: string[];
@@ -9,14 +10,15 @@ export const ComponentsPanel = ({
     components
 }: ComponentPanelProps) => {
     return (
-        <FlexBox role="listbox">
+        <Box role="listbox" style={{ overflowY: 'auto', height: '100%', display: 'block' }}>
             {
                 components.map(componentName => (
-                    <Box key={componentName} role="option">
-                        {componentName}
-                    </Box>
+                    <ListItem
+                        key={componentName}
+                        text={componentName}
+                        onClick={() => { }} />
                 ))
             }
-        </FlexBox>
+        </Box>
     );
 };

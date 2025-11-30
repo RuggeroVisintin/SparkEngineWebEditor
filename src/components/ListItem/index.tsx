@@ -49,6 +49,7 @@ export const ListItem = ({
 }: ListItemProps) => {
     return (
         <ItemWrapper
+            role={onClick ? "option" : "listitem"}
             $background={isAcitve ? BackgroundColor.Secondary : undefined}
             onClick={(e) => onClick?.(e)}
             data-testid={dataTestId}
