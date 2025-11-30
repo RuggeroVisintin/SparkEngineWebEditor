@@ -11,6 +11,21 @@ It leverages web technology to ensure high compatibility with many devices and e
 2) `npm i` to install needed dependencies
 3) `npm start` to launch the editor
 
+## Testing
+
+The project includes comprehensive test coverage:
+
+### Unit Tests
+* `npm test` - Run Jest unit tests in watch mode
+* `npm run test:ci` - Run all tests for CI/CD pipeline
+
+### E2E Tests
+* `npm run test:e2e` - Run Playwright end-to-end tests
+* `npm run test:e2e:watch` - Run E2E tests in watch mode
+* `npm run test:e2e:debug` - Debug E2E tests with Playwright inspector
+
+**Note:** E2E tests require the development server to be running (`npm start`) on port 3000.
+
 ### Local Development Enhancements
 
 If you are part of the core contributors to the project, there is a great chance you also need to debug the core of sparkengine.

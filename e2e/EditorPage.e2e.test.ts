@@ -1,4 +1,6 @@
 
+import { allOf } from 'sparkengineweb'
+
 describe('Editor Page - Components Panel', () => {
     it('Should add a new GameObject to the scene', async () => {
         const addEntityButton = page.getByText(/Add GameObject/i);
@@ -7,16 +9,27 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
-    test('Should add a new custom component to a selected entity', async () => {
-        const addEntityButton = page.getByText(/Add GameObject/i);
-        await addEntityButton.click();
+    describe('Add Component feature', () => {
+        beforeEach(async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
 
-        const addComponentButton = page.getByText(/Add Component/i);
-        await addComponentButton.click();
+            const addComponentButton = page.getByText(/Add Component/i);
+            await addComponentButton.click();
+        });
 
-        // TODO: use RigidBodyComponent instead
-        await expect(await page.getByText('Rigid Body Component')).toBeVisible();
-    });
+        it('Should show list of available components when Add Component button is clicked', async () => {
+            const components = allOf('Component');
+
+            await Promise.all(Object.keys(components).map(async (componentName: string) => {
+                return expect(page.getByRole('option', { name: componentName.split('Component')[0] })).toBeVisible();
+            }));
+        });
+
+        test.todo('Should add a new custom component to a selected entity');
+    })
+
+
 
     // test('Should open components panel when Add Component button is clicked', async ({ page }) => {
     //     // Similar setup - ensure we have an entity selected

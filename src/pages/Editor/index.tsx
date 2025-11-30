@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { GameEngine, IEntity, Vec2 } from '@sparkengine';
+import { allOf, GameEngine, IEntity, Vec2 } from '@sparkengine';
 import { EngineView } from '../../components';
 import { Box, FlexBox } from '../../primitives';
 import { EntityFactoryPanel, ScenePanel } from '../../templates';
@@ -7,6 +7,7 @@ import { ActionMenu } from '../../templates/ActionMenu';
 import { EntityPropsPanel } from '../../templates/EntityPropsPanel';
 import { OnEngineViewReadyCBProps } from '../../components/EngineView';
 import { useEditorService } from '../../hooks/useEditorService';
+import { ComponentsPanel } from './ComponentsPanel';
 
 export const Editor = () => {
     const engine = useRef<GameEngine>();
@@ -37,13 +38,14 @@ export const Editor = () => {
                     onMouseDragging={(e) => editorService.handleMouseDrag(e)}
                     onMouseWheel={(e) => editorService.handleMouseWheel(e)}
                 />
-                {editorState.isComponentsPanelOpen && <Box $size={0.25}>
-                    <FlexBox>
-                        <Box>
-                            Material Component
-                        </Box>
-                    </FlexBox>
-                </Box>}
+                {
+                    editorState.isComponentsPanelOpen &&
+                    <Box $size={0.25}>
+                        <ComponentsPanel
+                            components={Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? []}
+                        />
+                    </Box>
+                }
                 <Box $size={0.25}>
                     <FlexBox $fill={true}>
                         <ScenePanel
