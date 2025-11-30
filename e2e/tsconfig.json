@@ -6,7 +6,7 @@
             "node",
             "jest-playwright-preset"
         ],
-        "moduleResolution": "node"
+        "moduleResolution": "bundler"
     },
     "include": [
         "./**/*.ts",
