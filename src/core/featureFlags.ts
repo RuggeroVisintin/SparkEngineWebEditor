@@ -59,3 +59,17 @@ export function getEnabledFeatures(): FeatureFlag[] {
 
     return flags.filter(flag => isFeatureEnabled(flag));
 }
+
+/**
+ * This is a no-op in production, but can be used in tests to enable features
+ */
+export function enableFeature(Feature: FeatureFlag): void {
+    process.env[`FEATURE_${Feature}`] = 'true';
+}
+
+/**
+ * This is a no-op in production, but can be used in tests to enable features
+ */
+export function disableFeature(Feature: FeatureFlag): void {
+    process.env[`FEATURE_${Feature}`] = 'false';
+}
