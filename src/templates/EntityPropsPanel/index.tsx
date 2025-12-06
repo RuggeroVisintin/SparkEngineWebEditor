@@ -6,6 +6,7 @@ import { InputRow } from "../../primitives/InputRow";
 import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
+import { isFeatureEnabled } from "../../core/featureFlags";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -115,11 +116,12 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
                 </ExpandablePanel>
             )}
 
-            <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
+            {isFeatureEnabled('ADD_COMPONENTS') && <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
                 <FlexBox >
                     <Button onClick={() => onAddComponent?.()}> Add Component </Button>
                 </FlexBox>
             </Box>
+            }
 
         </Box>
     )

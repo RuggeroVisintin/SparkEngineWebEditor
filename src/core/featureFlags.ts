@@ -20,10 +20,7 @@
 declare const __FEATURE_FLAGS__: Record<string, boolean>;
 
 export type FeatureFlag =
-    | 'EXPERIMENTAL_SCRIPTING'
-    | 'DEBUG_MODE'
-    | 'ADVANCED_PHYSICS'
-    | 'BETA_FEATURES';
+    | 'ADD_COMPONENTS';
 
 /**
  * Check if a feature flag is enabled
@@ -58,12 +55,7 @@ export function withFeature<T>(
  * Get all enabled feature flags (useful for debugging)
  */
 export function getEnabledFeatures(): FeatureFlag[] {
-    const flags: FeatureFlag[] = [
-        'EXPERIMENTAL_SCRIPTING',
-        'DEBUG_MODE',
-        'ADVANCED_PHYSICS',
-        'BETA_FEATURES',
-    ];
+    const flags: FeatureFlag[] = ['ADD_COMPONENTS'];
 
     return flags.filter(flag => isFeatureEnabled(flag));
 }
