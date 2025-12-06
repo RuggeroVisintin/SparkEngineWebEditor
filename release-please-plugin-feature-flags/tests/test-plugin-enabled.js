@@ -5,7 +5,7 @@
  * This simulates the behavior after enabling a feature flag
  */
 
-const { FeatureFlagFilter } = require('../index.js');
+const { FeatureFlagFilterChangelogNotes } = require('../dist/index.js');
 const fs = require('fs');
 
 // Temporarily enable the flag
@@ -52,23 +52,10 @@ try {
         }
     ];
 
-    console.log('\n🧪 Testing Feature-Flag Filter Plugin (FLAG ENABLED)\n');
+    console.log('\n🧪 Testing Feature-Flag Filter Changelog Notes (FLAG ENABLED)\n');
     console.log('========================================\n');
 
-    const plugin = new FeatureFlagFilter({
-        github: {},
-        owner: 'RuggeroVisintin',
-        repo: 'spark-engine-web-editor',
-        targetBranch: 'main',
-        repositoryConfig: { '.': {} },
-        manifestPath: '.release-please-manifest.json'
-    });
-
-    plugin.logger = {
-        info: (msg) => console.log(`  ℹ️  ${msg}`),
-        warn: (msg) => console.log(`  ⚠️  ${msg}`),
-        error: (msg) => console.error(`  ❌ ${msg}`)
-    };
+    const changelogNotes = new FeatureFlagFilterChangelogNotes({});
 
     console.log('📋 Original commits:');
     mockCommits.forEach(commit => {
@@ -79,20 +66,33 @@ try {
         }
     });
 
-    console.log('\n🔍 Processing commits...\n');
+    console.log('\n🔍 Generating changelog notes...\n');
 
-    const filteredCommits = plugin.processCommits(mockCommits);
+    (async () => {
+        try {
+            const buildOptions = {
+                owner: 'RuggeroVisintin',
+                repository: 'spark-engine-web-editor',
+                version: '1.0.0',
+                currentTag: 'v1.0.0',
+                targetBranch: 'main'
+            };
+            const notes = await changelogNotes.buildNotes(mockCommits, buildOptions);
 
-    console.log('\n✅ Filtered commits (will appear in changelog):');
-    filteredCommits.forEach(commit => {
-        console.log(`  - [${commit.sha.substring(0, 7)}] ${commit.message.split('\n')[0]}`);
-    });
+            console.log('\n📝 Generated changelog:');
+            console.log(notes);
 
-    console.log('\n========================================\n');
-    console.log('✨ All commits included! Feature flag is enabled in production.\n');
-
-} finally {
-    // Restore original .env.production
+            console.log('\n========================================\n');
+            console.log('✨ All commits included! Feature flag is enabled in production.\n');
+        } catch (err) {
+            console.error('❌ Error:', err);
+        } finally {
+            // Restore original .env.production
+            fs.writeFileSync(envPath, originalEnv);
+            console.log('🔄 Restored .env.production to original state\n');
+        }
+    })();
+} catch (error) {
+    console.error('Setup error:', error);
     fs.writeFileSync(envPath, originalEnv);
-    console.log('🔄 Restored .env.production to original state\n');
 }
