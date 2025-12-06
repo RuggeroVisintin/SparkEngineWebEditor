@@ -23,9 +23,9 @@
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
     "prepare": "husky",
-    "test:e2e": "jest --config=jest-e2e.config.js",
-    "test:e2e:watch": "jest --config=jest-e2e.config.js --watch",
-    "test:e2e:debug": "PWDEBUG=1 jest --config=jest-e2e.config.js --runInBand"
+    "test:e2e": "bash ./scripts/run-e2e.sh",
+    "test:e2e:watch": "bash ./scripts/run-e2e.sh --watch",
+    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.9.1",

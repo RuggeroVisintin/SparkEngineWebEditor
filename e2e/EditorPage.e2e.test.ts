@@ -1,5 +1,6 @@
 
 import { allOf } from 'sparkengineweb'
+import { describeWithFeature } from './featureFlags';
 
 describe('Editor Page - Components Panel', () => {
     it('Should add a new GameObject to the scene', async () => {
@@ -9,7 +10,7 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
-    describe('Add Component feature', () => {
+    describeWithFeature('ADD_COMPONENTS', 'Add Component feature', () => {
         beforeEach(async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);
             await addEntityButton.click();
