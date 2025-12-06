@@ -1,5 +1,5 @@
 {
-    "name": "release-please-plugin-feature-flags",
+    "name": "release-please-plugin-feature-flag-filter",
     "version": "1.0.0",
     "description": "Release Please plugin to filter commits based on feature flag status",
     "main": "index.js",
