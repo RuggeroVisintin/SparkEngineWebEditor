@@ -6,6 +6,7 @@ import { FakeBitmap } from "../../__mocks__/bitmap.mock";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
 import { WithMemoryRouter } from "../../hooks";
 import { getWindowCurrentUrl } from "../../__mocks__/window.mock";
+import { disableFeature, enableFeature } from "../../core/featureFlags";
 
 describe('EntityPropsPanel', () => {
     describe('Transform', () => {
@@ -302,6 +303,55 @@ describe('EntityPropsPanel', () => {
             }));
 
             expect(getWindowCurrentUrl('scripting')).toBe(`/scripting/${entity.uuid}`);
+        });
+    });
+
+    describe('Add Component', () => {
+        describe('Feature Flag ENABLED', () => {
+            beforeAll(() => {
+                enableFeature('ADD_COMPONENTS');
+            })
+
+            it('Should have an "Add component" button', () => {
+                const entity = new GameObject();
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
+                expect(addComponentButton).toBeVisible();
+            });
+
+            it('Should invoke the "onAddComponent" callback', () => {
+                const entity = new GameObject();
+                const cb = jest.fn();
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} onAddComponent={cb} />)
+                );
+                const addComponentButton = screen.getByRole('button', { name: 'Add Component' });
+                fireEvent.click(addComponentButton);
+
+                expect(cb).toHaveBeenCalled();
+            });
+        });
+
+        describe('Feature Flag DISABLED', () => {
+            beforeAll(() => {
+                disableFeature('ADD_COMPONENTS');
+            });
+
+            it('Should not have an "Add component" button', () => {
+                const entity = new GameObject();
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
+                expect(addComponentButton).not.toBeInTheDocument();
+            });
         });
     });
 })

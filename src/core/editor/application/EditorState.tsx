@@ -5,4 +5,5 @@ export interface EditorState {
     entities?: IEntity[];
     currentScene?: Scene;
     spawnPoint?: Vec2
+    isComponentsPanelOpen?: boolean;
 }

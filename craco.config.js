@@ -30,6 +30,17 @@ module.exports = {
         // Use our eslint config instead
         enable: false,
     },
+    jest: {
+        configure: (jestConfig) => {
+            // Transform uuid package (ES modules issue)
+            // This handles uuid in both node_modules/uuid and nested locations like sparkengineweb/node_modules/uuid
+            jestConfig.transformIgnorePatterns = [
+                'node_modules/(?!.*(uuid|sparkengineweb)/)'
+            ];
+
+            return jestConfig;
+        }
+    },
     webpack: {
         configure: (webpackConfig) => {
             // Ignore source map warnings for Monaco editor

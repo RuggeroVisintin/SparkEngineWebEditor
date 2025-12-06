@@ -1,16 +1,19 @@
 import React from "react";
 import { IEntity, MaterialComponent, TransformComponent, TransformComponentProps, typeOf, Vec2 } from "@sparkengine";
 import { FormInput } from "../../components";
-import { Box, Button, Spacing } from "../../primitives";
+import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { InputRow } from "../../primitives/InputRow";
 import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
+import { Function } from "../../core/common";
+import { isFeatureEnabled } from "../../core/featureFlags";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
     onUpdatePosition?: CallableFunction,
     onUpdateSize?: CallableFunction,
-    onMaterialUpdate?: CallableFunction
+    onMaterialUpdate?: CallableFunction,
+    onAddComponent?: Function<void>
 }
 
 interface TransformPropsGroupProps {
@@ -73,7 +76,7 @@ const TransformPropsGroup = ({ transform, onUpdateSize, onUpdatePosition }: Tran
     )
 };
 
-export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate }: EntityPropsPanelProps) => {
+export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent }: EntityPropsPanelProps) => {
     const transform = currentEntity?.getComponent<TransformComponent>('TransformComponent');
     const material = currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 
@@ -111,9 +114,15 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
                         </Button>
                     </Box>
                 </ExpandablePanel>
+            )}
 
-            )
+            {isFeatureEnabled('ADD_COMPONENTS') && <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
+                <FlexBox >
+                    <Button onClick={() => onAddComponent?.()}> Add Component </Button>
+                </FlexBox>
+            </Box>
             }
-        </Box >
+
+        </Box>
     )
 }

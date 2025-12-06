@@ -10,10 +10,16 @@ import './__mocks__/broadcast.mock';
 import './__mocks__/window.mock';
 
 import { TextEncoder } from 'text-encoding';
+import { webcrypto } from 'crypto';
 
 jest.disableAutomock();
 
 global.TextEncoder = TextEncoder;
+
+// Polyfill crypto.getRandomValues for uuid package
+if (!global.crypto) {
+    (global as any).crypto = webcrypto;
+}
 
 // jest.mock('@sparkengine')
 
