@@ -71,6 +71,12 @@ jobs:
         pages: write
         id-token: write
       steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+        - name: Install feature flag plugin
+          run: npm install --no-save ./release-please-plugin-feature-flags
         - uses: googleapis/release-please-action@v4
           id: release
           with:

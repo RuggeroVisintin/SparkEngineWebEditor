@@ -40,9 +40,10 @@ Feature-Flag: ADD_COMPONENTS
 ```
 
 **Automated Processing:**
-- A GitHub Action automatically checks commits with `Feature-Flag:` footers
-- If the flag is disabled in `.env.production`, it adds `Release-As: skip` to exclude the commit from the changelog
-- When the flag is enabled in production, future commits will automatically include all previously skipped commits in the changelog
+- A release-please plugin automatically filters commits during release processing
+- The plugin reads `.env.production` to determine which flags are enabled
+- Commits with `Feature-Flag:` footers for disabled flags are excluded from changelogs and version bumps
+- When you enable a flag and create a new release, all previously excluded commits are automatically included
 
 **Benefits:**
 - Keep feature-flagged work out of release notes until the feature is production-ready
@@ -60,25 +61,4 @@ Refs: #123
 ```
 
 The `Feature-Flag:` footer can be combined with other conventional commit footers like `Refs:`, `Closes:`, or `BREAKING CHANGE:`.
-
-### Testing Locally
-
-You can test the feature flag processing script before pushing:
-
-```bash
-# Process the last commit
-./scripts/process-feature-flags.sh
-
-# Process multiple commits
-./scripts/process-feature-flags.sh HEAD~3..HEAD
-
-# Process commits from main to current branch
-./scripts/process-feature-flags.sh main..HEAD
-```
-
-The script will:
-- ✓ Show which feature flags are enabled/disabled in production
-- ✓ Identify commits with `Feature-Flag:` footers
-- ✓ Add `Release-As: skip` if the flag is disabled (only for HEAD commit)
-- ✓ Provide clear colored output for easy verification
 
