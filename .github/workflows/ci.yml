@@ -75,8 +75,12 @@ jobs:
         - uses: actions/setup-node@v4
           with:
             node-version: 20
-        - name: Install feature flag plugin
-          run: npm install --no-save ./release-please-plugin-feature-flags
+        - name: Install dependencies and feature flag plugin
+          run: |
+            cd release-please-plugin-feature-flags
+            npm install
+            cd ..
+            npm install --no-save ./release-please-plugin-feature-flags
         - uses: googleapis/release-please-action@v4
           id: release
           with:
