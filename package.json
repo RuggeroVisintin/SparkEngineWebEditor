@@ -22,7 +22,10 @@
     "lint:fix": "eslint . --config .eslintrc.json --ext .tsx --fix",
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "bash ./scripts/run-e2e.sh",
+    "test:e2e:watch": "bash ./scripts/run-e2e.sh --watch",
+    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -34,7 +37,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.9.6",
-    "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.3/sparkengineweb-v0.17.3-lib.tar.gz",
+    "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.4/sparkengineweb-v0.17.4-lib.tar.gz",
     "styled-components": "^6.1.19",
     "text-encoding": "^0.7.0",
     "uuid": "^11.1.0",
@@ -44,6 +47,7 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@craco/craco": "^7.1.0",
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
     "@types/jest": "^30.0.0",
     "@types/text-encoding": "^0.0.40",
     "@types/uuid": "^10.0.0",
@@ -52,6 +56,8 @@
     "cspell": "^9.3.2",
     "husky": "^9.1.7",
     "jest-canvas-mock": "^2.5.2",
+    "jest-playwright-preset": "^4.0.0",
+    "playwright": "^1.56.1",
     "react-scripts": "^5.0.1"
   },
   "eslintConfig": {

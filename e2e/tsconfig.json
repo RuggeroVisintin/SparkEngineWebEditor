@@ -1,0 +1,20 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "types": [
+            "jest",
+            "node",
+            "jest-playwright-preset"
+        ],
+        "moduleResolution": "bundler",
+        "rootDir": "."
+    },
+    "include": [
+        "./**/*.ts",
+        "./**/*.e2e.test.ts",
+        "types/**/*.d.ts"
+    ],
+    "exclude": [
+        "../node_modules"
+    ]
+}

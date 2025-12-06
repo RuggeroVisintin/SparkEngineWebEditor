@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { GameEngine, IEntity, Vec2 } from '@sparkengine';
+import { allOf, GameEngine, IEntity, Vec2 } from '@sparkengine';
 import { EngineView } from '../../components';
 import { Box, FlexBox } from '../../primitives';
 import { EntityFactoryPanel, ScenePanel } from '../../templates';
@@ -7,10 +7,10 @@ import { ActionMenu } from '../../templates/ActionMenu';
 import { EntityPropsPanel } from '../../templates/EntityPropsPanel';
 import { OnEngineViewReadyCBProps } from '../../components/EngineView';
 import { useEditorService } from '../../hooks/useEditorService';
+import { ComponentsPanel } from './ComponentsPanel';
 
 export const Editor = () => {
     const engine = useRef<GameEngine>();
-
     const [editorService, editorState] = useEditorService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
@@ -38,6 +38,14 @@ export const Editor = () => {
                     onMouseDragging={(e) => editorService.handleMouseDrag(e)}
                     onMouseWheel={(e) => editorService.handleMouseWheel(e)}
                 />
+                {
+                    editorState.isComponentsPanelOpen &&
+                    <Box $size={0.25}>
+                        <ComponentsPanel
+                            components={Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? []}
+                        />
+                    </Box>
+                }
                 <Box $size={0.25}>
                     <FlexBox $fill={true}>
                         <ScenePanel
@@ -52,6 +60,7 @@ export const Editor = () => {
                                 onUpdatePosition={({ newPosition }: { newPosition: Vec2 }) => editorService.updateCurrentEntityPosition(newPosition)}
                                 onUpdateSize={({ newSize }: { newSize: { width: number, height: number } }) => editorService.updateCurrentEntitySize(newSize)}
                                 onMaterialUpdate={(materialProps: any) => editorService.updateCurrentEntityMaterial(materialProps)}
+                                onAddComponent={() => editorService.openComponentsSelection()}
                             ></EntityPropsPanel>}
                     </FlexBox>
                 </Box>
