@@ -123,10 +123,10 @@ Feature-Flag: ADD_COMPONENTS"
 
 ### How it Works
 
-1. **Automatic Processing**: A GitHub Action checks each commit for `Feature-Flag:` footers
-2. **Production Check**: The workflow compares the flag against `.env.production`
-3. **Changelog Exclusion**: If disabled in production, `Release-As: skip` is automatically added
-4. **Automatic Inclusion**: When you enable the flag in `.env.production`, the next release will automatically include all previously skipped commits
+1. **Custom Plugin**: A release-please plugin (`feature-flag-filter`) runs during release processing
+2. **Commit Filtering**: The plugin reads `.env.production` and filters commits with `Feature-Flag:` footers
+3. **Automatic Exclusion**: Commits with disabled flags are excluded from changelog and version calculations
+4. **Automatic Inclusion**: When you enable a flag in `.env.production`, commits automatically appear in the next release
 
 ### Example Workflow
 
@@ -136,7 +136,7 @@ git commit -m "feat: implement drag-and-drop
 
 Feature-Flag: ADD_COMPONENTS"
 
-# GitHub Action adds: Release-As: skip (since flag is disabled)
+# Plugin automatically excludes from changelog (flag is disabled)
 
 # 2. Continue development
 git commit -m "fix: adjust drop zone styling
@@ -147,6 +147,7 @@ Feature-Flag: ADD_COMPONENTS"
 
 # 3. Enable feature in production
 # Edit .env.production: FEATURE_ADD_COMPONENTS=true
+# Commit and push the change
 
 # 4. Next release automatically includes all commits
 # Both commits now appear in CHANGELOG.md
@@ -165,27 +166,6 @@ Complete rewrite of the component architecture.
 Feature-Flag: ADD_COMPONENTS
 END_COMMIT_OVERRIDE
 ```
-
-### Testing Locally
-
-Test the feature flag processing before pushing:
-
-```bash
-# Process the last commit
-./scripts/process-feature-flags.sh
-
-# Process a range of commits
-./scripts/process-feature-flags.sh HEAD~5..HEAD
-
-# Process commits since main branch
-./scripts/process-feature-flags.sh main..HEAD
-```
-
-The script will show you:
-- Which flags are enabled/disabled in `.env.production`
-- Which commits have `Feature-Flag:` footers
-- Whether `Release-As: skip` needs to be added
-- Color-coded output for easy verification
 
 ## Testing
 

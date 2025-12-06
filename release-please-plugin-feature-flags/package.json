@@ -1,0 +1,16 @@
+{
+    "name": "release-please-plugin-feature-flags",
+    "version": "1.0.0",
+    "description": "Release Please plugin to filter commits based on feature flag status",
+    "main": "index.js",
+    "keywords": [
+        "release-please",
+        "plugin",
+        "feature-flags"
+    ],
+    "author": "",
+    "license": "MIT",
+    "peerDependencies": {
+        "release-please": ">=15.0.0"
+    }
+}

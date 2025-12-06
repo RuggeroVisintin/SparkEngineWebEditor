@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "feature-flag-filter"
+  ],
   "packages": {
     ".": {
       "changelog-path": "CHANGELOG.md",
