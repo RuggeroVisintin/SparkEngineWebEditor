@@ -17,4 +17,3 @@ module.exports = {
         'default',
         ['<rootDir>/../jest-todo-reporter.js', { maxTodos: 0 }]
     ]
-};
