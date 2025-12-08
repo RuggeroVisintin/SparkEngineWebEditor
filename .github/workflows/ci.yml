@@ -72,26 +72,32 @@ jobs:
         id-token: write
       steps:
         - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
         - uses: actions/setup-node@v4
           with:
             node-version: 20
-        - name: Install dependencies and feature flag plugin
+        - name: Configure git
           run: |
-            cd release-please-plugin-feature-flags
-            npm install
-            cd ..
-            npm install --no-save ./release-please-plugin-feature-flags
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+        - name: Filter git history based on feature flags
+          run: bash scripts/release-please-with-feature-flags.sh
+        - name: Push filtered branch
+          id: push_branch
+          run: |
+            FILTERED_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            TEMP_BRANCH="release-please-filtered-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo "Pushing filtered branch: $FILTERED_BRANCH to $TEMP_BRANCH"
+            echo "temp_branch=$TEMP_BRANCH" >> $GITHUB_OUTPUT
+            git push origin "HEAD:refs/heads/$TEMP_BRANCH" --force
         - uses: googleapis/release-please-action@v4
-          id: release
           with:
-            # this assumes that you have created a personal access token
-            # (PAT) and configured it as a GitHub action secret named
-            # `MY_RELEASE_PLEASE_TOKEN` (this secret name is not important).
             token: ${{ secrets.GITHUB_TOKEN }}
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
+            target-branch: ${{ steps.push_branch.outputs.temp_branch }}
+        - name: Clean up filtered branch
+          if: always()
+          run: git push origin --delete ${{ steps.push_branch.outputs.temp_branch }} || true
       needs: [test_unit, build, code_scan]
       if: github.ref_name == 'main'
         
