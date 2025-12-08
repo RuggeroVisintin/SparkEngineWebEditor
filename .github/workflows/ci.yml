@@ -98,18 +98,28 @@ jobs:
             
             # Run release-please against the filtered branch
             npm install -g release-please
+            
+            # Run release-please and capture output
+            set +e
             release-please release-pr \
               --token="${{ secrets.GITHUB_TOKEN }}" \
               --repo-url="RuggeroVisintin/spark-engine-web-editor" \
               --target-branch="$TEMP_BRANCH" \
-              > /tmp/release-please-output.txt 2>&1 || true
+              --json \
+              > /tmp/release-please-output.json 2>&1
+            RP_EXIT_CODE=$?
+            set -e
             
-            cat /tmp/release-please-output.txt
+            echo "=== Release-please output ==="
+            cat /tmp/release-please-output.json
+            echo "=== End output ==="
             
-            # Extract PR number if a PR was created
-            PR_NUMBER=$(grep -oP 'pull/\K[0-9]+' /tmp/release-please-output.txt | head -1 || echo "")
+            # Extract PR number from JSON output (it's an array, get first item's number)
+            if [ -f /tmp/release-please-output.json ]; then
+              PR_NUMBER=$(jq -r '.[0].number // empty' /tmp/release-please-output.json 2>/dev/null || echo "")
+            fi
             
-            if [ -n "$PR_NUMBER" ]; then
+            if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "false" ]; then
               echo "Found PR #$PR_NUMBER, retargeting to main..."
               
               # Update PR base branch from temp branch to main
@@ -121,7 +131,7 @@ jobs:
               
               echo "✅ PR #$PR_NUMBER retargeted to main"
             else
-              echo "No PR created (likely no changes needed)"
+              echo "No PR created by release-please (exit code: $RP_EXIT_CODE)"
             fi
             
             # Clean up temporary branch
