@@ -40,10 +40,20 @@ cd "$REPO_ROOT"
 log_info "Starting release-please with feature flag filtering"
 log_info "Current branch: $ORIGINAL_BRANCH"
 
-# Load enabled feature flags from .env.production
+# Load enabled feature flags from environment variables or .env.production
 load_enabled_flags() {
     local flags=()
-    if [[ -f "$ENV_FILE" ]]; then
+    
+    # First check environment variables (for testing)
+    for var in $(compgen -e | grep '^FEATURE_' || true); do
+        value="${!var}"
+        if [[ "$value" == "true" ]]; then
+            flags+=("$var")
+        fi
+    done
+    
+    # If no flags from environment, read from .env.production
+    if [[ ${#flags[@]} -eq 0 ]] && [[ -f "$ENV_FILE" ]]; then
         while IFS='=' read -r key value; do
             [[ "$key" =~ ^#.*$ ]] && continue
             [[ -z "$key" ]] && continue
@@ -54,6 +64,7 @@ load_enabled_flags() {
             fi
         done < "$ENV_FILE"
     fi
+    
     echo "${flags[@]}"
 }
 
