@@ -2,7 +2,6 @@
   "packages": {
     ".": {
       "changelog-path": "CHANGELOG.md",
-      "changelog-notes-type": "release-please-plugin-feature-flag-filter",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
       "draft": false,

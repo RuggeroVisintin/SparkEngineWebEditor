@@ -92,11 +92,6 @@ jobs:
         - uses: actions/setup-node@v4
           with:
             node-version: 20
-        - uses: actions/download-artifact@master
-          with:
-            name: coverage-badge-artifact
-            path: .github/pages/badges/coverage.badge.svg
       needs: [test_unit, build, code_scan]
       if: github.ref_name == 'main'
-        
         

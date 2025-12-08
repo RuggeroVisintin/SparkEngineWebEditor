@@ -1,0 +1,82 @@
+name: Test Release Please
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'release-please-config.json'
+      - '.release-please-manifest.json'
+      - 'tests/ci/**'
+  pull_request:
+    paths:
+      - 'release-please-config.json'
+      - '.release-please-manifest.json'
+      - 'tests/ci/**'
+
+jobs:
+  test_dry_run:
+    name: Release Please Dry Run with Feature Flag Filtering
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Configure git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+      
+      - name: Create test commits
+        run: bash tests/ci/create-test-commits.sh
+      
+      - name: Filter git history based on feature flags
+        run: bash scripts/release-please-with-feature-flags.sh
+      
+      - name: Verify commit messages after filtering
+        if: runner.debug == '1'
+        run: |
+          echo "=== Filtered commit messages ==="
+          git log --format="%h %s" -n 5
+          echo ""
+          echo "=== Full commit details ==="
+          git log --format="Commit: %H%nSubject: %s%nBody:%n%b%n---" -n 3
+      
+      - name: Install release-please CLI
+        run: npm install -g release-please
+      
+      - name: Run release-please dry-run on filtered branch
+        run: |
+          # Get the current filtered branch name
+          FILTERED_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "Running release-please on branch: $FILTERED_BRANCH"
+          echo "Commits on filtered branch:"
+          git log --oneline -10
+          
+          # Push the filtered branch to a temporary remote branch so release-please can analyze it
+          git push origin "HEAD:refs/heads/test-release-please-filtered" --force
+          
+          # Run release-please CLI against the temporary branch and capture output
+          release-please release-pr \
+            --token="${{ secrets.GITHUB_TOKEN }}" \
+            --repo-url="${{ github.repository }}" \
+            --target-branch="test-release-please-filtered" \
+            --dry-run | tee /tmp/release-please-output.txt
+          
+          # Delete the temporary branch
+          git push origin --delete test-release-please-filtered || true
+      
+      - name: Verify changelog content
+        if: always()
+        run: |
+          echo "Verifying changelog contains only expected commits..."
+          cat /tmp/release-please-output.txt | bash tests/ci/verify-changelog.sh
