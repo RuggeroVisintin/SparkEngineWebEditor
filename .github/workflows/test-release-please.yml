@@ -80,6 +80,9 @@ jobs:
       
       - name: Verify changelog content
         if: always()
+        env:
+          FEATURE_TEST_FLAG_ENABLED: true
+          FEATURE_TEST_FLAG_DISABLED: false
         run: |
           echo "Verifying changelog contains only expected commits..."
           cat /tmp/release-please-output.txt | bash tests/ci/verify-changelog.sh
