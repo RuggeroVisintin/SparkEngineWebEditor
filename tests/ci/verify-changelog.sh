@@ -23,8 +23,8 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 # Format: "commit_subject|feature_flag"
 # Note: Changelog strips the conventional commit prefix (feat:, fix:, etc.)
 TEST_COMMITS=(
-    "test with disabled flag|FEATURE_DISABLED_TEST"
-    "test with enabled flag|FEATURE_ADD_COMPONENTS"
+    "test with disabled flag|TEST_FLAG_DISABLED"
+    "test with enabled flag|TEST_FLAG_ENABLED"
     "test without flag|"
 )
 

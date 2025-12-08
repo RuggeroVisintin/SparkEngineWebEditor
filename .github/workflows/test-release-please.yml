@@ -36,7 +36,13 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
       
-      - name: Create test commits
+      - name: Setup test environment
+        run: |
+          # Add test feature flag to .env.production
+          echo "TEST_FLAG_ENABLED=true" >> .env.production
+          echo "TEST_FLAG_DISABLED=false" >> .env.production
+      
+      - name: Clean up previous test commits
         run: bash tests/ci/create-test-commits.sh
       
       - name: Filter git history based on feature flags
