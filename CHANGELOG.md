@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.14](https://github.com/RuggeroVisintin/spark-engine-web-editor/compare/sparkenginewebeditor-v0.0.13...sparkenginewebeditor-v0.0.14) (2025-12-08)
+
+
+### Features
+
+* **editor:** open components panel on Add Component button click ([#263](https://github.com/RuggeroVisintin/spark-engine-web-editor/issues/263)) ([a63eba2](https://github.com/RuggeroVisintin/spark-engine-web-editor/commit/a63eba2ab6f2d93ba3de9c97cf6c52373840415d))
+* **entity-props:** group components into expandable panels ([#252](https://github.com/RuggeroVisintin/spark-engine-web-editor/issues/252)) ([239c7de](https://github.com/RuggeroVisintin/spark-engine-web-editor/commit/239c7de0bc19969ebf211a09028e9e14eb8d0e0b))
+
 ## [0.0.13](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.12...sparkenginewebeditor-v0.0.13) (2025-10-26)
 
 
