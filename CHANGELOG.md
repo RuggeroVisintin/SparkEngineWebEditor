@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.14](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.13...sparkenginewebeditor-v0.0.14) (2025-12-08)
+
+
+### Features
+
+* **editor:** add components panel ([ddc64bf](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/ddc64bfb210ae3e156af5d3d9fe5e0ab8bec8b97))
+* **entity-props:** group components into expandable panels ([#252](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/252)) ([309121e](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/309121ec152485607078512d843f517b61b1de4d))
+
 ## [0.0.13](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.12...sparkenginewebeditor-v0.0.13) (2025-10-26)
 
 
