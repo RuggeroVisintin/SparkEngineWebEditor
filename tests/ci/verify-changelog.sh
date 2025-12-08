@@ -23,15 +23,25 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 # Format: "commit_subject|feature_flag"
 # Note: Changelog strips the conventional commit prefix (feat:, fix:, etc.)
 TEST_COMMITS=(
-    "test with disabled flag|TEST_FLAG_DISABLED"
-    "test with enabled flag|TEST_FLAG_ENABLED"
+    "test with disabled flag|FEATURE_TEST_FLAG_DISABLED"
+    "test with enabled flag|FEATURE_TEST_FLAG_ENABLED"
     "test without flag|"
 )
 
-# Load enabled feature flags from .env.production
+# Load enabled feature flags from environment variables or .env.production
 load_enabled_flags() {
     local flags=()
-    if [[ -f "$ENV_FILE" ]]; then
+    
+    # First check environment variables (for testing)
+    for var in $(compgen -e | grep '^FEATURE_' || true); do
+        value="${!var}"
+        if [[ "$value" == "true" ]]; then
+            flags+=("$var")
+        fi
+    done
+    
+    # If no flags from environment, read from .env.production
+    if [[ ${#flags[@]} -eq 0 ]] && [[ -f "$ENV_FILE" ]]; then
         while IFS='=' read -r key value; do
             [[ "$key" =~ ^#.*$ ]] && continue
             [[ -z "$key" ]] && continue
