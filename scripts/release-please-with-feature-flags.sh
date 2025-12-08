@@ -7,7 +7,6 @@ set -euo pipefail
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TEMP_BRANCH="release-please-filtered-$(date +%s)"
-USE_TEMP_BRANCH=true
 
 # Colors
 GREEN='\033[0;32m'
@@ -20,13 +19,6 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 cleanup() {
-    if [[ "$USE_TEMP_BRANCH" == "true" ]]; then
-        log_info "Cleaning up..."
-        git checkout "$ORIGINAL_BRANCH" 2>/dev/null || true
-        git branch -D "$TEMP_BRANCH" 2>/dev/null || true
-    fi
-}
-cleanup() {
     # In CI, don't cleanup - workflow needs the filtered branch
     if [[ "${CI:-false}" != "true" ]]; then
         log_info "Cleaning up..."
@@ -36,6 +28,13 @@ cleanup() {
 }
 
 trap cleanup EXIT
+
+# Check for uncommitted changes (skip in CI)
+if [[ "${CI:-false}" != "true" ]] && [[ -n $(git status --porcelain) ]]; then
+    log_error "You have uncommitted changes"
+    echo "Please commit or stash your changes before running this script"
+    git status --short
+    exit 1
 fi
 
 cd "$REPO_ROOT"
