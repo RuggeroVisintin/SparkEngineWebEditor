@@ -81,23 +81,51 @@ jobs:
           run: |
             git config user.name "GitHub Actions"
             git config user.email "actions@github.com"
-        - name: Filter git history based on feature flags
-          run: bash scripts/release-please-with-feature-flags.sh
-        - name: Push filtered branch
-          id: push_branch
+        - name: Filter history and run release-please
           run: |
+            # Load feature flags from .env.production
+            set -a
+            source .env.production
+            set +a
+            
+            # Run filter script (creates filtered branch locally)
+            bash scripts/release-please-with-feature-flags.sh
+            
+            # Push filtered history to temporary branch
             FILTERED_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            TEMP_BRANCH="release-please-filtered-${{ github.run_id }}-${{ github.run_attempt }}"
-            echo "Pushing filtered branch: $FILTERED_BRANCH to $TEMP_BRANCH"
-            echo "temp_branch=$TEMP_BRANCH" >> $GITHUB_OUTPUT
+            TEMP_BRANCH="release-please-filtered-${{ github.run_id }}"
             git push origin "HEAD:refs/heads/$TEMP_BRANCH" --force
-        - uses: googleapis/release-please-action@v4
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            target-branch: ${{ steps.push_branch.outputs.temp_branch }}
-        - name: Clean up filtered branch
-          if: always()
-          run: git push origin --delete ${{ steps.push_branch.outputs.temp_branch }} || true
+            
+            # Run release-please against the filtered branch
+            npm install -g release-please
+            release-please release-pr \
+              --token="${{ secrets.GITHUB_TOKEN }}" \
+              --repo-url="RuggeroVisintin/spark-engine-web-editor" \
+              --target-branch="$TEMP_BRANCH" \
+              > /tmp/release-please-output.txt 2>&1 || true
+            
+            cat /tmp/release-please-output.txt
+            
+            # Extract PR number if a PR was created
+            PR_NUMBER=$(grep -oP 'pull/\K[0-9]+' /tmp/release-please-output.txt | head -1 || echo "")
+            
+            if [ -n "$PR_NUMBER" ]; then
+              echo "Found PR #$PR_NUMBER, retargeting to main..."
+              
+              # Update PR base branch from temp branch to main
+              curl -X PATCH \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/RuggeroVisintin/spark-engine-web-editor/pulls/$PR_NUMBER" \
+                -d "{\"base\":\"main\"}"
+              
+              echo "✅ PR #$PR_NUMBER retargeted to main"
+            else
+              echo "No PR created (likely no changes needed)"
+            fi
+            
+            # Clean up temporary branch
+            git push origin --delete "$TEMP_BRANCH" || true
       needs: [test_unit, build, code_scan]
       if: github.ref_name == 'main'
         

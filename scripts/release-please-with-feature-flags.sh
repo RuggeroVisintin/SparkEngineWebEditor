@@ -7,7 +7,7 @@ set -euo pipefail
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TEMP_BRANCH="release-please-filtered-$(date +%s)"
-ENV_FILE="$REPO_ROOT/.env.production"
+USE_TEMP_BRANCH=true
 
 # Colors
 GREEN='\033[0;32m'
@@ -20,19 +20,22 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 cleanup() {
-    log_info "Cleaning up..."
-    git checkout "$ORIGINAL_BRANCH" 2>/dev/null || true
-    git branch -D "$TEMP_BRANCH" 2>/dev/null || true
+    if [[ "$USE_TEMP_BRANCH" == "true" ]]; then
+        log_info "Cleaning up..."
+        git checkout "$ORIGINAL_BRANCH" 2>/dev/null || true
+        git branch -D "$TEMP_BRANCH" 2>/dev/null || true
+    fi
+}
+cleanup() {
+    # In CI, don't cleanup - workflow needs the filtered branch
+    if [[ "${CI:-false}" != "true" ]]; then
+        log_info "Cleaning up..."
+        git checkout "$ORIGINAL_BRANCH" 2>/dev/null || true
+        git branch -D "$TEMP_BRANCH" 2>/dev/null || true
+    fi
 }
 
 trap cleanup EXIT
-
-# Check for uncommitted changes
-if [[ -n $(git status --porcelain) ]]; then
-    log_error "You have uncommitted changes"
-    echo "Please commit or stash your changes before running this script"
-    git status --short
-    exit 1
 fi
 
 cd "$REPO_ROOT"
@@ -40,30 +43,17 @@ cd "$REPO_ROOT"
 log_info "Starting release-please with feature flag filtering"
 log_info "Current branch: $ORIGINAL_BRANCH"
 
-# Load enabled feature flags from environment variables or .env.production
+# Load enabled feature flags from environment variables
 load_enabled_flags() {
     local flags=()
     
-    # First check environment variables (for testing)
+    # Check environment variables for enabled feature flags
     for var in $(compgen -e | grep '^FEATURE_' || true); do
         value="${!var}"
         if [[ "$value" == "true" ]]; then
             flags+=("$var")
         fi
     done
-    
-    # If no flags from environment, read from .env.production
-    if [[ ${#flags[@]} -eq 0 ]] && [[ -f "$ENV_FILE" ]]; then
-        while IFS='=' read -r key value; do
-            [[ "$key" =~ ^#.*$ ]] && continue
-            [[ -z "$key" ]] && continue
-            key=$(echo "$key" | xargs)
-            value=$(echo "$value" | xargs)
-            if [[ "$key" =~ ^FEATURE_ && "$value" == "true" ]]; then
-                flags+=("$key")
-            fi
-        done < "$ENV_FILE"
-    fi
     
     echo "${flags[@]}"
 }
@@ -139,32 +129,39 @@ filter_script=$(echo "$filter_script" | sed "s/ENABLED_FLAGS_PLACEHOLDER/$enable
 # Use git filter-branch to rewrite messages
 FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter "$filter_script" "$commit_range"
 
-# Run release-please if not in dry-run mode or CI
-if [[ "${DRY_RUN:-0}" == "1" ]] || [[ "${CI:-false}" == "true" ]]; then
-    log_info "Skipping release-please execution (DRY_RUN=${DRY_RUN:-0}, CI=${CI:-false})"
-    log_info "Git history filtered successfully on branch: $TEMP_BRANCH"
-else
-    log_info "Running release-please on filtered branch..."
-    
-    # Check if GITHUB_TOKEN is set
-    if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-        log_warn "GITHUB_TOKEN not set - this may cause API errors"
-    fi
-    
-    # Install if needed
-    if ! command -v release-please &> /dev/null && ! npx --no-install release-please --version &> /dev/null; then
-        log_info "Installing release-please..."
-        npm install --no-save release-please >/dev/null 2>&1
-    fi
-    
-    # Run release-please with provided arguments
-    npx release-please release-pr \
-        --repo-url="${REPO_URL:-$(git config --get remote.origin.url | sed 's/.*github.com[:/]\(.*\)\.git/\1/')}" \
-        --target-branch="${TARGET_BRANCH:-main}" \
-        ${GITHUB_TOKEN:+--token="$GITHUB_TOKEN"} \
-        "$@"
-    
-    exit_code=$?
-    log_info "Release-please completed with exit code: $exit_code"
-    exit $exit_code
+# In CI mode, we're done - the workflow will handle release-please
+if [[ "${CI:-false}" == "true" ]]; then
+    log_info "CI mode - git history filtered successfully on branch: $TEMP_BRANCH"
+    log_info "Branch is ready for release-please analysis"
+    exit 0
 fi
+
+# For local execution, run release-please if not in dry-run mode
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+    log_info "Dry-run mode - git history filtered successfully on branch: $TEMP_BRANCH"
+    exit 0
+fi
+
+log_info "Running release-please on filtered branch..."
+
+# Check if GITHUB_TOKEN is set
+if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+    log_warn "GITHUB_TOKEN not set - this may cause API errors"
+fi
+
+# Install if needed
+if ! command -v release-please &> /dev/null && ! npx --no-install release-please --version &> /dev/null; then
+    log_info "Installing release-please..."
+    npm install --no-save release-please >/dev/null 2>&1
+fi
+
+# Run release-please with provided arguments
+npx release-please release-pr \
+    --repo-url="${REPO_URL:-$(git config --get remote.origin.url | sed 's/.*github.com[:/]\(.*\)\.git/\1/')}" \
+    --target-branch="${TARGET_BRANCH:-main}" \
+    ${GITHUB_TOKEN:+--token="$GITHUB_TOKEN"} \
+    "$@"
+
+exit_code=$?
+log_info "Release-please completed with exit code: $exit_code"
+exit $exit_code
