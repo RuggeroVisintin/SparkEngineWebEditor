@@ -22,7 +22,7 @@ git commit -m "feat: test with disabled flag
 
 This should be FILTERED OUT
 
-Feature-Flag: FEATURE_DISABLED_TEST" --no-verify
+Feature-Flag: TEST_FLAG_DISABLED" --no-verify
 
 echo "test-enabled" > .test-2.txt
 git add .test-2.txt
@@ -30,7 +30,7 @@ git commit -m "feat: test with enabled flag
 
 This should APPEAR in changelog
 
-Feature-Flag: FEATURE_ADD_COMPONENTS" --no-verify
+Feature-Flag: TEST_FLAG_ENABLED" --no-verify
 
 echo "test-no-flag" > .test-3.txt
 git add .test-3.txt
