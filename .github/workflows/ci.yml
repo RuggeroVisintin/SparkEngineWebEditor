@@ -77,6 +77,10 @@ jobs:
         - uses: actions/setup-node@v4
           with:
             node-version: 20
+        
+        - name: Install dependencies (includes release-please fork)
+          run: npm ci
+        
         - name: Run release-please with feature flag filtering
           run: |
             # Load feature flags from .env.production
