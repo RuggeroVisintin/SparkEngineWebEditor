@@ -39,47 +39,49 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
       
-      - name: Clean up previous test commits
-        run: bash tests/ci/create-test-commits.sh
-      
-      - name: Filter git history based on feature flags
-        run: bash scripts/release-please-with-feature-flags.sh
-      
-      - name: Verify commit messages after filtering
-        if: runner.debug == '1'
+      - name: Create test branch with test commits
         run: |
-          echo "=== Filtered commit messages ==="
-          git log --format="%h %s" -n 5
-          echo ""
-          echo "=== Full commit details ==="
-          git log --format="Commit: %H%nSubject: %s%nBody:%n%b%n---" -n 3
+          # Create a unique test branch to avoid clashes
+          TEST_BRANCH="test-release-please-$(date +%s)"
+          git checkout -b "$TEST_BRANCH"
+          
+          # Create test commits
+          bash tests/ci/create-test-commits.sh
+          
+          # Show created commits
+          echo "Created commits on branch: $TEST_BRANCH"
+          git log --oneline -n 3
+          
+          # Push branch to GitHub so release-please can access config files
+          git push origin "$TEST_BRANCH"
+          
+          # Save branch name for later steps
+          echo "TEST_BRANCH=$TEST_BRANCH" >> $GITHUB_ENV
       
-      - name: Install release-please CLI
-        run: npm install -g release-please
-      
-      - name: Run release-please dry-run on filtered branch
+      - name: Install release-please and run dry-run test
         run: |
-          # Get the current filtered branch name
-          FILTERED_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          echo "Running release-please on branch: $FILTERED_BRANCH"
-          echo "Commits on filtered branch:"
-          git log --oneline -10
+          echo "Running release-please with integrated feature-flags plugin"
+          echo "Enabled flags: FEATURE_TEST_FLAG_ENABLED"
+          echo "Disabled flags: FEATURE_TEST_FLAG_DISABLED"
           
-          # Push the filtered branch to a temporary remote branch so release-please can analyze it
-          git push origin "HEAD:refs/heads/test-release-please-filtered" --force
+          # Install dependencies (which includes release-please fork)
+          npm ci
           
-          # Run release-please CLI against the temporary branch and capture output
-          release-please release-pr \
+          # Run release-please from the fork (installed via package.json)
+          npx release-please release-pr \
             --token="${{ secrets.GITHUB_TOKEN }}" \
             --repo-url="${{ github.repository }}" \
-            --target-branch="test-release-please-filtered" \
+            --target-branch="${{ env.TEST_BRANCH }}" \
             --dry-run | tee /tmp/release-please-output.txt
-          
-          # Delete the temporary branch
-          git push origin --delete test-release-please-filtered || true
       
       - name: Verify changelog content
         if: always()
         run: |
           echo "Verifying changelog contains only expected commits..."
           cat /tmp/release-please-output.txt | bash tests/ci/verify-changelog.sh
+      
+      - name: Cleanup test branch
+        if: always()
+        run: |
+          echo "Cleaning up test branch: ${{ env.TEST_BRANCH }}"
+          git push origin --delete "${{ env.TEST_BRANCH }}" || echo "Branch already deleted or does not exist"
