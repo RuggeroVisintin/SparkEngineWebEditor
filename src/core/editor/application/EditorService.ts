@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject, toRounded, IComponent } from "sparkengineweb";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject, toRounded, IComponent, create } from "sparkengineweb";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
@@ -239,6 +239,16 @@ export class EditorService {
         this.stateRepository.update({
             isComponentsPanelOpen: true
         });
+    }
+
+    public addComponent(componentType: string): void {
+        this.stateRepository.update({
+            isComponentsPanelOpen: false
+        });
+
+        const component = create<IComponent>(componentType);
+
+        this.currentEntity?.addComponent(component);
     }
 
     private onScriptingEditorReadyEvent(e: ScriptingEditorReady): void {

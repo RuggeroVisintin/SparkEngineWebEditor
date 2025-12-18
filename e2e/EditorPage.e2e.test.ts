@@ -27,7 +27,14 @@ describe('Editor Page - Components Panel', () => {
             }));
         });
 
-        test.todo('Should add a new custom component to a selected entity');
+        it('Should add a new custom component to a selected entity', async () => {
+            const componentName = 'BoundingBox';
+            const componentOption = page.getByRole('option', { name: componentName });
+            await componentOption.click();
+
+            // Check if the component is added to the selected entity
+            await expect(page.getByText(componentName)).toBeVisible();
+        });
     })
 
 
