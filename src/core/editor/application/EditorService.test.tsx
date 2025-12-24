@@ -1,4 +1,4 @@
-import { CanvasDevice, DOMImageLoader, GameObject, IEntity, Renderer, RenderSystem, Scene, SerializableCallback, TransformComponent, TriggerEntity, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, Renderer, RenderSystem, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -652,5 +652,41 @@ describe('EditorService', () => {
 
             expect(entity.onTriggerCB.call(this)).toEqual(1);
         })
+    });
+
+    describe('addComponent()', () => {
+        it('Should close the components panel', () => {
+            appState.update({
+                isComponentsPanelOpen: true
+            });
+
+            const componentType = typeOf(BoundingBoxComponent);
+
+            editorService.addComponent(componentType);
+
+            expect(appState.get().isComponentsPanelOpen).toBe(false);
+        });
+
+        it('Should add the component to the current entity', () => {
+            const entity = new GameObject();
+            editorService.selectEntity(entity);
+
+            const componentType = typeOf(BoundingBoxComponent);
+
+            editorService.addComponent(componentType);
+            expect((editorService.currentEntity as IEntity).getComponent<BoundingBoxComponent>(componentType)).toBeInstanceOf(BoundingBoxComponent);
+        })
+    });
+
+    describe('closeComponentSelection()', () => {
+        it('Should close the components panel', () => {
+            appState.update({
+                isComponentsPanelOpen: true
+            });
+
+            editorService.closeComponentSelection();
+
+            expect(appState.get().isComponentsPanelOpen).toBe(false);
+        });
     });
 });

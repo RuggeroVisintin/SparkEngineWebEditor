@@ -42,7 +42,9 @@ export const Editor = () => {
                     editorState.isComponentsPanelOpen &&
                     <Box $size={0.25}>
                         <ComponentsPanel
+                            onSelectComponent={(componentName) => editorService.addComponent(componentName + 'Component')}
                             components={Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? []}
+                            onClose={() => editorService.closeComponentSelection()}
                         />
                     </Box>
                 }
