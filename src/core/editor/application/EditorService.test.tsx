@@ -677,4 +677,16 @@ describe('EditorService', () => {
             expect((editorService.currentEntity as IEntity).getComponent<BoundingBoxComponent>(componentType)).toBeInstanceOf(BoundingBoxComponent);
         })
     });
+
+    describe('closeComponentSelection()', () => {
+        it('Should close the components panel', () => {
+            appState.update({
+                isComponentsPanelOpen: true
+            });
+
+            editorService.closeComponentSelection();
+
+            expect(appState.get().isComponentsPanelOpen).toBe(false);
+        });
+    });
 });

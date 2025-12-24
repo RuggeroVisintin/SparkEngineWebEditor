@@ -241,14 +241,18 @@ export class EditorService {
         });
     }
 
-    public addComponent(componentType: string): void {
+    public closeComponentSelection(): void {
         this.stateRepository.update({
             isComponentsPanelOpen: false
         });
+    }
 
-        const component = create<IComponent>(componentType);
+    public addComponent(componentType: string): void {
+        this.currentEntity?.addComponent(
+            create<IComponent>(componentType)
+        );
 
-        this.currentEntity?.addComponent(component);
+        this.closeComponentSelection();
     }
 
     private onScriptingEditorReadyEvent(e: ScriptingEditorReady): void {
