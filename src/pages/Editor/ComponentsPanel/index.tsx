@@ -29,7 +29,7 @@ export const ComponentsPanel = ({
     }, [onClose]);
 
     return (
-        <Box ref={panelRef} role="listbox" style={{ overflowY: 'auto', height: '100%', display: 'block' }}>
+        <Box ref={panelRef} role="listbox" aria-label="Components Panel" style={{ overflowY: 'auto', height: '100%', display: 'block' }}>
             {
                 components.map(componentName => (
                     <ListItem
