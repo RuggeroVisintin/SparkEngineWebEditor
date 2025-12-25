@@ -3,7 +3,6 @@ import { allOf } from 'sparkengineweb'
 import { describeWithFeature } from './featureFlags';
 
 describe('Editor Page - Components Panel', () => {
-    const AVAILABLE_COMPONENTS = Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? [];
 
     it('Should add a new GameObject to the scene', async () => {
         const addEntityButton = page.getByText(/Add GameObject/i);
@@ -13,6 +12,8 @@ describe('Editor Page - Components Panel', () => {
     });
 
     describeWithFeature('ADD_COMPONENTS', 'Add Component feature', () => {
+        const AVAILABLE_COMPONENTS = Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? [];
+
         beforeEach(async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);
             await addEntityButton.click();
