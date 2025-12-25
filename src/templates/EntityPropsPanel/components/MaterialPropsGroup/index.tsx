@@ -1,7 +1,7 @@
 import React from "react";
 import { ImageAsset, MaterialComponent, Rgb } from "@sparkengine";
 import { FormInput } from "../../../../components";
-import { InputRow } from "../../../../primitives/InputRow";
+import { Inputs } from "../../../../primitives/Inputs";
 import { Box, Button } from "../../../../primitives";
 
 export interface MaterialPropsGroupProps {
@@ -43,21 +43,21 @@ export const MaterialPropsGroup = ({ material, onMaterialUpdate }: MaterialProps
 
     return (
         <>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
                 <Box>Color</Box>
                 {materialDiffuseColorGroup}
                 <Button onClick={() => onMaterialUpdate?.({ removeDiffuseColor: true })} data-testid="EntityPropsPanel.RemoveDiffuseColor">
                     X
                 </Button>
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
                 <Box>Opacity</Box>
                 {matierialOpacityGroup}
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
                 <Box>Texture</Box>
                 {meterialDiffuseTextureGroup}
-            </InputRow>
+            </Inputs.Row>
         </>
     )
 }

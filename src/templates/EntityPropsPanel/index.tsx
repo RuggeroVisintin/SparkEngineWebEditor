@@ -2,7 +2,7 @@ import React from "react";
 import { IEntity, MaterialComponent, TransformComponent, TransformComponentProps, typeOf, Vec2 } from "@sparkengine";
 import { FormInput } from "../../components";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
-import { InputRow } from "../../primitives/InputRow";
+import { Inputs } from "../../primitives/Inputs";
 import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
@@ -64,14 +64,14 @@ const TransformPropsGroup = ({ transform, onUpdateSize, onUpdatePosition }: Tran
 
     return (
         <>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box role="group" aria-label="Position">Position</Box>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Position</Inputs.Legend>
                 {transformPositionGroup}
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Size</Box>
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Size</Inputs.Legend>
                 {transformSizeInputs}
-            </InputRow>
+            </Inputs.Row>
         </>
     )
 };
@@ -81,7 +81,7 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
     const material = currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 
     return (
-        <Box $size={1} $scroll $divide $spacing={Spacing.sm} role="region" aria-label="Entity Properties">
+        <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {transform &&
                 <ExpandablePanel title="Transform">
                     <TransformPropsGroup
