@@ -29,6 +29,11 @@ branches:
           - "Unit Tests"
 
       enforce_admins: false
+      bypass_pull_request_allowances:
+        apps:
+          - github-actions[bot]
+        users: []
+        teams: []
       required_linear_history: true
       allow_force_pushes: false
       allow_deletions: false
@@ -36,8 +41,3 @@ branches:
       required_conversation_resolution: false
       lock_branch: false
       allow_fork_syncing: false
-      restrictions:
-        apps:
-          - release-please[bot]
-        users: []
-        teams: []
