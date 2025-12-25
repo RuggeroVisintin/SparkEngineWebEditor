@@ -35,26 +35,13 @@ describe('Editor Page - Components Panel', () => {
             // Check if the component is added to the selected entity
             await expect(page.getByText(componentName)).toBeVisible();
         });
-    })
 
+        it('Should close the Components Panel when clicking outside', async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
 
-
-    // test('Should open components panel when Add Component button is clicked', async ({ page }) => {
-    //     // Similar setup - ensure we have an entity selected
-    //     await page.waitForSelector('canvas', { timeout: 10000 });
-
-    //     // Select an entity (adjust based on your actual UI)
-    //     const entityInScene = page.getByTestId('scene-panel').locator('text=Entity').first();
-    //     if (await entityInScene.isVisible()) {
-    //         await entityInScene.click();
-    //     }
-
-    //     // Click the Add Component button
-    //     const addComponentButton = page.getByRole('button', { name: /Add Component/i });
-    //     await addComponentButton.click();
-
-    //     // Check if the components panel opens
-    //     // Based on your Editor component, this should show "Material Component"
-    //     await expect(page.getByText('Material Component')).toBeVisible();
-    // });
+            const componentsPanel = page.getByRole('listbox', { name: /Components Panel/i });
+            await expect(componentsPanel).not.toBeVisible();
+        });
+    });
 });
