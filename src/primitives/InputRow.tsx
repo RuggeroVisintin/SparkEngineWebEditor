@@ -1,8 +1,15 @@
 import styled from "styled-components";
-import { FlexBox } from "./FlexBox";
+import { FlexBoxProps, flexStyles } from "./FlexBox";
 
-export const InputRow = styled(FlexBox)`
-    &+${FlexBox} {
+export const InputRow = styled.fieldset<FlexBoxProps>`
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    ${flexStyles}
+
+    &+fieldset {
         margin-top: 5px;
     }
-`
+`;
+

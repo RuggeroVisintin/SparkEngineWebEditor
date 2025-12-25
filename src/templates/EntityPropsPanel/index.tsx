@@ -65,7 +65,7 @@ const TransformPropsGroup = ({ transform, onUpdateSize, onUpdatePosition }: Tran
     return (
         <>
             <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Position</Box>
+                <Box role="group" aria-label="Position">Position</Box>
                 {transformPositionGroup}
             </InputRow>
             <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
@@ -81,7 +81,7 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
     const material = currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 
     return (
-        <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
+        <Box $size={1} $scroll $divide $spacing={Spacing.sm} role="region" aria-label="Entity Properties">
             {transform &&
                 <ExpandablePanel title="Transform">
                     <TransformPropsGroup

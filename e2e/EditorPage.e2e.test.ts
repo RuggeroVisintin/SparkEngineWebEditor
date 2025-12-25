@@ -11,6 +11,15 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
+    describe('Entity Props', () => { 
+        it('Should show Entity Props Panel when an entity is selected', async () => {
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
+
+            await expect(page.getByRole('group', { name: /Entity Properties/i })).toBeVisible();
+        });
+    })
+
     describeWithFeature('ADD_COMPONENTS', 'Add Component feature', () => {
         const AVAILABLE_COMPONENTS = Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? [];
 
