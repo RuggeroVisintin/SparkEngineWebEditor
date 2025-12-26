@@ -20,7 +20,7 @@ describe('EntityPropsPanel', () => {
                 render(<EntityPropsPanel currentEntity={entity} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputFieldX = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
+                const inputFieldX = screen.getByTestId(`EntityPropsPanel.Position.${prop.toUpperCase()}.InputField`);
 
                 expect(inputFieldX).toHaveValue(entity.transform.position[prop]);
             });
@@ -36,7 +36,7 @@ describe('EntityPropsPanel', () => {
                 rerender(<EntityPropsPanel currentEntity={newEntity} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
+                const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop.toUpperCase()}.InputField`);
                 expect(inputField).toHaveValue(newEntity.transform.position[prop]);
             });
 
@@ -51,7 +51,7 @@ describe('EntityPropsPanel', () => {
                 render(<EntityPropsPanel currentEntity={entity} onUpdatePosition={cb} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop}.InputField`);
+                const inputField = screen.getByTestId(`EntityPropsPanel.Position.${prop.toUpperCase()}.InputField`);
                 fireEvent.change(inputField, { target: { value: '23' } })
 
                 expect(cb).toHaveBeenCalledWith({ newPosition: result });
@@ -68,7 +68,7 @@ describe('EntityPropsPanel', () => {
                 render(<EntityPropsPanel currentEntity={entity} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
+                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop.charAt(0).toUpperCase()}.InputField`);
 
 
                 expect(inputField).toHaveValue(entity.transform.size[prop]);
@@ -85,7 +85,7 @@ describe('EntityPropsPanel', () => {
                 rerender(<EntityPropsPanel currentEntity={newEntity} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
+                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop.charAt(0).toUpperCase()}.InputField`);
 
                 expect(inputField).toHaveValue(newEntity.transform.size[prop]);
             });
@@ -102,7 +102,7 @@ describe('EntityPropsPanel', () => {
                 render(<EntityPropsPanel currentEntity={entity} onUpdateSize={cb} />);
                 fireEvent.click(screen.getByText('Transform'));
 
-                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop}.InputField`);
+                const inputField = screen.getByTestId(`EntityPropsPanel.Size.${prop.charAt(0).toUpperCase()}.InputField`);
                 fireEvent.change(inputField, { target: { value: '23' } })
 
                 expect(cb).toHaveBeenCalledWith({ newSize: result });

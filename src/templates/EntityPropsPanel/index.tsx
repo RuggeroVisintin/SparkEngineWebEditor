@@ -85,9 +85,13 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {transform &&
                 <ExpandablePanel title="Transform">
-                    <DynamicPropsGroup component={transform} />
-                    <TransformPropsGroup
-                        transform={transform} onUpdatePosition={onUpdatePosition} onUpdateSize={onUpdateSize}></TransformPropsGroup>
+                    <DynamicPropsGroup component={transform} onChange={(propName: string, newValue: any) => {
+                        if (propName === 'position') {
+                            onUpdatePosition?.({ newPosition: newValue });
+                        } else if (propName === 'size') {
+                            onUpdateSize?.({ newSize: newValue });
+                        }
+                    }} />
                 </ExpandablePanel>
             }
             {material &&
