@@ -1,7 +1,9 @@
-import { fireEvent, render, within } from "@testing-library/react";
-import { IComponent, Vec2 } from "sparkengineweb";
+import { fireEvent, render, waitFor, within } from "@testing-library/react";
+import { IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
 import { DynamicPropsGroup } from ".";
 import React from "react";
+import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
+import { setMockedFile } from "../../../../__mocks__/fs-api.mock";
 
 describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
@@ -140,5 +142,100 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
             expect(onChangeMock).toHaveBeenCalledWith('size', new Vec2(2929, 12));
             expect(resultJson.size.x).toBe(12);
         });
+
+        describe('ImageAsset', () => {
+            it('Should render image asset as image input', () => {
+                const materialComponent = new MaterialComponent();
+                materialComponent.diffuseTexture = new ImageAsset(new FakeBitmap(), 'png');
+
+                const view = render(<DynamicPropsGroup component={materialComponent} />);
+
+                const textureGroup = view.getByRole('group', { name: 'Texture' });
+                const textureInput = within(textureGroup).getByRole('button', { name: /replace/i });
+                expect(textureInput).toBeVisible();
+            });
+
+            it('Should render image asset load button when asset is missing on MaterialComponent', () => {
+                const materialComponent = new MaterialComponent();
+
+                const view = render(<DynamicPropsGroup component={materialComponent} />);
+
+                const textureGroup = view.getByRole('group', { name: 'Texture' });
+                const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
+                expect(textureInput).toBeVisible();
+            });
+
+            it('Should invoke onChange callback with the loaded image asset when the asset is changed', async () => {
+                const materialComponent = new MaterialComponent();
+                setMockedFile('assets/test.png');
+
+                const onChangeMock = jest.fn();
+
+                await new Promise((resolve) => {
+                    const view = render(<DynamicPropsGroup component={materialComponent} onChange={((propName: string, value: ImageAsset) => {
+                        expect(value).toBeInstanceOf(ImageAsset);
+                        onChangeMock(propName, value);
+
+                        resolve(null);
+                    })} />);
+
+                    const textureGroup = view.getByRole('group', { name: 'Texture' });
+                    const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
+
+                    textureInput.click();
+                });
+
+                expect(onChangeMock).toHaveBeenCalled();
+            });
+        });
+
+        describe('Color', () => {
+            it('Should render a color picker when a color is detected', () => {
+                const mockComponent = new MaterialComponent({
+                    diffuseColor: new Rgb(255, 0, 0)
+                })
+
+                const view = render(<DynamicPropsGroup component={mockComponent} />);
+
+                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+                const innerColorInput = within(nestedPropGroup).getByRole('color');
+
+                expect(innerColorInput).toHaveValue('#ff0000');
+            });
+
+            it('Should invoke onChange callbacks when color is changed', () => {
+                const onChangeMock = jest.fn();
+
+                const mockComponent = new MaterialComponent({
+                    diffuseColor: new Rgb(0, 255, 0)
+                })
+
+                const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+
+                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+                const innerColorInput = within(nestedPropGroup).getByRole('color');
+
+                fireEvent.change(innerColorInput, { target: { value: '#0000ff' } });
+
+                expect(onChangeMock).toHaveBeenCalledWith('diffuseColor', Rgb.fromHex('#0000ff'));
+            });
+
+            it('Should allow to remove color if needed', () => {
+                const onChangeMock = jest.fn();
+
+                const mockComponent = new MaterialComponent({
+                    diffuseColor: new Rgb(0, 255, 0)
+                })
+
+                const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+
+                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+
+                const removeButton = within(nestedPropGroup).getByRole('button', { name: /x/i });
+                fireEvent.click(removeButton);
+
+                expect(onChangeMock).toHaveBeenCalledWith('diffuseColor', null);
+            });
+        })
     });
 });

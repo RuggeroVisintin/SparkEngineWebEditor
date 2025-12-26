@@ -210,24 +210,24 @@ export class EditorService {
         });
     }
 
-    public updateCurrentEntityMaterial({ newDiffuseColor, newOpacity, newDiffuseTexture, removeDiffuseColor }: {
-        newDiffuseColor?: Rgb,
-        newOpacity?: number,
-        newDiffuseTexture?: ImageAsset,
+    public updateCurrentEntityMaterial({ diffuseColor, opacity, diffuseTexture, removeDiffuseColor }: {
+        diffuseColor?: Rgb,
+        opacity?: number,
+        diffuseTexture?: ImageAsset,
         removeDiffuseColor?: boolean
     }): void {
         const material = this._currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 
         if (!material) return;
 
-        if (newDiffuseColor) material.diffuseColor = newDiffuseColor;
-        if (newOpacity) material.opacity = newOpacity;
+        if (diffuseColor) material.diffuseColor = diffuseColor;
+        if (opacity) material.opacity = opacity;
 
         if (removeDiffuseColor) material.removeDiffuseColor();
 
-        if (newDiffuseTexture) {
+        if (diffuseTexture) {
             material.diffuseTexturePath = `assets/${v4()}.png`;
-            material.diffuseTexture = newDiffuseTexture;
+            material.diffuseTexture = diffuseTexture;
         }
 
         this.stateRepository.update({

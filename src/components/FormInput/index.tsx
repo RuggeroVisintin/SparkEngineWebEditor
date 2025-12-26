@@ -59,6 +59,7 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
     return <FlexBox $direction="row" $fill $fillMethod="flex">
         {label && <Label htmlFor={id}>{label}</Label>}
         <Input
+            role={type === 'color' ? 'color' : undefined}
             type={inputType}
             id={id}
             value={defaultValue}

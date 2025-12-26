@@ -251,8 +251,6 @@ describe('EntityPropsPanel', () => {
 
             it('Should invoke the onMaterialUpdate callback when the diffuse texture input changes', async () => {
                 const entity = new GameObject();
-                entity.material.diffuseTexturePath = 'test.png';
-
                 setMockedFile('assets/test.png');
 
                 const promise = new Promise((resolve) => {

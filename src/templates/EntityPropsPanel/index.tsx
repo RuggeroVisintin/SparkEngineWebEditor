@@ -96,10 +96,25 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
             }
             {material &&
                 <ExpandablePanel title="Material" $divide>
-                    <MaterialPropsGroup
+                    <DynamicPropsGroup
+                        component={material}
+                        onChange={(propName: string, newValue: any) => {
+                            const result: Record<string, any> = {};
+
+                            result[propName] = newValue;
+
+                            if (result['diffuseColor'] === null) {
+                                result['removeDiffuseColor'] = true;
+                                delete result['diffuseColor'];
+                            }
+
+                            onMaterialUpdate?.(result)
+                        }}
+                    />
+                    {/* <MaterialPropsGroup
                         material={material}
                         onMaterialUpdate={onMaterialUpdate}
-                    />
+                    /> */}
                 </ExpandablePanel>
             }
             {typeOf(currentEntity) === 'TriggerEntity' && (
