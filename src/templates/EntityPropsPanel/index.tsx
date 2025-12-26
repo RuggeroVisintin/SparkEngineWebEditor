@@ -2,11 +2,12 @@ import React from "react";
 import { IEntity, MaterialComponent, TransformComponent, TransformComponentProps, typeOf, Vec2 } from "@sparkengine";
 import { FormInput } from "../../components";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
-import { InputRow } from "../../primitives/InputRow";
+import { Inputs } from "../../primitives/Inputs";
 import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
+import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -64,14 +65,14 @@ const TransformPropsGroup = ({ transform, onUpdateSize, onUpdatePosition }: Tran
 
     return (
         <>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Position</Box>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Position</Inputs.Legend>
                 {transformPositionGroup}
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Size</Box>
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Size</Inputs.Legend>
                 {transformSizeInputs}
-            </InputRow>
+            </Inputs.Row>
         </>
     )
 };
@@ -84,16 +85,36 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {transform &&
                 <ExpandablePanel title="Transform">
-                    <TransformPropsGroup
-                        transform={transform} onUpdatePosition={onUpdatePosition} onUpdateSize={onUpdateSize}></TransformPropsGroup>
+                    <DynamicPropsGroup component={transform} onChange={(propName: string, newValue: any) => {
+                        if (propName === 'position') {
+                            onUpdatePosition?.({ newPosition: newValue });
+                        } else if (propName === 'size') {
+                            onUpdateSize?.({ newSize: newValue });
+                        }
+                    }} />
                 </ExpandablePanel>
             }
             {material &&
                 <ExpandablePanel title="Material" $divide>
-                    <MaterialPropsGroup
+                    <DynamicPropsGroup
+                        component={material}
+                        onChange={(propName: string, newValue: any) => {
+                            const result: Record<string, any> = {};
+
+                            result[propName] = newValue;
+
+                            if (result['diffuseColor'] === null) {
+                                result['removeDiffuseColor'] = true;
+                                delete result['diffuseColor'];
+                            }
+
+                            onMaterialUpdate?.(result)
+                        }}
+                    />
+                    {/* <MaterialPropsGroup
                         material={material}
                         onMaterialUpdate={onMaterialUpdate}
-                    />
+                    /> */}
                 </ExpandablePanel>
             }
             {typeOf(currentEntity) === 'TriggerEntity' && (

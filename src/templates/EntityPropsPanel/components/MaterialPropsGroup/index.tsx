@@ -1,8 +1,8 @@
 import React from "react";
 import { ImageAsset, MaterialComponent, Rgb } from "@sparkengine";
 import { FormInput } from "../../../../components";
-import { InputRow } from "../../../../primitives/InputRow";
-import { Box, Button } from "../../../../primitives";
+import { Inputs } from "../../../../primitives/Inputs";
+import { Button } from "../../../../primitives";
 
 export interface MaterialPropsGroupProps {
     material: MaterialComponent,
@@ -18,7 +18,7 @@ export const MaterialPropsGroup = ({ material, onMaterialUpdate }: MaterialProps
             onChange={(newDiffuseColor: string) => {
                 onMaterialUpdate?.({ newDiffuseColor: Rgb.fromHex(newDiffuseColor) })
             }}
-        ></FormInput>
+        />
     ];
 
     const matierialOpacityGroup = [
@@ -28,7 +28,7 @@ export const MaterialPropsGroup = ({ material, onMaterialUpdate }: MaterialProps
             defaultValue={material.opacity}
             type="number"
             onChange={(newValue: number) => onMaterialUpdate?.({ newOpacity: newValue })}
-        ></FormInput>
+        />
     ]
 
     const meterialDiffuseTextureGroup = [
@@ -38,26 +38,26 @@ export const MaterialPropsGroup = ({ material, onMaterialUpdate }: MaterialProps
             type="image"
             label={material.diffuseTexture ? 'Replace' : 'Add'}
             onChange={(newDiffuseTexture: ImageAsset) => { onMaterialUpdate?.({ newDiffuseTexture }) }}
-        ></FormInput>
+        />
     ]
 
     return (
         <>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Color</Box>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Color</Inputs.Legend>
                 {materialDiffuseColorGroup}
                 <Button onClick={() => onMaterialUpdate?.({ removeDiffuseColor: true })} data-testid="EntityPropsPanel.RemoveDiffuseColor">
                     X
                 </Button>
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Opacity</Box>
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Opacity</Inputs.Legend>
                 {matierialOpacityGroup}
-            </InputRow>
-            <InputRow $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                <Box>Texture</Box>
+            </Inputs.Row>
+            <Inputs.Row $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                <Inputs.Legend>Texture</Inputs.Legend>
                 {meterialDiffuseTextureGroup}
-            </InputRow>
+            </Inputs.Row>
         </>
     )
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { FormInput } from ".";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
 import { ImageAsset } from "sparkengineweb";
 
@@ -26,4 +26,22 @@ describe('FormInput', () => {
             await promise;
         });
     })
+
+    describe('number', () => {
+        it.each([
+            ['Explicit type', 'number'],
+            ['Inferred type', undefined],
+        ])('Should invoke the onChange callback when the value is changed with %s', (_, type) => {
+            const onChangeMock = jest.fn();
+
+            const inputItem = <FormInput type={type} data-testid="test-input" defaultValue={10} onChange={onChangeMock} />;
+
+            render(inputItem);
+
+            const inputField = screen.getByTestId('test-input.InputField') as HTMLInputElement;
+            fireEvent.change(inputField, { target: { value: '20' } });
+
+            expect(onChangeMock).toHaveBeenCalledWith(20);
+        });
+    });
 })

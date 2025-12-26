@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Box } from './Box';
 
 const getFillProp = ($fillMethod: FillMethod = ''): string => {
@@ -14,7 +14,7 @@ const getFillProp = ($fillMethod: FillMethod = ''): string => {
 
 type FillMethod = 'flex' | 'size' | '';
 
-interface FlexBoxProps {
+export interface FlexBoxProps {
     $direction?: 'column' | 'row';
     $centerItems?: boolean;
     $fill?: boolean;
@@ -22,7 +22,7 @@ interface FlexBoxProps {
     $fillMethod?: FillMethod
 }
 
-export const FlexBox = styled.div<FlexBoxProps>`
+export const flexStyles = css<FlexBoxProps>`
     display: flex;
     flex-direction: ${props => props.$direction ?? 'column'};
     align-items: ${props => props.$centerItems ? 'center' : 'unset'};
@@ -33,4 +33,8 @@ export const FlexBox = styled.div<FlexBoxProps>`
     &:${Box} {
         flex: auto;
     }
+`;
+
+export const FlexBox = styled.div<FlexBoxProps>`
+    ${flexStyles}
 `
