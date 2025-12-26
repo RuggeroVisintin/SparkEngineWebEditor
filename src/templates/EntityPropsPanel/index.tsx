@@ -7,6 +7,7 @@ import { MaterialPropsGroup } from "./components/MaterialPropsGroup";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
+import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -84,6 +85,7 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {transform &&
                 <ExpandablePanel title="Transform">
+                    <DynamicPropsGroup component={transform} />
                     <TransformPropsGroup
                         transform={transform} onUpdatePosition={onUpdatePosition} onUpdateSize={onUpdateSize}></TransformPropsGroup>
                 </ExpandablePanel>

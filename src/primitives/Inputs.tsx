@@ -24,9 +24,9 @@ const Legend = styled.legend`
 
 export const Inputs = {
     Row,
-    Legend: ({ children }: { children: React.ReactNode }) =>
+    Legend: ({ children, style }: { children: React.ReactNode, style?: React.CSSProperties }) =>
         <Legend>
-            <Box>{children}</Box>
+            <Box style={style}>{children}</Box>
         </Legend>
 };
 
