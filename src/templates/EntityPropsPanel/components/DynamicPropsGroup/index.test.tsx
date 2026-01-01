@@ -1,22 +1,19 @@
 import { fireEvent, render, waitFor, within } from "@testing-library/react";
-import { IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
+import { BaseComponent, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
 import { DynamicPropsGroup } from ".";
 import React from "react";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { setMockedFile } from "../../../../__mocks__/fs-api.mock";
 
 describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
-
     describe('Primitives', () => {
         it.each([
             ['number', 'spinbutton', 100],
             ['text', 'textbox', 'TestString'],
         ])('Should render %s component props', (_, ariaRole, value) => {
             const mockComponent = {
-                toJson: () => ({
-                    __type: 'MockComponent',
-                    testProp: value
-                })
+                __type: 'MockComponent',
+                testProp: value
             } as unknown as IComponent;
 
             const view = render(<DynamicPropsGroup component={mockComponent} />);
@@ -29,11 +26,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
         it('Should map properties names to capitalized labels', async () => {
             const mockComponent = {
-                toJson: () => ({
-                    __type: 'MockComponent',
-                    diffuseColor: '#FF0000',
-                    opacity: 0.5
-                })
+                __type: 'MockComponent',
+                diffuseColor: '#FF0000',
+                opacity: 0.5
             } as unknown as IComponent;
 
             const view = render(<DynamicPropsGroup component={mockComponent} />);
@@ -52,10 +47,8 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
             const onChangeMock = jest.fn();
 
             const mockComponent = {
-                toJson: () => ({
-                    __type: 'MockComponent',
-                    prop: value
-                })
+                __type: 'MockComponent',
+                prop: value
             } as unknown as IComponent;
 
             const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
@@ -72,13 +65,11 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
     describe('Complex Objects', () => {
         it('Should trim complex object\'s properties label by keeping the first letter capitalized', () => {
             const mockComponent = {
-                toJson: () => ({
-                    __type: 'MockComponent',
-                    size: {
-                        width: 1920,
-                        height: 1080
-                    }
-                })
+                __type: 'MockComponent',
+                size: {
+                    width: 1920,
+                    height: 1080
+                }
             } as unknown as IComponent;
 
             const view = render(<DynamicPropsGroup component={mockComponent} />);
@@ -97,13 +88,11 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
         it('Should render nested component props', () => {
             const mockComponent = {
-                toJson: () => ({
-                    __type: 'MockComponent',
-                    nested: {
-                        string: 'InnerValue',
-                        number: 42
-                    }
-                })
+                __type: 'MockComponent',
+                nested: {
+                    string: 'InnerValue',
+                    number: 42
+                }
             } as unknown as IComponent;
 
             const result = render(<DynamicPropsGroup component={mockComponent} />);
@@ -128,9 +117,7 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 size: new Vec2(12, 12)
             };
 
-            const mockComponent = {
-                toJson: () => resultJson
-            } as unknown as IComponent;
+            const mockComponent = resultJson as unknown as IComponent;
 
             const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
 
@@ -150,7 +137,7 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
                 const view = render(<DynamicPropsGroup component={materialComponent} />);
 
-                const textureGroup = view.getByRole('group', { name: 'Texture' });
+                const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
                 const textureInput = within(textureGroup).getByRole('button', { name: /replace/i });
                 expect(textureInput).toBeVisible();
             });
@@ -160,7 +147,7 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
                 const view = render(<DynamicPropsGroup component={materialComponent} />);
 
-                const textureGroup = view.getByRole('group', { name: 'Texture' });
+                const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
                 const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
                 expect(textureInput).toBeVisible();
             });
@@ -179,7 +166,7 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                         resolve(null);
                     })} />);
 
-                    const textureGroup = view.getByRole('group', { name: 'Texture' });
+                    const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
                     const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
 
                     textureInput.click();
