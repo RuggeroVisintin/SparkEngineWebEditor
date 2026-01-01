@@ -56,7 +56,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
         const finalLabel = label?.at(0)?.toUpperCase() ?? '';
 
         return <FormInput
-            data-testid={`EntityPropsPanel.${capitalize(propertyName)}.${finalLabel}`}
+            data-testid={`EntityPropsPanel.${capitalize(propertyName)}${finalLabel ? '.' + finalLabel : ''}`}
             defaultValue={value}
             label={finalLabel}
             onChange={(newValue: PrimitiveProp) => onChange?.(propertyName, newValue)}
