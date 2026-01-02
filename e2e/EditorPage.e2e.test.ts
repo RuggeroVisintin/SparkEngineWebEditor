@@ -3,6 +3,7 @@ import { allOf } from 'sparkengineweb'
 import { describeWithFeature } from './featureFlags';
 
 describe('Editor Page - Components Panel', () => {
+
     it('Should add a new GameObject to the scene', async () => {
         const addEntityButton = page.getByText(/Add GameObject/i);
         await addEntityButton.click();
@@ -10,7 +11,18 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
+    describe('Entity Props', () => { 
+        it('Should show Entity Props Panel when an entity is selected', async () => {
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
+
+            await expect(page.getByRole('group', { name: /Entity Properties/i })).toBeVisible();
+        });
+    })
+
     describeWithFeature('ADD_COMPONENTS', 'Add Component feature', () => {
+        const AVAILABLE_COMPONENTS = Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? [];
+
         beforeEach(async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);
             await addEntityButton.click();
@@ -20,15 +32,12 @@ describe('Editor Page - Components Panel', () => {
         });
 
         it('Should show list of available components when Add Component button is clicked', async () => {
-            const components = allOf('Component');
-
-            await Promise.all(Object.keys(components).map(async (componentName: string) => {
-                return expect(page.getByRole('option', { name: componentName.split('Component')[0] })).toBeVisible();
+            await Promise.all(AVAILABLE_COMPONENTS.map(async (componentName: string) => {
+                return expect(page.getByRole('option', { name: componentName })).toBeVisible();
             }));
         });
 
-        it('Should add a new custom component to a selected entity', async () => {
-            const componentName = 'BoundingBox';
+        it.each(AVAILABLE_COMPONENTS)('Should add %s component to a selected entity', async (componentName: string) => {
             const componentOption = page.getByRole('option', { name: componentName });
             await componentOption.click();
 

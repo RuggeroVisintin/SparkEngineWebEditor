@@ -38,7 +38,7 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
     const inputType = type ? typesMap[type] : typesMap[typeof defaultValue] ?? typesMap;
 
     const onValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = type === 'number' ? parseInt(event.target.value) : event.target.value;
+        const newValue = inputType === 'number' ? parseInt(event.target.value) : event.target.value;
         onChange?.(newValue);
     }
 
@@ -59,6 +59,7 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
     return <FlexBox $direction="row" $fill $fillMethod="flex">
         {label && <Label htmlFor={id}>{label}</Label>}
         <Input
+            role={type === 'color' ? 'color' : undefined}
             type={inputType}
             id={id}
             value={defaultValue}
