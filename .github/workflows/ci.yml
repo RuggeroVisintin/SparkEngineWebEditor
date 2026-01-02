@@ -81,6 +81,9 @@ jobs:
         - uses: actions/setup-node@v4
           with:
             node-version: 20
+        
+        - name: install jq
+          run: apt-get update && apt-get install -y jq
   
         - name: install
           run: npm ci
