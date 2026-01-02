@@ -52,6 +52,31 @@ jobs:
           with:
             name: coverage-badge-artifact
             path: .github/pages/badges/coverage.badge.svg
+    test_e2e:
+      name: E2E Tests
+      timeout-minutes: 10
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+  
+        - name: install
+          run: npm ci
+
+        - name: build
+          run: npm run build
+
+        - name: start server
+          run: npm run start > server.log 2>&1 &
+          
+        - name: wait for server
+          run: npx wait-on http://localhost:3000
+
+        - name: run e2e tests
+          run: npm run test:e2e
+
     code_scan:
       name: "Code Scan"
       uses: './.github/workflows/codeql.yml'
@@ -92,6 +117,6 @@ jobs:
             npx release-please release-pr \
               --token="${{ secrets.GITHUB_TOKEN }}" \
               --repo-url="${{ github.repository }}"
-      needs: [test_unit, build, code_scan]
+      needs: [test_unit, test_e2e, build, code_scan]
       if: github.ref_name == 'main'
         
