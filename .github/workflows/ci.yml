@@ -65,9 +65,6 @@ jobs:
         - name: install
           run: npm ci
 
-        - name: build
-          run: npm run build
-
         - name: start server
           run: npm run start > server.log 2>&1 &
           
