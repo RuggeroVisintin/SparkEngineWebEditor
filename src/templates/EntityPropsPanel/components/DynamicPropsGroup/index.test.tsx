@@ -1,5 +1,5 @@
-import { fireEvent, render, waitFor, within } from "@testing-library/react";
-import { BaseComponent, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
 import { DynamicPropsGroup } from ".";
 import React from "react";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
@@ -16,9 +16,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 testProp: value
             } as unknown as IComponent;
 
-            const view = render(<DynamicPropsGroup component={mockComponent} />);
+            render(<DynamicPropsGroup component={mockComponent} />);
 
-            const testPropGroup = view.getByRole('group', { name: 'Test Prop' });
+            const testPropGroup = screen.getByRole('group', { name: 'Test Prop' });
 
             expect(testPropGroup).toBeVisible();
             expect(within(testPropGroup).getByRole(ariaRole, { name: '' })).toHaveValue(value);
@@ -31,12 +31,12 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 opacity: 0.5
             } as unknown as IComponent;
 
-            const view = render(<DynamicPropsGroup component={mockComponent} />);
+            render(<DynamicPropsGroup component={mockComponent} />);
 
-            const diffuseColorGroup = await view.findByRole('group', { name: 'Diffuse Color' });
+            const diffuseColorGroup = await screen.findByRole('group', { name: 'Diffuse Color' });
             expect(diffuseColorGroup).toBeVisible();
 
-            const opacityGroup = await view.findByRole('group', { name: 'Opacity' });
+            const opacityGroup = await screen.findByRole('group', { name: 'Opacity' });
             expect(opacityGroup).toBeVisible();
         });
 
@@ -51,9 +51,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 prop: value
             } as unknown as IComponent;
 
-            const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+            render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
 
-            const propGroup = view.getByRole('group', { name: 'Prop' });
+            const propGroup = screen.getByRole('group', { name: 'Prop' });
             const propInput = within(propGroup).getByRole(ariaRole, { name: '' });
 
             fireEvent.change(propInput, { target: { value: newValue } });
@@ -72,9 +72,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 }
             } as unknown as IComponent;
 
-            const view = render(<DynamicPropsGroup component={mockComponent} />);
+            render(<DynamicPropsGroup component={mockComponent} />);
 
-            const sizeGroup = view.getByRole('group', { name: 'Size' });
+            const sizeGroup = screen.getByRole('group', { name: 'Size' });
             expect(sizeGroup).toBeVisible();
 
             const widthInput = within(sizeGroup).getByRole('spinbutton', { name: 'W' });
@@ -95,9 +95,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 }
             } as unknown as IComponent;
 
-            const result = render(<DynamicPropsGroup component={mockComponent} />);
+            render(<DynamicPropsGroup component={mockComponent} />);
 
-            const nestedPropGroup = result.getByRole('group', { name: 'Nested' });
+            const nestedPropGroup = screen.getByRole('group', { name: 'Nested' });
             expect(nestedPropGroup).toBeVisible();
 
             const innerStringInput = within(nestedPropGroup).getByRole('textbox', { name: 'S' });
@@ -119,9 +119,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
             const mockComponent = resultJson as unknown as IComponent;
 
-            const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+            render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
 
-            const nestedPropGroup = view.getByRole('group', { name: 'Size' });
+            const nestedPropGroup = screen.getByRole('group', { name: 'Size' });
 
             const innerSizeInput = within(nestedPropGroup).getByRole('spinbutton', { name: 'X' });
             fireEvent.change(innerSizeInput, { target: { value: 2929 } });
@@ -135,9 +135,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 const materialComponent = new MaterialComponent();
                 materialComponent.diffuseTexture = new ImageAsset(new FakeBitmap(), 'png');
 
-                const view = render(<DynamicPropsGroup component={materialComponent} />);
+                render(<DynamicPropsGroup component={materialComponent} />);
 
-                const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
+                const textureGroup = screen.getByRole('group', { name: 'Diffuse Texture' });
                 const textureInput = within(textureGroup).getByRole('button', { name: /replace/i });
                 expect(textureInput).toBeVisible();
             });
@@ -145,9 +145,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
             it('Should render image asset load button when asset is missing on MaterialComponent', () => {
                 const materialComponent = new MaterialComponent();
 
-                const view = render(<DynamicPropsGroup component={materialComponent} />);
+                render(<DynamicPropsGroup component={materialComponent} />);
 
-                const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
+                const textureGroup = screen.getByRole('group', { name: 'Diffuse Texture' });
                 const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
                 expect(textureInput).toBeVisible();
             });
@@ -159,14 +159,14 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 const onChangeMock = jest.fn();
 
                 await new Promise((resolve) => {
-                    const view = render(<DynamicPropsGroup component={materialComponent} onChange={((propName: string, value: ImageAsset) => {
+                    render(<DynamicPropsGroup component={materialComponent} onChange={((propName: string, value: ImageAsset) => {
                         expect(value).toBeInstanceOf(ImageAsset);
                         onChangeMock(propName, value);
 
                         resolve(null);
                     })} />);
 
-                    const textureGroup = view.getByRole('group', { name: 'Diffuse Texture' });
+                    const textureGroup = screen.getByRole('group', { name: 'Diffuse Texture' });
                     const textureInput = within(textureGroup).getByRole('button', { name: /add/i });
 
                     textureInput.click();
@@ -182,9 +182,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                     diffuseColor: new Rgb(255, 0, 0)
                 })
 
-                const view = render(<DynamicPropsGroup component={mockComponent} />);
+                render(<DynamicPropsGroup component={mockComponent} />);
 
-                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+                const nestedPropGroup = screen.getByRole('group', { name: 'Diffuse Color' });
                 const innerColorInput = within(nestedPropGroup).getByRole('color');
 
                 expect(innerColorInput).toHaveValue('#ff0000');
@@ -197,9 +197,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                     diffuseColor: new Rgb(0, 255, 0)
                 })
 
-                const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+                render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
 
-                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+                const nestedPropGroup = screen.getByRole('group', { name: 'Diffuse Color' });
                 const innerColorInput = within(nestedPropGroup).getByRole('color');
 
                 fireEvent.change(innerColorInput, { target: { value: '#0000ff' } });
@@ -214,9 +214,9 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                     diffuseColor: new Rgb(0, 255, 0)
                 })
 
-                const view = render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
+                render(<DynamicPropsGroup component={mockComponent} onChange={onChangeMock} />);
 
-                const nestedPropGroup = view.getByRole('group', { name: 'Diffuse Color' });
+                const nestedPropGroup = screen.getByRole('group', { name: 'Diffuse Color' });
 
                 const removeButton = within(nestedPropGroup).getByRole('button', { name: /x/i });
                 fireEvent.click(removeButton);

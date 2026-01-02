@@ -1,9 +1,7 @@
 import React from "react";
-import { GameObject, ImageAsset, Rgb, TriggerEntity, Vec2 } from "@sparkengine";
+import { GameObject, TriggerEntity } from "@sparkengine";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { FakeBitmap } from "../../__mocks__/bitmap.mock";
-import { setMockedFile } from "../../__mocks__/fs-api.mock";
 import { WithMemoryRouter } from "../../hooks";
 import { getWindowCurrentUrl } from "../../__mocks__/window.mock";
 import { disableFeature, enableFeature } from "../../core/featureFlags";
