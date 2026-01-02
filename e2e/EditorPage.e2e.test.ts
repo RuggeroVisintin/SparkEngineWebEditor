@@ -11,12 +11,15 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
-    describe('Entity Props', () => { 
+    describe('Entity Props', () => {
         it('Should show Entity Props Panel when an entity is selected', async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
+
             const entityItem = page.getByText(/GameObject1/i);
             await entityItem.click();
 
-            await expect(page.getByRole('group', { name: /Entity Properties/i })).toBeVisible();
+            await expect(page.getByRole('region', { name: /Transform/i })).toBeVisible();
         });
     })
 

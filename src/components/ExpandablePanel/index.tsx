@@ -10,19 +10,21 @@ export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePane
     const [isExpanded, setIsExpanded] = React.useState(false);
 
     return (
-        <Box {...boxProps}>
+        <Box {...boxProps} role="region" aria-label={title}>
             <Box
-                data-testid="ExpandablePanel.Title" onClick={() => setIsExpanded(!isExpanded)}
+                data-testid="ExpandablePanel.Title"
+                onClick={() => setIsExpanded(!isExpanded)}
                 $background={BackgroundColor.Secondary}
                 $spacing={Spacing.xs}
                 $hSpacing={Spacing.sm}
                 $clickable
+                role="button"
+                aria-expanded={isExpanded}
             >
                 <FlexBox $direction="row">
                     <FlexBox $fill>{title}</FlexBox>
                     <FlexBox>{isExpanded ? '-' : '+'}</FlexBox>
                 </FlexBox>
-
             </Box>
             {isExpanded &&
                 <Box
@@ -32,7 +34,6 @@ export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePane
                     {children}
                 </Box>
             }
-
         </Box>
     )
 }
