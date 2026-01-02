@@ -58,6 +58,11 @@ jobs:
       outputs:
         version: ${{ steps.get_version.outputs.version }}
       steps:
+        - uses: actions/checkout@v4
+          with:
+            sparse-checkout: |
+              package.json
+
         - name: Get Playwright version from package.json
           id: get_version
           run: |
