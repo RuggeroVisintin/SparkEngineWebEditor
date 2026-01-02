@@ -73,6 +73,7 @@ jobs:
           echo "Using Playwright version: $VERSION"
     test_e2e:
       name: E2E Tests
+      needs: get_playwright_version
       timeout-minutes: 10
       runs-on: ubuntu-latest
       container:
