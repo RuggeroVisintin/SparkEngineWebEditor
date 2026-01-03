@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.14](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.13...sparkenginewebeditor-v0.0.14) (2025-12-24)
+## [0.0.14](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.13...sparkenginewebeditor-v0.0.14) (2025-12-25)
 
 
 ### Features
