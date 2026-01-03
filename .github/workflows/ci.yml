@@ -115,28 +115,12 @@ jobs:
         pull-requests: write
         pages: write
         id-token: write
+        
       steps:
-        - uses: actions/checkout@v4
+        - uses: RuggeroVisintin/release-please-action@main
+          id: release
           with:
-            fetch-depth: 0
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-        
-        - name: Install dependencies (includes release-please fork)
-          run: npm ci
-        
-        - name: Run release-please with feature flag filtering
-          run: |
-            # Load feature flags from .env.production
-            set -a
-            source .env.production
-            set +a
-            
-            # Use release-please from the fork (installed via package.json)
-            npx release-please release-pr \
-              --token="${{ secrets.GITHUB_TOKEN }}" \
-              --repo-url="${{ github.repository }}"
+            token: ${{ secrets.GITHUB_TOKEN }}
       needs: [test_unit, test_e2e, build, code_scan]
       if: github.ref_name == 'main'
         
