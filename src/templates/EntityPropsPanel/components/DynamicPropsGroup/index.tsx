@@ -1,12 +1,12 @@
 import React from "react";
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf } from "sparkengineweb"
+import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum } from "sparkengineweb"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";
 import { Button } from "../../../../primitives";
 
 type PrimitiveProp = string | number;
-type ComplexProp = ImageAsset | Rgb | object;
+type ComplexProp = ImageAsset | Rgb | Enum | object;
 type ComponentProp = PrimitiveProp | ComplexProp;
 
 export interface DynamicPropsGroupProps {
@@ -17,7 +17,35 @@ export interface DynamicPropsGroupProps {
 const valueToFormInput = (propertyName: string, value: ComponentProp, component: any, onChange?: CallableFunction, label?: string): React.ReactNode | React.ReactNode[] => {
     const originalValue = component[propertyName];
 
-    if (getOptionalType(component, propertyName) === Rgb) {
+    if (value instanceof Enum) {
+        const enumClass = Object.getPrototypeOf(value).constructor;
+        const options = enumClass.getValues?.() || [];
+
+        const optionsWithLabels = options.map((option: Enum) => {
+            // Find the property name that holds this enum value
+            const optionLabel = Object.entries(enumClass)
+                .find(([_, val]) => val === option)?.[0] || String(option.value);
+
+            return {
+                value: String(option.value),
+                label: optionLabel
+            };
+        });
+
+        return (
+            <FormInput
+                data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
+                type="select"
+                defaultValue={value.value}
+                label={label}
+                onChange={(newValue: string | number) => {
+                    const selected = options.find((opt: Enum) => opt.value === newValue);
+                    onChange?.(propertyName, selected);
+                }}
+                options={optionsWithLabels}
+            />
+        );
+    } else if (getOptionalType(component, propertyName) === Rgb) {
         return <>
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}

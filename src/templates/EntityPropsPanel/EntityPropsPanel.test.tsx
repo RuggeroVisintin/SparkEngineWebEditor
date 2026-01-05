@@ -1,5 +1,5 @@
 import React from "react";
-import { GameObject, TriggerEntity } from "@sparkengine";
+import { BaseComponent, BaseEntity, BoundingBoxComponent, GameObject, TransformComponent, TriggerEntity } from "@sparkengine";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";
@@ -39,6 +39,46 @@ describe('EntityPropsPanel', () => {
             expect(getWindowCurrentUrl('scripting')).toBe(`/scripting/${entity.uuid}`);
         });
     });
+
+    describe('Components', () => {
+        let entity: BaseEntity;
+
+        beforeEach(() => {
+            entity = new BaseEntity();
+        });
+
+        it('Should render all the components available in the entity', () => {
+            const entity = new BaseEntity();
+
+            entity.addComponent(new TransformComponent());
+            entity.addComponent(new BoundingBoxComponent());
+
+            render(
+                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+            );
+
+            expect(screen.queryByRole('region', { name: 'TransformComponent' })).toBeVisible();
+            expect(screen.queryByRole('region', { name: 'BoundingBoxComponent' })).toBeVisible();
+
+        });
+
+        it('Shjould notify changes in component properties', () => {
+            entity.addComponent(new TransformComponent());
+
+            const onComponentUpdate = jest.fn();
+
+            render(
+                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} onComponentUpdate={onComponentUpdate} />)
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: /TransformComponent/i }));
+            const positionInput = screen.getByTestId('EntityPropsPanel.Position.X.InputField');
+
+            fireEvent.change(positionInput, { target: { value: 10 } });
+
+            expect(onComponentUpdate).toHaveBeenCalled();
+        });
+    })
 
     describe('Add Component', () => {
         describe('Feature Flag ENABLED', () => {
