@@ -221,9 +221,9 @@ export class EditorService {
         if (!material) return;
 
         if (diffuseColor) material.diffuseColor = diffuseColor;
-        if (opacity) material.opacity = opacity;
+        if (diffuseColor === null) material.removeDiffuseColor();
 
-        if (removeDiffuseColor) material.removeDiffuseColor();
+        if (opacity) material.opacity = opacity;
 
         if (diffuseTexture) {
             material.diffuseTexturePath = `assets/${v4()}.png`;
