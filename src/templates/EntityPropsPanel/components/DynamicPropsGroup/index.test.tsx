@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
+import { Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
 import { DynamicPropsGroup } from ".";
 import React from "react";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
@@ -224,5 +224,28 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 expect(onChangeMock).toHaveBeenCalledWith('diffuseColor', null);
             });
         })
+    });
+
+    describe('Enum', () => {
+        it('Should render enum properties as select inputs', () => {
+            class TestEnum extends Enum<string> {
+                static readonly OptionA = new TestEnum('OptionA');
+                static readonly OptionB = new TestEnum('OptionB');
+                static readonly OptionC = new TestEnum('OptionC');
+            }
+
+            const mockComponent = {
+                __type: 'MockComponent',
+                enumProp: TestEnum.OptionB
+            } as unknown as IComponent;
+
+            render(<DynamicPropsGroup component={mockComponent} />);
+
+            const enumPropGroup = screen.getByRole('group', { name: 'Enum Prop' });
+            const enumSelect = within(enumPropGroup).getByRole('combobox');
+
+            expect(enumSelect).toBeVisible();
+            expect(enumSelect).toHaveValue('OptionB');
+        });
     });
 });
