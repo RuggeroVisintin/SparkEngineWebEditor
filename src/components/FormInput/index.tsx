@@ -6,7 +6,15 @@ import { v4 } from "uuid";
 import { FileSystemImageRepository } from "../../core/assets/image/adapters";
 import { ImageAsset } from "sparkengineweb";
 
+
 const Input = styled.input`
+    border: 1px solid ${BackgroundColor.Secondary};
+    flex: 1;
+    min-width: 15px;
+    width: 100%;
+`;
+
+const Select = styled.select`
     border: 1px solid ${BackgroundColor.Secondary};
     flex: 1;
     min-width: 15px;
@@ -22,6 +30,7 @@ interface FormInputProps extends WithDataTestId {
     onChange?: CallableFunction,
     defaultValue?: number | string,
     type?: string;
+    options?: Array<{ value: any; label: string }>;
 }
 
 const typesMap: Record<string, string> = {
@@ -33,11 +42,11 @@ const typesMap: Record<string, string> = {
 
 const imageLoader = new FileSystemImageRepository();
 
-export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTestId, type }: FormInputProps = {}) => {
+export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTestId, type, options }: FormInputProps = {}) => {
     const id = v4();
     const inputType = type ? typesMap[type] : typesMap[typeof defaultValue] ?? typesMap;
 
-    const onValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onValueChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const newValue = inputType === 'number' ? parseInt(event.target.value) : event.target.value;
         onChange?.(newValue);
     }
@@ -53,6 +62,24 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
                 }}>{label}</button>
             }
 
+        </FlexBox>
+    }
+
+    if (type === 'select') {
+        return <FlexBox $direction="row" $fill $fillMethod="flex">
+            {label && <Label htmlFor={id}>{label}</Label>}
+            <Select
+                id={id}
+                value={defaultValue}
+                onChange={onValueChange}
+                data-testid={`${dataTestId}.InputField`}
+            >
+                {options?.map((opt) => (
+                    <option key={String(opt.value)} value={String(opt.value)}>
+                        {opt.label}
+                    </option>
+                ))}
+            </Select>
         </FlexBox>
     }
 
