@@ -12,18 +12,31 @@ interface EntityPropsPanelProps {
     onUpdateSize?: CallableFunction,
     onMaterialUpdate?: CallableFunction,
     onAddComponent?: Function<void>
+    onComponentUpdate?: CallableFunction,
 }
 
-export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent }: EntityPropsPanelProps) => {
+export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
-
 
     return (
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {components && components.map((component, index) => {
                 return (
                     <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
-                        <DynamicPropsGroup component={component} onChange={() => { }} />
+                        <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
+                            onComponentUpdate?.(component, propName, value);
+
+                            if (component instanceof TransformComponent) {
+                                if (propName === 'position') {
+                                    onUpdatePosition?.({ newPosition: value });
+                                } else if (propName === 'size') {
+                                    onUpdateSize?.({ newSize: value });
+                                }
+                            } else if (component instanceof MaterialComponent) {
+                                console.log('Material prop changed', propName, value);
+                                onMaterialUpdate?.({ [propName]: value });
+                            }
+                        }} />
                     </ExpandablePanel>
                 )
             })}
