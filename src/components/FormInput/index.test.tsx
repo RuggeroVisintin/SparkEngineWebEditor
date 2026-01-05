@@ -44,4 +44,40 @@ describe('FormInput', () => {
             expect(onChangeMock).toHaveBeenCalledWith(20);
         });
     });
+
+    describe('select', () => {
+        it('Should show the current selected option', () => {
+            const options = [
+                { value: 'option1', label: 'Option 1' },
+                { value: 'option2', label: 'Option 2' },
+                { value: 'option3', label: 'Option 3' },
+            ];
+
+            const inputItem = <FormInput type="select" data-testid="test-input" defaultValue="option2" options={options} />;
+
+            render(inputItem);
+
+            const inputField = screen.getByTestId('test-input.InputField') as HTMLSelectElement;
+            expect(inputField.value).toBe('option2');
+        });
+
+        it('Should invoke the onChange callback when the value is changed', () => {
+            const options = [
+                { value: 'option1', label: 'Option 1' },
+                { value: 'option2', label: 'Option 2' },
+                { value: 'option3', label: 'Option 3' },
+            ];
+
+            const onChangeMock = jest.fn();
+
+            const inputItem = <FormInput type="select" data-testid="test-input" defaultValue="option1" options={options} onChange={onChangeMock} />;
+
+            render(inputItem);
+
+            const inputField = screen.getByTestId('test-input.InputField') as HTMLSelectElement;
+            fireEvent.change(inputField, { target: { value: 'option3' } });
+
+            expect(onChangeMock).toHaveBeenCalledWith('option3');
+        });
+    })
 })
