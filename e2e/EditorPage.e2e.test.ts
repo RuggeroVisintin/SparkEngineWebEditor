@@ -44,8 +44,7 @@ describe('Editor Page - Components Panel', () => {
             const componentOption = page.getByRole('option', { name: componentName });
             await componentOption.click();
 
-            // Check if the component is added to the selected entity
-            await expect(page.getByText(componentName)).toBeVisible();
+            await expect((await page.getByText(componentName).all()).at(0)).toBeVisible();
         });
 
         it('Should close the Components Panel when clicking outside', async () => {
