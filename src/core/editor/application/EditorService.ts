@@ -145,7 +145,11 @@ export class EditorService {
             const scale = this.editorCamera.camera.transform.scale;
             const delta = new Vec2(event.deltaX * scale, event.deltaY * scale);
 
-            this.updateCurrentEntityPosition(new Vec2(transform.position.x + delta.x, transform.position.y + delta.y));
+            this.updateCurrentEntityComponentProperty(
+                transform,
+                'position',
+                new Vec2(transform.position.x + delta.x, transform.position.y + delta.y)
+            );
         }
     }
 
@@ -183,38 +187,28 @@ export class EditorService {
         });
     }
 
-    public updateCurrentEntitySize(newSize: { width: number, height: number }): void {
-        const transform = this._currentEntity?.getComponent<TransformComponent>('TransformComponent');
+    public updateCurrentEntityComponentProperty(component: IComponent, propertyName: string, newValue: any): void {
+        if (!component) return;
 
-        if (!transform) return;
+        if (typeOf(component) === 'MaterialComponent') {
+            this.updateCurrentEntityMaterial({ [propertyName]: newValue });
+        }
 
-        transform.size = newSize;
+        (component as any)[propertyName] = newValue;
 
-        this._editorScene && this.contextualUiService.focusOnEntity(this._currentEntity!);
-
-        this.stateRepository.update({
-            currentEntity: this._currentEntity
-        });
-    }
-
-    public updateCurrentEntityPosition(newPosition: Vec2): void {
-        const transform = this._currentEntity?.getComponent<TransformComponent>('TransformComponent');
-
-        if (!transform) return;
-
-        transform.position = newPosition;
-        this._editorScene && this.contextualUiService.focusOnEntity(this._currentEntity!);
+        if (typeOf(component) === 'TransformComponent') {
+            this._editorScene && this.contextualUiService.focusOnEntity(this._currentEntity!);
+        }
 
         this.stateRepository.update({
             currentEntity: this._currentEntity
         });
     }
 
-    public updateCurrentEntityMaterial({ diffuseColor, opacity, diffuseTexture, removeDiffuseColor }: {
+    public updateCurrentEntityMaterial({ diffuseColor, opacity, diffuseTexture }: {
         diffuseColor?: Rgb,
         opacity?: number,
         diffuseTexture?: ImageAsset,
-        removeDiffuseColor?: boolean
     }): void {
         const material = this._currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
 

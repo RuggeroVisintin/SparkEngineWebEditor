@@ -7,6 +7,8 @@ import { FileSystemImageRepository } from "../../core/assets/image/adapters";
 import { ImageAsset } from "sparkengineweb";
 
 
+type InputValue = string | number | boolean;
+
 const Input = styled.input`
     border: 1px solid ${BackgroundColor.Secondary};
     flex: 1;
@@ -28,9 +30,9 @@ const Label = styled.label`
 interface FormInputProps extends WithDataTestId {
     label?: string;
     onChange?: CallableFunction,
-    defaultValue?: number | string,
+    defaultValue?: InputValue,
     type?: string;
-    options?: Array<{ value: any; label: string }>;
+    options?: Array<{ value: InputValue; label: string }>;
 }
 
 const typesMap: Record<string, string> = {
@@ -38,6 +40,7 @@ const typesMap: Record<string, string> = {
     'string': 'text',
     'image': 'file',
     'color': 'color',
+    'boolean': 'checkbox',
 }
 
 const imageLoader = new FileSystemImageRepository();
@@ -47,7 +50,17 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
     const inputType = type ? typesMap[type] : typesMap[typeof defaultValue] ?? typesMap;
 
     const onValueChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const newValue = inputType === 'number' ? parseInt(event.target.value) : event.target.value;
+        let newValue: InputValue = event.target.value;
+
+        switch (inputType) {
+        case 'checkbox':
+            newValue = (event.target as HTMLInputElement).checked === true;
+            break;
+        case 'number':
+            newValue = parseInt(event.target.value)
+            break;
+        }
+
         onChange?.(newValue);
     }
 
@@ -70,7 +83,7 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
             {label && <Label htmlFor={id}>{label}</Label>}
             <Select
                 id={id}
-                value={defaultValue}
+                value={defaultValue as string | number}
                 onChange={onValueChange}
                 data-testid={`${dataTestId}.InputField`}
             >
@@ -89,9 +102,13 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
             role={type === 'color' ? 'color' : undefined}
             type={inputType}
             id={id}
-            value={defaultValue}
             onChange={onValueChange}
             data-testid={`${dataTestId}.InputField`}
+            {...inputType === 'checkbox' ? {
+                checked: defaultValue as boolean ?? false
+            } : {
+                value: defaultValue as string | number
+            }}
         />
     </FlexBox>
 }

@@ -57,6 +57,10 @@ class ContextualUiServiceTestDouble extends ContextualUiService {
     public moveSpawnOrigin(position: Vec2): void {
         this.currentSpawnPosition = position;
     }
+
+    public reset(): void {
+        Object.assign(this, new ContextualUiServiceTestDouble());
+    }
 }
 
 const sceneToLoad = new Scene();
@@ -494,66 +498,42 @@ describe('EditorService', () => {
         });
     })
 
-    describe('.updateCurrentEntitySize()', () => {
-        it('Should update the size of the current entity', () => {
+    describe('.updateCurrentEntityComponentProperty()', () => {
+        it('Should update the given component property with the new value', () => {
+            const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
+            entity.addComponent(new TransformComponent());
 
+            editorService.start(context, resolution);
             editorService.selectEntity(entity);
-            editorService.updateCurrentEntitySize({ width: 200, height: 200 });
 
-            expect((editorService.currentEntity as GameObject)?.transform.size).toEqual({ width: 200, height: 200 });
+            editorService.updateCurrentEntityComponentProperty(
+                entity.getComponent<TransformComponent>('TransformComponent')!,
+                'position',
+                new Vec2(100, 200)
+            );
+
+            expect(entity.getComponent<TransformComponent>('TransformComponent')?.position).toEqual(new Vec2(100, 200));
         });
 
-        it('Should trigger an update on the given subscriber with the new size', () => {
-            const subscriber = jest.fn();
-            appState.subscribe(subscriber);
-
+        it('Should trigger the contextual ui service to focus on the current entity if the updated component is a TransformComponent', () => {
+            const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
+            entity.addComponent(new TransformComponent());
 
+            editorService.start(context, resolution);
             editorService.selectEntity(entity);
-            editorService.updateCurrentEntitySize({ width: 200, height: 200 });
 
-            expect(subscriber).toHaveBeenCalledWith(expect.objectContaining({
-                currentEntity: expect.objectContaining({
-                    transform: expect.objectContaining({
-                        size: { width: 200, height: 200 }
-                    })
-                })
-            }));
+            contextualUiServiceDouble.reset();
+
+            editorService.updateCurrentEntityComponentProperty(
+                entity.getComponent<TransformComponent>('TransformComponent')!,
+                'position',
+                new Vec2(100, 200)
+            );
+
+            expect(contextualUiServiceDouble.lastFocusedEntity?.uuid).toEqual(entity.uuid);
         });
-
-        it.todo('Should match the editor entities to the new size');
-    });
-
-    describe('.updateCurrentEntityPosition()', () => {
-        it('Should update the position of the current entity', () => {
-            const entity = new GameObject();
-
-            editorService.selectEntity(entity);
-            editorService.updateCurrentEntityPosition(new Vec2(200, 200));
-
-            expect((editorService.currentEntity as GameObject)?.transform.position).toEqual({ x: 200, y: 200 });
-        });
-
-        it('Should trigger an update on the given subscriber with the new position', () => {
-            const subscriber = jest.fn();
-            appState.subscribe(subscriber);
-
-            const entity = new GameObject();
-
-            editorService.selectEntity(entity);
-            editorService.updateCurrentEntityPosition(new Vec2(200, 200));
-
-            expect(subscriber).toHaveBeenCalledWith(expect.objectContaining({
-                currentEntity: expect.objectContaining({
-                    transform: expect.objectContaining({
-                        position: { x: 200, y: 200 }
-                    })
-                })
-            }));
-        })
-
-        it.todo('Should match the editor entities to the new position');
     });
 
     describe('on ScriptingEditorReady event', () => {
