@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { allOf, GameEngine, IEntity, Vec2 } from '@sparkengine';
+import { allOf, GameEngine, IComponent, IEntity, Vec2 } from '@sparkengine';
 import { EngineView } from '../../components';
 import { Box, FlexBox } from '../../primitives';
 import { EntityFactoryPanel, ScenePanel } from '../../templates';
@@ -59,10 +59,8 @@ export const Editor = () => {
                         {editorState.currentEntity &&
                             <EntityPropsPanel
                                 currentEntity={editorState.currentEntity}
-                                onUpdatePosition={({ newPosition }: { newPosition: Vec2 }) => editorService.updateCurrentEntityPosition(newPosition)}
-                                onUpdateSize={({ newSize }: { newSize: { width: number, height: number } }) => editorService.updateCurrentEntitySize(newSize)}
-                                onMaterialUpdate={(materialProps: any) => editorService.updateCurrentEntityMaterial(materialProps)}
                                 onAddComponent={() => editorService.openComponentsSelection()}
+                                onComponentUpdate={(component: IComponent, propName: string, newValue: any) => editorService.updateCurrentEntityComponentProperty(component, propName, newValue)}
                             ></EntityPropsPanel>}
                     </FlexBox>
                 </Box>

@@ -1,6 +1,6 @@
 import React from "react";
 import { FormInput } from ".";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
 import { ImageAsset } from "sparkengineweb";
 
@@ -80,4 +80,34 @@ describe('FormInput', () => {
             expect(onChangeMock).toHaveBeenCalledWith('option3');
         });
     })
+
+    describe('boolean', () => {
+        it('Should treat boolean type as checkbox', () => {
+            const onChangeMock = jest.fn();
+
+            const inputItem = <FormInput data-testid="test-input" defaultValue={true} onChange={onChangeMock} />;
+
+            render(inputItem);
+
+            const inputField = screen.getByTestId('test-input.InputField') as HTMLInputElement;
+            expect(inputField.type).toBe('checkbox');
+        });
+
+        it('Should invoke the onChange callback when the checkbox is toggled', () => {
+            let defaultValue = true;
+
+            const onChangeMock = jest.fn(() => {
+                defaultValue = !defaultValue;
+            });
+
+            const inputItem = <FormInput data-testid="test-input" defaultValue={defaultValue} onChange={onChangeMock} />;
+
+            render(inputItem);
+
+            const inputField = screen.getByTestId('test-input.InputField') as HTMLInputElement;
+            fireEvent.click(inputField);
+
+            expect(onChangeMock).toHaveBeenCalledWith(false);
+        });
+    });
 })
