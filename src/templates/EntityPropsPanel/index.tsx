@@ -8,14 +8,11 @@ import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
-    onUpdatePosition?: CallableFunction,
-    onUpdateSize?: CallableFunction,
-    onMaterialUpdate?: CallableFunction,
     onAddComponent?: Function<void>
     onComponentUpdate?: CallableFunction,
 }
 
-export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
+export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
 
     return (
