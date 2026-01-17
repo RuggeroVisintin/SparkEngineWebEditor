@@ -25,17 +25,6 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
                     <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
                         <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
                             onComponentUpdate?.(component, propName, value);
-
-                            if (component instanceof TransformComponent) {
-                                if (propName === 'position') {
-                                    onUpdatePosition?.({ newPosition: value });
-                                } else if (propName === 'size') {
-                                    onUpdateSize?.({ newSize: value });
-                                }
-                            } else if (component instanceof MaterialComponent) {
-                                console.log('Material prop changed', propName, value);
-                                onMaterialUpdate?.({ [propName]: value });
-                            }
                         }} />
                     </ExpandablePanel>
                 )
