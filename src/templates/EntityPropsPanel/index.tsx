@@ -1,5 +1,5 @@
 import React from "react";
-import { IEntity, MaterialComponent, TransformComponent, typeOf } from "@sparkengine";
+import { IEntity, typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
@@ -8,48 +8,24 @@ import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
-    onUpdatePosition?: CallableFunction,
-    onUpdateSize?: CallableFunction,
-    onMaterialUpdate?: CallableFunction,
     onAddComponent?: Function<void>
+    onComponentUpdate?: CallableFunction,
 }
 
-export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent }: EntityPropsPanelProps) => {
-    const transform = currentEntity?.getComponent<TransformComponent>('TransformComponent');
-    const material = currentEntity?.getComponent<MaterialComponent>('MaterialComponent');
+export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
+    const components = currentEntity?.components;
 
     return (
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
-            {transform &&
-                <ExpandablePanel title="Transform">
-                    <DynamicPropsGroup component={transform} onChange={(propName: string, newValue: any) => {
-                        if (propName === 'position') {
-                            onUpdatePosition?.({ newPosition: newValue });
-                        } else if (propName === 'size') {
-                            onUpdateSize?.({ newSize: newValue });
-                        }
-                    }} />
-                </ExpandablePanel>
-            }
-            {material &&
-                <ExpandablePanel title="Material" $divide>
-                    <DynamicPropsGroup
-                        component={material}
-                        onChange={(propName: string, newValue: any) => {
-                            const result: Record<string, any> = {};
-
-                            result[propName] = newValue;
-
-                            if (result['diffuseColor'] === null) {
-                                result['removeDiffuseColor'] = true;
-                                delete result['diffuseColor'];
-                            }
-
-                            onMaterialUpdate?.(result)
-                        }}
-                    />
-                </ExpandablePanel>
-            }
+            {components && components.map((component, index) => {
+                return (
+                    <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
+                        <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
+                            onComponentUpdate?.(component, propName, value);
+                        }} />
+                    </ExpandablePanel>
+                )
+            })}
             {typeOf(currentEntity) === 'TriggerEntity' && (
                 // TODO: scripting should be done at a component level
                 <ExpandablePanel title="Scripting" $divide>

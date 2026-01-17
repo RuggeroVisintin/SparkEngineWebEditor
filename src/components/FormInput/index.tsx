@@ -6,7 +6,17 @@ import { v4 } from "uuid";
 import { FileSystemImageRepository } from "../../core/assets/image/adapters";
 import { ImageAsset } from "sparkengineweb";
 
+
+type InputValue = string | number | boolean;
+
 const Input = styled.input`
+    border: 1px solid ${BackgroundColor.Secondary};
+    flex: 1;
+    min-width: 15px;
+    width: 100%;
+`;
+
+const Select = styled.select`
     border: 1px solid ${BackgroundColor.Secondary};
     flex: 1;
     min-width: 15px;
@@ -20,8 +30,9 @@ const Label = styled.label`
 interface FormInputProps extends WithDataTestId {
     label?: string;
     onChange?: CallableFunction,
-    defaultValue?: number | string,
+    defaultValue?: InputValue,
     type?: string;
+    options?: Array<{ value: InputValue; label: string }>;
 }
 
 const typesMap: Record<string, string> = {
@@ -29,16 +40,27 @@ const typesMap: Record<string, string> = {
     'string': 'text',
     'image': 'file',
     'color': 'color',
+    'boolean': 'checkbox',
 }
 
 const imageLoader = new FileSystemImageRepository();
 
-export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTestId, type }: FormInputProps = {}) => {
+export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTestId, type, options }: FormInputProps = {}) => {
     const id = v4();
     const inputType = type ? typesMap[type] : typesMap[typeof defaultValue] ?? typesMap;
 
-    const onValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = inputType === 'number' ? parseInt(event.target.value) : event.target.value;
+    const onValueChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        let newValue: InputValue = event.target.value;
+
+        switch (inputType) {
+        case 'checkbox':
+            newValue = (event.target as HTMLInputElement).checked === true;
+            break;
+        case 'number':
+            newValue = parseInt(event.target.value)
+            break;
+        }
+
         onChange?.(newValue);
     }
 
@@ -56,15 +78,37 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
         </FlexBox>
     }
 
+    if (type === 'select') {
+        return <FlexBox $direction="row" $fill $fillMethod="flex">
+            {label && <Label htmlFor={id}>{label}</Label>}
+            <Select
+                id={id}
+                value={defaultValue as string | number}
+                onChange={onValueChange}
+                data-testid={`${dataTestId}.InputField`}
+            >
+                {options?.map((opt) => (
+                    <option key={String(opt.value)} value={String(opt.value)}>
+                        {opt.label}
+                    </option>
+                ))}
+            </Select>
+        </FlexBox>
+    }
+
     return <FlexBox $direction="row" $fill $fillMethod="flex">
         {label && <Label htmlFor={id}>{label}</Label>}
         <Input
             role={type === 'color' ? 'color' : undefined}
             type={inputType}
             id={id}
-            value={defaultValue}
             onChange={onValueChange}
             data-testid={`${dataTestId}.InputField`}
+            {...inputType === 'checkbox' ? {
+                checked: defaultValue as boolean ?? false
+            } : {
+                value: defaultValue as string | number
+            }}
         />
     </FlexBox>
 }

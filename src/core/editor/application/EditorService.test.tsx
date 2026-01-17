@@ -1,4 +1,4 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, Renderer, RenderSystem, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -56,6 +56,10 @@ class ContextualUiServiceTestDouble extends ContextualUiService {
 
     public moveSpawnOrigin(position: Vec2): void {
         this.currentSpawnPosition = position;
+    }
+
+    public reset(): void {
+        Object.assign(this, new ContextualUiServiceTestDouble());
     }
 }
 
@@ -494,66 +498,42 @@ describe('EditorService', () => {
         });
     })
 
-    describe('.updateCurrentEntitySize()', () => {
-        it('Should update the size of the current entity', () => {
+    describe('.updateCurrentEntityComponentProperty()', () => {
+        it('Should update the given component property with the new value', () => {
+            const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
+            entity.addComponent(new TransformComponent());
 
+            editorService.start(context, resolution);
             editorService.selectEntity(entity);
-            editorService.updateCurrentEntitySize({ width: 200, height: 200 });
 
-            expect((editorService.currentEntity as GameObject)?.transform.size).toEqual({ width: 200, height: 200 });
+            editorService.updateCurrentEntityComponentProperty(
+                entity.getComponent<TransformComponent>('TransformComponent')!,
+                'position',
+                new Vec2(100, 200)
+            );
+
+            expect(entity.getComponent<TransformComponent>('TransformComponent')?.position).toEqual(new Vec2(100, 200));
         });
 
-        it('Should trigger an update on the given subscriber with the new size', () => {
-            const subscriber = jest.fn();
-            appState.subscribe(subscriber);
-
+        it('Should trigger the contextual ui service to focus on the current entity if the updated component is a TransformComponent', () => {
+            const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
+            entity.addComponent(new TransformComponent());
 
+            editorService.start(context, resolution);
             editorService.selectEntity(entity);
-            editorService.updateCurrentEntitySize({ width: 200, height: 200 });
 
-            expect(subscriber).toHaveBeenCalledWith(expect.objectContaining({
-                currentEntity: expect.objectContaining({
-                    transform: expect.objectContaining({
-                        size: { width: 200, height: 200 }
-                    })
-                })
-            }));
+            contextualUiServiceDouble.reset();
+
+            editorService.updateCurrentEntityComponentProperty(
+                entity.getComponent<TransformComponent>('TransformComponent')!,
+                'position',
+                new Vec2(100, 200)
+            );
+
+            expect(contextualUiServiceDouble.lastFocusedEntity?.uuid).toEqual(entity.uuid);
         });
-
-        it.todo('Should match the editor entities to the new size');
-    });
-
-    describe('.updateCurrentEntityPosition()', () => {
-        it('Should update the position of the current entity', () => {
-            const entity = new GameObject();
-
-            editorService.selectEntity(entity);
-            editorService.updateCurrentEntityPosition(new Vec2(200, 200));
-
-            expect((editorService.currentEntity as GameObject)?.transform.position).toEqual({ x: 200, y: 200 });
-        });
-
-        it('Should trigger an update on the given subscriber with the new position', () => {
-            const subscriber = jest.fn();
-            appState.subscribe(subscriber);
-
-            const entity = new GameObject();
-
-            editorService.selectEntity(entity);
-            editorService.updateCurrentEntityPosition(new Vec2(200, 200));
-
-            expect(subscriber).toHaveBeenCalledWith(expect.objectContaining({
-                currentEntity: expect.objectContaining({
-                    transform: expect.objectContaining({
-                        position: { x: 200, y: 200 }
-                    })
-                })
-            }));
-        })
-
-        it.todo('Should match the editor entities to the new position');
     });
 
     describe('on ScriptingEditorReady event', () => {
@@ -687,6 +667,82 @@ describe('EditorService', () => {
             editorService.closeComponentSelection();
 
             expect(appState.get().isComponentsPanelOpen).toBe(false);
+        });
+    });
+
+    describe('.updateCurrentEntityMaterial()', () => {
+        it('Should update the material diffuseColor when a valid color is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            const newColor = new Rgb(255, 0, 0);
+            editorService.updateCurrentEntityMaterial({ diffuseColor: newColor });
+
+            expect(material.diffuseColor).toEqual(newColor);
+        });
+
+        it('Should remove the diffuseColor when null is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.diffuseColor = new Rgb(255, 0, 0);
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ diffuseColor: null as any });
+
+            expect(material.diffuseColor).toBeUndefined();
+        });
+
+        it('Should update the material opacity when a non-zero value is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: 0.5 });
+
+            expect(material.opacity).toBe(0.5);
+        });
+
+        it('Should update the material opacity when value is 0', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.opacity = 1.0;
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: 0 });
+
+            expect(material.opacity).toBe(0);
+        });
+
+        it('Should not update the material opacity when undefined is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.opacity = 0.7;
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: undefined });
+
+            expect(material.opacity).toBe(0.7);
         });
     });
 });
