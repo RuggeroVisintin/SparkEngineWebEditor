@@ -1,4 +1,3 @@
-import React from 'react';
 import { GameObject, Rgb, StaticObject, TriggerEntity, Vec2 } from '@sparkengine';
 import { ListItem } from '../../components';
 import { Box, Spacing } from '../../primitives';

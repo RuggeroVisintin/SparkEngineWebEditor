@@ -1,4 +1,3 @@
-import React from "react";
 import { PopupMenu } from "../../components/PopupMenu";
 import { BackgroundColor, FlexBox, TextColor } from "../../primitives";
 import { Function } from "../../core/common";

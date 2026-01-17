@@ -1,4 +1,3 @@
-import React from "react";
 import { IEntity, typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";

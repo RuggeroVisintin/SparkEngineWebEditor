@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ExpandablePanel } from ".";
-import React from "react";
 
 describe('ExpandablePanel', () => {
     it('Should be collapsed by default', () => {

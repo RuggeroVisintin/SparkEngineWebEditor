@@ -1,4 +1,3 @@
-import React from "react"
 import { BackgroundColor, Box, BoxProps, FlexBox, Spacing } from "../../primitives"
 
 interface ExpandablePanelProps extends BoxProps {

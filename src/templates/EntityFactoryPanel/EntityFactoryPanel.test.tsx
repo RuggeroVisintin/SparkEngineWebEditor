@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { render, screen, fireEvent } from '@testing-library/react';
 import { EntityFactoryPanel } from '.';
 import { GameObject, IEntity, StaticObject, TriggerEntity, Vec2 } from '@sparkengine';

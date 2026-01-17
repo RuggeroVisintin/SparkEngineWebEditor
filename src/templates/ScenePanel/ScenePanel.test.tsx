@@ -1,4 +1,3 @@
-import React from "react"
 import { GameObject, StaticObject } from "@sparkengine"
 import { ScenePanel } from "."
 import { fireEvent, render, screen } from '@testing-library/react';

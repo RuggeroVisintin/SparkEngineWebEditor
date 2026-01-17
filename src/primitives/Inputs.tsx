@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { TextColor } from "./colors";
 import { FlexBoxProps, flexStyles } from "./FlexBox";
-import React from "react";
 import { Box } from "./Box";
 
 const Row = styled.fieldset<FlexBoxProps>`

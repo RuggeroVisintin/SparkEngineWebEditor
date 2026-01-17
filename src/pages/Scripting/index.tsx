@@ -1,6 +1,5 @@
 import { FC, useRef, useState, useEffect } from 'react';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import React from 'react';
 import { BackgroundColor, FlexBox, TextColor } from '../../primitives';
 import { Linter } from "eslint-linter-browserify";
 import eslint from "@eslint/js";

@@ -1,4 +1,3 @@
-import React from "react";
 import { MemoryRouter, Routes, Route, useLocation } from "react-router";
 
 export const WithMemoryRouter = (

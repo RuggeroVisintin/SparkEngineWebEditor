@@ -1,4 +1,3 @@
-import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { EngineView } from ".";

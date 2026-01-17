@@ -1,4 +1,3 @@
-import React from "react";
 import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum } from "sparkengineweb"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";

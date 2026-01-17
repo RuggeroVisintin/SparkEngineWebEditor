@@ -1,4 +1,3 @@
-import React from "react";
 import { FormInput } from ".";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
