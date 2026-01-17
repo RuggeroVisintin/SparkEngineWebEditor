@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.15](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.14...sparkenginewebeditor-v0.0.15) (2026-01-17)
+
+
+### Features
+
+* add dynamic support to components widgets ([#276](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/276)) ([6aac3bf](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/6aac3bf28b8e1c9f1f12b6bb3a40fb5f725e2db2))
+
 ## [0.0.14](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.13...sparkenginewebeditor-v0.0.14) (2025-12-25)
 
 
