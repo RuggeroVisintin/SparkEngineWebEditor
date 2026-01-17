@@ -1,5 +1,5 @@
 import React from "react";
-import { IEntity, MaterialComponent, TransformComponent, typeOf } from "@sparkengine";
+import { IEntity, typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function } from "../../core/common";
@@ -8,14 +8,11 @@ import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
-    onUpdatePosition?: CallableFunction,
-    onUpdateSize?: CallableFunction,
-    onMaterialUpdate?: CallableFunction,
     onAddComponent?: Function<void>
     onComponentUpdate?: CallableFunction,
 }
 
-export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize, onMaterialUpdate, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
+export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
 
     return (
@@ -25,17 +22,6 @@ export const EntityPropsPanel = ({ currentEntity, onUpdatePosition, onUpdateSize
                     <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
                         <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
                             onComponentUpdate?.(component, propName, value);
-
-                            if (component instanceof TransformComponent) {
-                                if (propName === 'position') {
-                                    onUpdatePosition?.({ newPosition: value });
-                                } else if (propName === 'size') {
-                                    onUpdateSize?.({ newSize: value });
-                                }
-                            } else if (component instanceof MaterialComponent) {
-                                console.log('Material prop changed', propName, value);
-                                onMaterialUpdate?.({ [propName]: value });
-                            }
                         }} />
                     </ExpandablePanel>
                 )

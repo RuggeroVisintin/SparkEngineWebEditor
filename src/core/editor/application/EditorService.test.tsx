@@ -1,4 +1,4 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, Renderer, RenderSystem, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -667,6 +667,82 @@ describe('EditorService', () => {
             editorService.closeComponentSelection();
 
             expect(appState.get().isComponentsPanelOpen).toBe(false);
+        });
+    });
+
+    describe('.updateCurrentEntityMaterial()', () => {
+        it('Should update the material diffuseColor when a valid color is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            const newColor = new Rgb(255, 0, 0);
+            editorService.updateCurrentEntityMaterial({ diffuseColor: newColor });
+
+            expect(material.diffuseColor).toEqual(newColor);
+        });
+
+        it('Should remove the diffuseColor when null is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.diffuseColor = new Rgb(255, 0, 0);
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ diffuseColor: null as any });
+
+            expect(material.diffuseColor).toBeUndefined();
+        });
+
+        it('Should update the material opacity when a non-zero value is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: 0.5 });
+
+            expect(material.opacity).toBe(0.5);
+        });
+
+        it('Should update the material opacity when value is 0', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.opacity = 1.0;
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: 0 });
+
+            expect(material.opacity).toBe(0);
+        });
+
+        it('Should not update the material opacity when undefined is provided', () => {
+            const resolution = { width: 800, height: 600 };
+            const entity = new GameObject();
+            const material = new MaterialComponent();
+            material.opacity = 0.7;
+            entity.addComponent(material);
+
+            editorService.start(context, resolution);
+            editorService.selectEntity(entity);
+
+            editorService.updateCurrentEntityMaterial({ opacity: undefined });
+
+            expect(material.opacity).toBe(0.7);
         });
     });
 });
