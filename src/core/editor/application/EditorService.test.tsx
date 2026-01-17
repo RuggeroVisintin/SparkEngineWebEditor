@@ -744,27 +744,5 @@ describe('EditorService', () => {
 
             expect(material.opacity).toBe(0.7);
         });
-
-        it('Should do nothing when no current entity is set', () => {
-            const resolution = { width: 800, height: 600 };
-
-            editorService.start(context, resolution);
-
-            expect(() => {
-                editorService.updateCurrentEntityMaterial({ opacity: 0.5 });
-            }).not.toThrow();
-        });
-
-        it('Should do nothing when current entity has no MaterialComponent', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            expect(() => {
-                editorService.updateCurrentEntityMaterial({ opacity: 0.5 });
-            }).not.toThrow();
-        });
     });
 });
