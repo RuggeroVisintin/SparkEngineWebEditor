@@ -190,7 +190,7 @@ export class EditorService {
     public updateCurrentEntityComponentProperty(component: IComponent, propertyName: string, newValue: any): void {
         if (!component) return;
 
-        if (typeOf(component) === 'MaterialComponent') {
+        if (typeOf(component) === 'MaterialComponent' && newValue !== undefined) {
             this.updateCurrentEntityMaterial({ [propertyName]: newValue });
         }
 
