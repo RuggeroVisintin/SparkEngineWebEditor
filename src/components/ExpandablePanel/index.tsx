@@ -1,12 +1,13 @@
+import { ReactNode, useState } from "react";
 import { BackgroundColor, Box, BoxProps, FlexBox, Spacing } from "../../primitives"
 
 interface ExpandablePanelProps extends BoxProps {
-    children?: React.ReactNode;
+    children?: ReactNode;
     title?: string;
 }
 
 export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePanelProps) => {
-    const [isExpanded, setIsExpanded] = React.useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     return (
         <Box {...boxProps} role="region" aria-label={title}>

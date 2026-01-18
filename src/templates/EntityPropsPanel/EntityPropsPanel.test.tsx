@@ -1,4 +1,4 @@
-import { GameObject, TriggerEntity } from "@sparkengine";
+import { BaseEntity, BoundingBoxComponent, GameObject, TransformComponent, TriggerEntity } from "@sparkengine";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";

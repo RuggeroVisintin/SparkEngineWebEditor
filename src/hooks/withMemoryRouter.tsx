@@ -1,15 +1,16 @@
+import { ReactElement, useEffect, useState } from "react";
 import { MemoryRouter, Routes, Route, useLocation } from "react-router";
 
 export const WithMemoryRouter = (
-    component: React.ReactElement,
+    component: ReactElement,
     onNavigate?: ({ history, location }: { history: any; location: any }) => null
 ) => {
 
     const Wrapper = () => {
         const location = useLocation();
-        const [history, setHistory] = React.useState<any>([]);
+        const [history, setHistory] = useState<any>([]);
 
-        React.useEffect(() => {
+        useEffect(() => {
             const newHistory = [...history, location.pathname]
             setHistory(newHistory);
 
