@@ -1,8 +1,10 @@
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum } from "sparkengineweb"
+import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, AnimationFrame } from "sparkengineweb"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";
 import { Button } from "../../../../primitives";
+import { isArrayOf } from "../../../../core/common/utils/array";
+import { isAnimationFrame } from "../../../../core/common/utils/guards";
 
 type PrimitiveProp = string | number;
 type ComplexProp = ImageAsset | Rgb | Enum | object;
@@ -67,6 +69,8 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
             />
         </>
 
+    } else if (Array.isArray(value) && isArrayOf(value, isAnimationFrame)) {
+        return <Button data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}>Edit</Button>
     } else if (typeof value === 'object') {
         return Object.entries(value).map(([key, val]: [string, PrimitiveProp]) => {
             const originalNestedValue = (originalValue as any)?.[key];

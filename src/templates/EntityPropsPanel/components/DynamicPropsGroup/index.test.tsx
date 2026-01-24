@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
+import { Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2, AnimationFrame } from "sparkengineweb";
 import { DynamicPropsGroup } from ".";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { setMockedFile } from "../../../../__mocks__/fs-api.mock";
@@ -245,6 +245,26 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
 
             expect(enumSelect).toBeVisible();
             expect(enumSelect).toHaveValue('OptionB');
+        });
+    });
+
+    describe('Arrays of AnimationFrame', () => {
+        it('Should recognize arrays of AnimationFrame', () => {
+            const mockComponent = {
+                __type: 'AnimationComponent',
+                frames: [
+                    { duration: 100 },
+                    { duration: 200 }
+                ]
+            } as unknown as IComponent;
+
+            render(<DynamicPropsGroup component={mockComponent} />);
+
+            const framesGroup = screen.getByRole('group', { name: 'Frames' });
+            expect(framesGroup).toBeVisible();
+
+            const editButton = within(framesGroup).getByRole('button', { name: 'Edit' });
+            expect(editButton).toBeVisible();
         });
     });
 });
