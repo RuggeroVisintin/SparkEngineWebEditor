@@ -17,6 +17,8 @@ SparkEngineWeb Editor is a browser-based visual editor for the SparkEngine game 
 
 **ALL code changes MUST follow strict TDD practices:**
 
+**New behaviours MUST be covered by new failing tests FIRST.**
+
 ### The Red-Green-Refactor Cycle
 
 1. **RED** - Write a sinle failing test FIRST
@@ -39,6 +41,7 @@ SparkEngineWeb Editor is a browser-based visual editor for the SparkEngine game 
    - Move to the next test case
    - Never write multiple tests before implementation
 
+
 ### Testing Guidelines
 
 **Test Structure:**
@@ -59,15 +62,6 @@ describe('ComponentName', () => {
     });
 });
 ```
-
-**Test Conventions:**
-- Use `describe()` blocks to group related tests by feature/component
-- Nest `describe()` blocks for sub-features or scenarios
-- Use `it()` or `test()` for individual test cases
-- Use `it.each()` for parameterized tests with multiple inputs
-- Test file naming: `ComponentName.test.tsx` adjacent to component file
-- Use data-testid attributes for reliable element selection
-- Mock external dependencies using `jest.fn()` and module mocks
 
 **What to Test:**
 - Component rendering with different props
