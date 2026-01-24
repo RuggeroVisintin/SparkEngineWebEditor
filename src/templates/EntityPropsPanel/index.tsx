@@ -1,7 +1,7 @@
-import { IEntity, typeOf } from "@sparkengine";
+import { IComponent, IEntity, typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
-import { Function } from "../../core/common";
+import { Function, isComponentUnavaible } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
 import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
@@ -17,6 +17,10 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
     return (
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
             {components && components.map((component, index) => {
+                if (isComponentUnavaible(component)) {
+                    return null;
+                }
+
                 return (
                     <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
                         <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {

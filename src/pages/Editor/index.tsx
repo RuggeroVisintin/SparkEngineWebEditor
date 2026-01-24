@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { allOf, GameEngine, IComponent, IEntity, Vec2 } from '@sparkengine';
+import { useRef } from 'react';
+import { GameEngine, IComponent, IEntity } from '@sparkengine';
 import { EngineView } from '../../components';
 import { Box, FlexBox } from '../../primitives';
 import { EntityFactoryPanel, ScenePanel } from '../../templates';
@@ -8,6 +8,7 @@ import { EntityPropsPanel } from '../../templates/EntityPropsPanel';
 import { OnEngineViewReadyCBProps } from '../../components/EngineView';
 import { useEditorService } from '../../hooks/useEditorService';
 import { ComponentsPanel } from './ComponentsPanel';
+import { getAllAvailableComponents } from '../../core/common';
 
 export const Editor = () => {
     const engine = useRef<GameEngine>();
@@ -43,7 +44,7 @@ export const Editor = () => {
                     <Box $size={0.25}>
                         <ComponentsPanel
                             onSelectComponent={(componentName) => editorService.addComponent(componentName + 'Component')}
-                            components={Object.keys(allOf('Component')).map(component => component.split('Component')[0]) ?? []}
+                            components={Object.keys(getAllAvailableComponents()).map(component => component.split('Component')[0]) ?? []}
                             onClose={() => editorService.closeComponentSelection()}
                         />
                     </Box>

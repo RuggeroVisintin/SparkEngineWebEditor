@@ -5,3 +5,4 @@ export * from './image';
 export * from './expressive';
 export * from './json';
 export * from './string';
+export * from './ecs';
