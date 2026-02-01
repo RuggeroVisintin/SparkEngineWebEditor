@@ -2,8 +2,8 @@
  * Feature Flags System
  * 
  * Provides compile-time feature flags that are eliminated from production builds.
- * Flags are defined in environment variables (prefixed with REACT_APP_FEATURE_)
- * and replaced at build time by webpack DefinePlugin.
+ * Flags are defined in environment variables (prefixed with FEATURE_)
+ * and replaced at build time by Vite's define plugin.
  * 
  * Usage:
  * ```typescript
@@ -16,7 +16,7 @@
  */
 
 // Define available feature flags as a const object for type safety
-// These will be replaced by webpack DefinePlugin at build time
+// These will be replaced by Vite define plugin at build time
 declare const __FEATURE_FLAGS__: Record<string, boolean>;
 
 export type FeatureFlag =
@@ -31,9 +31,9 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
         return __FEATURE_FLAGS__[flag];
     }
 
-    // Fallback for development without webpack (e.g., tests)
+    // Fallback for development without Vite define plugin (e.g., tests)
     const envKey = `FEATURE_${flag}`;
-    return process.env[envKey] === 'true';
+    return import.meta.env[envKey] === 'true';
 }
 
 /**

@@ -9,3 +9,4 @@ Vite
 vite
 vitejs
 babel
+env
