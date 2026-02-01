@@ -57,7 +57,7 @@ export const ListItem = ({
             $clickable={!!onClick}
         >
             <FlexBox $direction="row" $centerItems>
-                {imgSrc && <ImageBox src={require(`../../assets/images/${imgSrc}`)} alt="img" />}
+                {imgSrc && <ImageBox src={new URL(`../../assets/images/${imgSrc}`, import.meta.url).href} alt="img" />}
                 <Text>{text}</Text>
                 {button &&
                     <Button

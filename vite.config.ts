@@ -16,8 +16,15 @@ function getFeatureFlags() {
 }
 
 export default defineConfig({
-    root: 'public',
-    plugins: [react()],
+    plugins: [
+        react({
+            babel: {
+                plugins: [
+                    ['@babel/plugin-proposal-decorators', { version: '2023-05' }],
+                ],
+            },
+        }),
+    ],
     resolve: {
         alias: {
             '@sparkengine': path.resolve(__dirname, 'node_modules/sparkengineweb'),
@@ -25,8 +32,16 @@ export default defineConfig({
     },
     define: {
         __FEATURE_FLAGS__: JSON.stringify(getFeatureFlags()),
-    },
-    server: {
+    },    optimizeDeps: {
+        // Pre-bundle sparkengineweb to handle its CommonJS exports
+        include: ['@sparkengine', 'sparkengineweb'],
+        esbuildOptions: {
+            // Ensure esbuild processes sparkengineweb's CommonJS properly
+            loader: {
+                '.js': 'jsx',
+            },
+        },
+    },    server: {
         port: 3000,
         strictPort: false,
     },
@@ -35,7 +50,12 @@ export default defineConfig({
         sourcemap: false,
         minify: 'esbuild',
         rollupOptions: {
+            external: ['sparkengineweb', '@sparkengine'],
             output: {
+                globals: {
+                    sparkengineweb: 'sparkengineweb',
+                    '@sparkengine': '@sparkengine',
+                },
                 manualChunks: {
                     'monaco-editor': ['monaco-editor'],
                 },

@@ -5,3 +5,7 @@ adr
 sparkengine
 rgb
 poc
+Vite
+vite
+vitejs
+babel
