@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import fs from 'fs';
 
 // Parse feature flags from environment variables
 function getFeatureFlags() {
@@ -33,7 +32,7 @@ export default defineConfig({
     },
     define: {
         __FEATURE_FLAGS__: JSON.stringify(getFeatureFlags()),
-    },    optimizeDeps: {
+    }, optimizeDeps: {
         // Pre-bundle sparkengineweb to handle its CommonJS exports
         include: ['@sparkengine', 'sparkengineweb'],
         esbuildOptions: {
@@ -42,7 +41,7 @@ export default defineConfig({
                 '.js': 'jsx',
             },
         },
-    },    server: {
+    }, server: {
         port: 3000,
         strictPort: false,
     },

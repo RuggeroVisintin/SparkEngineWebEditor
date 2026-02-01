@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "jest": true
+        "jest": true,
+        "node": true
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -20,6 +21,13 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
     ],
+    "ignorePatterns": [
+        "build/",
+        "dist/",
+        "node_modules/",
+        "coverage/",
+        ".eslintrc.json"
+    ],
     "rules": {
         "camelcase": "error",
         "default-case-last": "error",
@@ -36,6 +44,13 @@
             4
         ],
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
+        "react-hooks/exhaustive-deps": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ]
     }
 }
