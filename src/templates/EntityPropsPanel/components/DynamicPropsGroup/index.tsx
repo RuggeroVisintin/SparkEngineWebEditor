@@ -1,4 +1,4 @@
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf } from "sparkengineweb"
+import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf, SerializableCallback } from "sparkengineweb"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";
@@ -59,7 +59,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
                 X
             </Button>
         </>
-    } else if (isOptionallyInstanceOf(component, propertyName, ImageAsset)){
+    } else if (isOptionallyInstanceOf(component, propertyName, ImageAsset)) {
         return <>
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
@@ -68,7 +68,6 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
                 onChange={(newDiffuseTexture: ImageAsset) => { onChange?.('diffuseTexture', newDiffuseTexture) }}
             />
         </>
-
     } else if (Array.isArray(value) && isArrayOf(value, isAnimationFrame)) {
         return <Button data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}>Edit</Button>
     } else if (typeof value === 'object') {
@@ -110,7 +109,7 @@ export const DynamicPropsGroup = ({ component, onChange }: DynamicPropsGroupProp
     return (
         <>
             {Object.entries(props).map(([key, value]) => (
-                <Inputs.Row key={key} $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                isOptionallyInstanceOf(component, key, SerializableCallback) === false && <Inputs.Row key={key} $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
                     <Inputs.Legend>{camelCaseToCapitalizedWords(key)}</Inputs.Legend>
                     {valueToFormInput(key, value as ComponentProp, component as any, onChange)}
                 </Inputs.Row>
