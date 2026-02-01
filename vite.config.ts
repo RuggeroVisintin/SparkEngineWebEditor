@@ -25,6 +25,7 @@ export default defineConfig({
             },
         }),
     ],
+    publicDir: 'public',
     resolve: {
         alias: {
             '@sparkengine': path.resolve(__dirname, 'node_modules/sparkengineweb'),

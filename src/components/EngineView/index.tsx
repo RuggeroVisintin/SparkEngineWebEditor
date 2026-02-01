@@ -46,7 +46,7 @@ export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, o
     const [isMouseDragging, setIsMouseDragging] = React.useState(false);
     const [lastMouseButton, setLastMouseButton] = React.useState(-1);
 
-    let isEngineInit = useRef(false);
+    const isEngineInit = useRef(false);
 
     const width = 1920;
     const height = 1080;

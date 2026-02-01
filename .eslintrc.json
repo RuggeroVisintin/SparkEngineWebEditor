@@ -1,19 +1,24 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "jest": true
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "react",
+        "react-hooks"
     ],
     "extends": [
         "eslint:recommended",
-        "react-app",
-        "react-app/jest"
+        "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
         "camelcase": "error",
@@ -30,6 +35,7 @@
             "error",
             4
         ],
-        "jest/no-mocks-import": "off"
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
     }
 }
