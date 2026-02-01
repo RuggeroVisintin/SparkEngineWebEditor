@@ -1,4 +1,4 @@
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, AnimationFrame } from "sparkengineweb"
+import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf } from "sparkengineweb"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";
@@ -18,7 +18,7 @@ export interface DynamicPropsGroupProps {
 const valueToFormInput = (propertyName: string, value: ComponentProp, component: any, onChange?: CallableFunction, label?: string): React.ReactNode | React.ReactNode[] => {
     const originalValue = component[propertyName];
 
-    if (value instanceof Enum) {
+    if (isOptionallyInstanceOf(component, propertyName, Enum)) {
         const enumClass = Object.getPrototypeOf(value).constructor;
         const options = enumClass.getValues?.() || [];
 
@@ -37,7 +37,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
                 type="select"
-                defaultValue={value.value}
+                defaultValue={(value as Enum)?.value}
                 label={label}
                 onChange={(newValue: string | number) => {
                     const selected = options.find((opt: Enum) => opt.value === newValue);
@@ -46,7 +46,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
                 options={optionsWithLabels}
             />
         );
-    } else if (getOptionalType(component, propertyName) === Rgb) {
+    } else if (isOptionallyInstanceOf(component, propertyName, Rgb)) {
         return <>
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
@@ -59,7 +59,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
                 X
             </Button>
         </>
-    } else if (getOptionalType(component, propertyName) === ImageAsset) {
+    } else if (isOptionallyInstanceOf(component, propertyName, ImageAsset)){
         return <>
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
