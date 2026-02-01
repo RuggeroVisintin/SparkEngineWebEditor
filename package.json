@@ -55,6 +55,7 @@
     "@vitejs/plugin-react": "^4.3.3",
     "cspell": "^9.3.2",
     "esbuild": "^0.24.2",
+    "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "jest-canvas-mock": "^2.5.2",
     "jest-playwright-preset": "^4.0.0",
