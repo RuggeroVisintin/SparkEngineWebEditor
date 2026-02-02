@@ -11,7 +11,7 @@ describe('core/common/utiles/json', () => {
 
             const result = toJsonString(obj);
 
-            expect(result).toEqual(`{"function::fn":"function () {\\n        return 'test';\\n      }"}`);
+            expect(result).toEqual(`{"function::fn":"function () { return 'test'; }"}`);
         });
 
         it('Should not modify non-function values', () => {
