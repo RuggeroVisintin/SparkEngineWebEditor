@@ -1,5 +1,6 @@
-// Load environment variables from .env.development before tests run
-require('dotenv').config({ path: '.env' });
+// Load environment variables: .env.development first, then .env (overrides)
+require('dotenv').config({ path: '.env.development' });
+require('dotenv').config({ path: '.env', override: true });
 
 module.exports = {
     preset: 'ts-jest',

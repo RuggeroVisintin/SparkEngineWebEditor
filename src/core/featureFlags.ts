@@ -22,6 +22,15 @@ declare const __FEATURE_FLAGS__: Record<string, boolean>;
 export type FeatureFlag =
     | 'ADD_COMPONENTS';
 
+
+const flagsStatus: Record<string, string | undefined> = {};
+
+Object.keys(import.meta.env).forEach(key => {
+    if (key.startsWith('FEATURE_')) {
+        flagsStatus[key] = import.meta.env[key];
+    }
+});
+
 /**
  * Check if a feature flag is enabled
  * This function call will be optimized away by webpack when used with constants
@@ -34,7 +43,7 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
     // Fallback for development without Vite define plugin (e.g., tests)
     const envKey = `FEATURE_${flag}`;
 
-    return import.meta.env?.[envKey] === 'true';
+    return flagsStatus[envKey] === 'true';
 }
 
 /**
@@ -65,12 +74,12 @@ export function getEnabledFeatures(): FeatureFlag[] {
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function enableFeature(Feature: FeatureFlag): void {
-    import.meta.env[`FEATURE_${Feature}`] = 'true';
+    flagsStatus[`FEATURE_${Feature}`] = 'true';
 }
 
 /**
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function disableFeature(Feature: FeatureFlag): void {
-    import.meta.env[`FEATURE_${Feature}`] = 'false';
+    flagsStatus[`FEATURE_${Feature}`] = 'false';
 }
