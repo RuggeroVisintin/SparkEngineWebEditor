@@ -25,15 +25,9 @@ export const createDirectoryHandleMock = (overrides?: Partial<FileSystemDirector
     resolve: function (possibleDescendant: FileSystemHandle): Promise<string[] | null> {
         throw new Error("Function not implemented.");
     },
-    keys: function (): AsyncIterableIterator<string> {
-        throw new Error("Function not implemented.");
-    },
-    values: function (): AsyncIterableIterator<FileSystemDirectoryHandle | FileSystemFileHandle> {
-        throw new Error("Function not implemented.");
-    },
-    entries: function (): AsyncIterableIterator<[string, FileSystemDirectoryHandle | FileSystemFileHandle]> {
-        throw new Error("Function not implemented.");
-    },
+    keys: jest.fn(),
+    values: jest.fn(),
+    entries: jest.fn(),
     isFile: false,
     isDirectory: true,
     getFile: function (name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle> {
@@ -42,12 +36,8 @@ export const createDirectoryHandleMock = (overrides?: Partial<FileSystemDirector
     getDirectory: function (name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle> {
         throw new Error("Function not implemented.");
     },
-    getEntries: function (): AsyncIterableIterator<FileSystemDirectoryHandle | FileSystemFileHandle> {
-        throw new Error("Function not implemented.");
-    },
-    [Symbol.asyncIterator]: function (): AsyncIterableIterator<[string, FileSystemDirectoryHandle | FileSystemFileHandle]> {
-        throw new Error("Function not implemented.");
-    },
+    getEntries: jest.fn(),
+    [Symbol.asyncIterator]: jest.fn(),
     isSameEntry: function (other: FileSystemHandle): Promise<boolean> {
         throw new Error("Function not implemented.");
     },
@@ -58,7 +48,7 @@ export const createDirectoryHandleMock = (overrides?: Partial<FileSystemDirector
         throw new Error("Function not implemented.");
     },
     ...overrides
-});
+} as unknown as FileSystemDirectoryHandle);
 
 beforeEach(() => {
     setMockedFile('{}');

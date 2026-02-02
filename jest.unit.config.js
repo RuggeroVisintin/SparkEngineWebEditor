@@ -1,7 +1,6 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
-    extensionsToTreatAsEsm: ['.ts', '.tsx'],
     rootDir: '.',
     roots: [
         '<rootDir>/src',
@@ -19,13 +18,28 @@ module.exports = {
     transform: {
         '^.+\\.tsx?$': ['ts-jest', {
             tsconfig: 'tsconfig.test.json',
-            useESM: true,
+            diagnostics: {
+                ignoreCodes: [1343]  // Ignore import.meta error
+            },
+            astTransformers: {
+                before: [
+                    {
+                        path: 'ts-jest-mock-import-meta',
+                        options: { metaObjectReplacement: { url: 'https://mock.url' } }
+                    }
+                ],
+            },
         }],
         '^.+\\.jsx?$': 'babel-jest',
     },
     transformIgnorePatterns: [
         'node_modules/(?!.*(uuid|sparkengineweb)/)',
     ],
+    globals: {
+        'import.meta': {
+            url: 'file:///mock-path/',
+        },
+    },
     collectCoverageFrom: [
         'src/**/*.{ts,tsx}',
         '!src/**/*.d.ts',
