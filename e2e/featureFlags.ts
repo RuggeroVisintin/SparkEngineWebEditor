@@ -55,9 +55,13 @@ export function testWithFeature(
     timeout?: number
 ): void {
     if (isFeatureEnabled(flag)) {
-        test(name, fn, timeout);
+        test(name, async () => {
+            await fn();
+        }, timeout);
     } else {
-        test.skip(`${name} [SKIPPED: FEATURE_${flag} disabled]`, fn, timeout);
+        test.skip(`${name} [SKIPPED: FEATURE_${flag} disabled]`, async () => {
+            await fn();
+        }, timeout);
     }
 }
 
