@@ -31,7 +31,7 @@ export default defineConfig({
         },
     },
     define: {
-        __FEATURE_FLAGS__: JSON.stringify(getFeatureFlags()),
+        __FEATURE_FLAGS__: JSON.stringify(getFeatureFlags())
     }, optimizeDeps: {
         // Pre-bundle sparkengineweb to handle its CommonJS exports
         include: ['@sparkengine', 'sparkengineweb'],

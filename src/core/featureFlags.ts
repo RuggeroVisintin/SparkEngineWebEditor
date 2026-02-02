@@ -33,7 +33,8 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
 
     // Fallback for development without Vite define plugin (e.g., tests)
     const envKey = `FEATURE_${flag}`;
-    return import.meta.env[envKey] === 'true';
+
+    return import.meta.env?.[envKey] === 'true';
 }
 
 /**
@@ -64,12 +65,12 @@ export function getEnabledFeatures(): FeatureFlag[] {
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function enableFeature(Feature: FeatureFlag): void {
-    process.env[`FEATURE_${Feature}`] = 'true';
+    import.meta.env[`FEATURE_${Feature}`] = 'true';
 }
 
 /**
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function disableFeature(Feature: FeatureFlag): void {
-    process.env[`FEATURE_${Feature}`] = 'false';
+    import.meta.env[`FEATURE_${Feature}`] = 'false';
 }

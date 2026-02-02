@@ -1,3 +1,6 @@
+// Load environment variables from .env.development before tests run
+require('dotenv').config({ path: '.env' });
+
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
@@ -12,7 +15,7 @@ module.exports = {
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleNameMapper: {
         '^@sparkengine(.*)$': '<rootDir>/node_modules/sparkengineweb$1',
-        '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+        '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
     },
     setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
     transform: {
@@ -25,12 +28,17 @@ module.exports = {
                 before: [
                     {
                         path: 'ts-jest-mock-import-meta',
-                        options: { metaObjectReplacement: { url: 'https://mock.url' } }
+                        options: {
+                            metaObjectReplacement: {
+                                url: 'https://mock.url',
+                                env: process.env
+                            }
+                        }
                     }
                 ],
             },
         }],
-        '^.+\\.jsx?$': 'babel-jest',
+        '^.+\\.jsx?$': 'esbuild-jest',
     },
     transformIgnorePatterns: [
         'node_modules/(?!.*(uuid|sparkengineweb)/)',
