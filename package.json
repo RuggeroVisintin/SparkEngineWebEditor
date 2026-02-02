@@ -12,14 +12,14 @@
     "url": "https://github.com/RuggeroVisintin/spark-engine-web-editor/issues"
   },
   "scripts": {
-    "start": "bash ./scripts/run.sh start",
-    "build": "bash ./scripts/run.sh build",
-    "test": "bash ./scripts/run.sh test",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest --config jest.unit.config.js --watch",
     "test:ci": "bash ./scripts/test-ci.sh",
-    "eject": "react-scripts eject",
     "license-check": "bash ./scripts/check-licenses.sh",
-    "lint": "eslint . --config .eslintrc.json --ext .tsx",
-    "lint:fix": "eslint . --config .eslintrc.json --ext .tsx --fix",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
     "prepare": "husky",
@@ -28,7 +28,6 @@
     "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "eslint-linter-browserify": "^9.38.0",
@@ -44,39 +43,37 @@
     "web-vitals": "^5.1.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@craco/craco": "^7.1.0",
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/jest": "^30.0.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
     "@types/text-encoding": "^0.0.40",
     "@types/uuid": "^10.0.0",
     "@types/wicg-file-system-access": "^2023.10.7",
-    "craco-alias": "^3.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "@vitejs/plugin-react": "^4.3.3",
     "cspell": "^9.3.2",
+    "dotenv": "^17.2.3",
+    "esbuild": "^0.24.2",
+    "esbuild-jest": "^0.5.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
+    "identity-obj-proxy": "^3.0.0",
     "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^30.2.0",
     "jest-playwright-preset": "^4.0.0",
     "playwright": "^1.56.1",
-    "react-scripts": "^5.0.1",
-    "release-please": "github:RuggeroVisintin/release-please"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "release-please": "github:RuggeroVisintin/release-please",
+    "ts-jest": "^29.4.6",
+    "ts-jest-mock-import-meta": "^1.3.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.8"
   }
 }

@@ -32,9 +32,11 @@ If you are part of the core contributors to the project, there is a great chance
 To enhance your experience, you can link the project directly against the local `sparkengineweb` repository like so:
 
 1) Open a terminal and move to the root of this project
-2) `cp dev.env .env` 
-3) replace `<path/to/sparkengine/local/repo>` with the absolute path of the cloned `sparkengineweb` project
-4) you can now make changes to the `sparkengineweb` project and rebuild, the changes will be automatically applied here too
+2) Edit `.env.development` and set `SPARK_ENGINE_PATH` to the absolute path of your local `sparkengineweb` project:
+   ```
+   SPARK_ENGINE_PATH=/path/to/sparkengineweb/dist/lib
+   ```
+3) You can now make changes to the `sparkengineweb` project and rebuild, the changes will be automatically applied here too
 
 ### Prerequisites
 

@@ -21,9 +21,12 @@ if (!global.crypto) {
     (global as any).crypto = webcrypto;
 }
 
-// jest.mock('@sparkengine')
+// Mock createImageBitmap - not available in jsdom
+global.createImageBitmap = jest.fn().mockResolvedValue({
+    width: 100,
+    height: 100,
+    close: jest.fn(),
+});
 
-// jest.mock('uuid', () => ({
-//     v4: () => 'test-uuid'
-// }))
+// jest.mock('@sparkengine')
 

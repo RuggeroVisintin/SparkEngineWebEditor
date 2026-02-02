@@ -8,7 +8,10 @@ module.exports = {
     testTimeout: 30000,
     rootDir: './e2e',
     transform: {
-        '^.+\\.(js|jsx|ts|tsx)$': require.resolve('react-scripts/config/jest/babelTransform.js')
+        '^.+\\.tsx?$': ['ts-jest', {
+            tsconfig: 'e2e/tsconfig.json'
+        }],
+        '^.+\\.jsx?$': 'esbuild-jest'
     },
     transformIgnorePatterns: [
         'node_modules/(?!(sparkengineweb|uuid)/)'

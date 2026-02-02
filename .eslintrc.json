@@ -1,19 +1,32 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "jest": true,
+        "node": true
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "react",
+        "react-hooks"
     ],
     "extends": [
         "eslint:recommended",
-        "react-app",
-        "react-app/jest"
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "ignorePatterns": [
+        "build/",
+        "dist/",
+        "node_modules/",
+        "coverage/",
+        ".eslintrc.json"
     ],
     "rules": {
         "camelcase": "error",
@@ -30,6 +43,30 @@
             "error",
             4
         ],
-        "jest/no-mocks-import": "off"
-    }
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ],
+        "@typescript-eslint/no-unsafe-function-type": "warn",
+        "@typescript-eslint/no-unused-expressions": "warn"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/__mocks__/**/*.{ts,tsx}"
+            ],
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-unused-vars": "off",
+                "@typescript-eslint/no-unsafe-function-type": "off",
+                "@typescript-eslint/no-unused-expressions": "off",
+                "@typescript-eslint/no-this-alias": "off"
+            }
+        }
+    ]
 }

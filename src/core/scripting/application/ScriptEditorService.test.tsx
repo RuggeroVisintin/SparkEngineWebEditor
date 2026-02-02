@@ -6,7 +6,7 @@ import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBus
 
 describe('core/scripting/application/ScriptEditorService', () => {
     let service: ScriptEditorService;
-    let entityUuid = 'test-entity-uuid';
+    const entityUuid = 'test-entity-uuid';
     let eventBus: InMemoryEventBusDouble;
     let state: ReactStateRepository<ScriptEditorState>;
 

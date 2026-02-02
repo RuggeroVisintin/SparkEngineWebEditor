@@ -2,8 +2,8 @@
  * Feature Flags System
  * 
  * Provides compile-time feature flags that are eliminated from production builds.
- * Flags are defined in environment variables (prefixed with REACT_APP_FEATURE_)
- * and replaced at build time by webpack DefinePlugin.
+ * Flags are defined in environment variables (prefixed with FEATURE_)
+ * and replaced at build time by Vite's define plugin.
  * 
  * Usage:
  * ```typescript
@@ -16,11 +16,20 @@
  */
 
 // Define available feature flags as a const object for type safety
-// These will be replaced by webpack DefinePlugin at build time
+// These will be replaced by Vite define plugin at build time
 declare const __FEATURE_FLAGS__: Record<string, boolean>;
 
 export type FeatureFlag =
     | 'ADD_COMPONENTS';
+
+
+const flagsStatus: Record<string, string | undefined> = {};
+
+Object.keys(import.meta.env).forEach(key => {
+    if (key.startsWith('FEATURE_')) {
+        flagsStatus[key] = import.meta.env[key];
+    }
+});
 
 /**
  * Check if a feature flag is enabled
@@ -31,9 +40,10 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
         return __FEATURE_FLAGS__[flag];
     }
 
-    // Fallback for development without webpack (e.g., tests)
+    // Fallback for development without Vite define plugin (e.g., tests)
     const envKey = `FEATURE_${flag}`;
-    return process.env[envKey] === 'true';
+
+    return flagsStatus[envKey] === 'true';
 }
 
 /**
@@ -64,12 +74,12 @@ export function getEnabledFeatures(): FeatureFlag[] {
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function enableFeature(Feature: FeatureFlag): void {
-    process.env[`FEATURE_${Feature}`] = 'true';
+    flagsStatus[`FEATURE_${Feature}`] = 'true';
 }
 
 /**
  * This is a no-op in production, but can be used in tests to enable features
  */
 export function disableFeature(Feature: FeatureFlag): void {
-    process.env[`FEATURE_${Feature}`] = 'false';
+    flagsStatus[`FEATURE_${Feature}`] = 'false';
 }
