@@ -92,7 +92,7 @@ jobs:
           run: npm run start > server.log 2>&1 &
           
         - name: wait for server
-          run: npx wait-on http://localhost:3000 --timeout 10000
+          run: npx wait-on http://localhost:3000/ --timeout 10000
           
         - name: check server status
           if: failure()
