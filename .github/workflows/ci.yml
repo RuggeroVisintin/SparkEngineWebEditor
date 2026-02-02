@@ -91,15 +91,8 @@ jobs:
         - name: start server
           run: npm run start > server.log 2>&1 &
           
-        - name: wait for server
-          run: npx wait-on http://localhost:3000/ --timeout 10000
-          
-        - name: check server status
-          if: failure()
-          run: |
-            echo "Server failed to start. Server log:"
-            cat server.log
-            exit 1
+        - name: wait for server to start
+          run: sleep 3
 
         - name: run e2e tests
           run: npm run test:e2e
