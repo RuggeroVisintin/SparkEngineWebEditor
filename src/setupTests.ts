@@ -21,5 +21,19 @@ if (!global.crypto) {
     (global as any).crypto = webcrypto;
 }
 
+// Mock createImageBitmap - not available in jsdom
+global.createImageBitmap = jest.fn().mockResolvedValue({
+    width: 100,
+    height: 100,
+    close: jest.fn(),
+});
+
+// Setup feature flags for tests - can be overridden in individual tests
+// Usage in tests:
+//   beforeEach(() => { (global as any).__FEATURE_FLAGS__ = { ADD_COMPONENTS: true }; });
+(global as any).__FEATURE_FLAGS__ = {
+    ADD_COMPONENTS: false,
+};
+
 // jest.mock('@sparkengine')
 
