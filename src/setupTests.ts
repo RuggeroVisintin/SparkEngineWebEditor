@@ -23,7 +23,3 @@ if (!global.crypto) {
 
 // jest.mock('@sparkengine')
 
-// jest.mock('uuid', () => ({
-//     v4: () => 'test-uuid'
-// }))
-
