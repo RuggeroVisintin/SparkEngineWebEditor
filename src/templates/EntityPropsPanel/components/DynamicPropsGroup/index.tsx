@@ -83,7 +83,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
             }, key);
         });
     } else {
-        const finalLabel = label?.at(0)?.toUpperCase() ?? '';
+        const finalLabel = (label?.[0] as string)?.toUpperCase() ?? '';
 
         return <FormInput
             data-testid={`EntityPropsPanel.${capitalize(propertyName)}${finalLabel ? '.' + finalLabel : ''}`}
