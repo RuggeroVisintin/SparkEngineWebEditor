@@ -27,7 +27,7 @@ export const ExpandablePanel = ({ children, title, suffix, ...boxProps }: Expand
                     <FlexBox>{isExpanded ? '-' : '+'}</FlexBox>
                     {
                         suffix &&
-                        <FlexBox>
+                        <FlexBox $spacing={Spacing.sm}>
                             {suffix}
                         </FlexBox>
                     }

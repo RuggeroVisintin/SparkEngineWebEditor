@@ -21,6 +21,7 @@ export interface FlexBoxProps {
     $fill?: boolean;
     $wrap?: boolean;
     $fillMethod?: FillMethod
+    $spacing?: Spacing;
 }
 
 export const flexStyles = css<FlexBoxProps>`
@@ -35,9 +36,11 @@ export const flexStyles = css<FlexBoxProps>`
         flex: auto;
     }
 
-    & + & {
-        margin-left: ${Spacing.sm};
-    }
+    ${props => props.$spacing && `
+        &:not(:first-child) {
+            margin-left: ${props.$spacing};
+        }
+    `}
 `;
 
 export const FlexBox = styled.div<FlexBoxProps>`
