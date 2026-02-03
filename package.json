@@ -30,7 +30,7 @@
   "dependencies": {
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "eslint-linter-browserify": "^9.38.0",
+    "eslint-linter-browserify": "^9.39.2",
     "globals": "^16.5.0",
     "monaco-editor": "^0.55.1",
     "react": "^19.0.0",
