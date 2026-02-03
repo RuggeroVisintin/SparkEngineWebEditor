@@ -1,7 +1,7 @@
 import { IComponent, IEntity, typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
-import { Function, isComponentUnavaible } from "../../core/common";
+import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
 import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
@@ -21,8 +21,13 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                     return null;
                 }
 
+                const componentType = typeOf(component);
+                const isRequired = currentEntity && isComponentRequired(currentEntity, componentType);
+
                 return (
-                    <ExpandablePanel key={index} title={typeOf(component)} $divide={index > 0}>
+                    <ExpandablePanel key={index} title={componentType} $divide={index > 0} suffix={
+                        isFeatureEnabled('ADD_COMPONENTS') && <Button disabled={isRequired}> X </Button>
+                    }>
                         <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
                             onComponentUpdate?.(component, propName, value);
                         }} />

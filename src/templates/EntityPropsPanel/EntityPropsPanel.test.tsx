@@ -108,6 +108,51 @@ describe('EntityPropsPanel', () => {
 
                 expect(cb).toHaveBeenCalled();
             });
+
+            it('Should have a delete button for each component', () => {
+                const entity = new GameObject();
+                entity.addComponent(new TransformComponent());
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                expect(screen.queryAllByRole('button', { name: 'X' })[0]).toBeVisible();
+            });
+
+            it('Should disable delete button when components are required in the entity', () => {
+                const entity = new GameObject();
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                // GameObject has 3 required components: Transform, Shape, Material
+                const deleteButtons = screen.queryAllByRole('button', { name: 'X' });
+
+                // All 3 delete buttons should be disabled (required components)
+                expect(deleteButtons).toHaveLength(3);
+                deleteButtons.forEach(button => {
+                    expect(button).toBeDisabled();
+                });
+            });
+
+            it('Should enable delete button for non-required components', () => {
+                const entity = new GameObject();
+                entity.addComponent(new BoundingBoxComponent());
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                const deleteButtons = screen.queryAllByRole('button', { name: 'X' });
+
+                // 4 buttons: Transform (disabled), Shape (disabled), Material (disabled), BoundingBox (enabled)
+                expect(deleteButtons).toHaveLength(4);
+
+                // BoundingBox should be the last one and should be enabled (not required for GameObject)
+                expect(deleteButtons[3]).not.toBeDisabled();
+            });
         });
 
         describe('Feature Flag DISABLED', () => {
@@ -124,6 +169,17 @@ describe('EntityPropsPanel', () => {
 
                 const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
                 expect(addComponentButton).not.toBeInTheDocument();
+            });
+
+            it('Should not show a component delete button', () => {
+                const entity = new GameObject();
+                entity.addComponent(new TransformComponent());
+
+                render(
+                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
+                );
+
+                expect(screen.queryByRole('button', { name: 'X' })).not.toBeInTheDocument();
             });
         });
     });
