@@ -36,15 +36,9 @@ export const flexStyles = css<FlexBoxProps>`
         flex: auto;
     }
 
-    ${props => props.$spacing && `
-        &:not(:first-child) {
-            margin-left: ${props.$spacing};
-        }
-    `}
+    ${props => props.$spacing && `margin-left: ${props.$spacing};`}
 `;
 
 export const FlexBox = styled.div<FlexBoxProps>`
     ${flexStyles}
-
-    
 `
