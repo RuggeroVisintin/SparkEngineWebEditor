@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Box } from './Box';
+import { Spacing } from './spacing';
 
 const getFillProp = ($fillMethod: FillMethod = ''): string => {
     if ($fillMethod === 'flex') {
@@ -20,6 +21,7 @@ export interface FlexBoxProps {
     $fill?: boolean;
     $wrap?: boolean;
     $fillMethod?: FillMethod
+    $spacing?: Spacing;
 }
 
 export const flexStyles = css<FlexBoxProps>`
@@ -33,6 +35,8 @@ export const flexStyles = css<FlexBoxProps>`
     &:${Box} {
         flex: auto;
     }
+
+    ${props => props.$spacing && `margin-left: ${props.$spacing};`}
 `;
 
 export const FlexBox = styled.div<FlexBoxProps>`
