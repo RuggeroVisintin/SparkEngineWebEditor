@@ -39,7 +39,7 @@
     "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.8/sparkengineweb-v0.17.8-lib.tar.gz",
     "styled-components": "^6.1.19",
     "text-encoding": "^0.7.0",
-    "uuid": "^11.1.0",
+    "uuid": "^13.0.0",
     "web-vitals": "^5.1.0"
   },
   "devDependencies": {
