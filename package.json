@@ -34,7 +34,7 @@
     "globals": "^17.3.0",
     "monaco-editor": "^0.55.1",
     "react": "^19.0.0",
-    "react-dom": "^19.2.0",
+    "react-dom": "^19.2.4",
     "react-router": "^7.13.0",
     "sparkengineweb": "https://github.com/RuggeroVisintin/SparkEngineWeb/releases/download/sparkengineweb-v0.17.8/sparkengineweb-v0.17.8-lib.tar.gz",
     "styled-components": "^6.1.19",
