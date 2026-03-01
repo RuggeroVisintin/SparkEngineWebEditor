@@ -9,9 +9,10 @@ interface EntityPropsPanelProps {
     currentEntity?: IEntity,
     onAddComponent?: Function<void>
     onComponentUpdate?: CallableFunction,
+    onComponentRemove: CallableFunction,
 }
 
-export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate }: EntityPropsPanelProps) => {
+export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate, onComponentRemove }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
 
     return (

@@ -5,14 +5,40 @@ import { WithMemoryRouter } from "../../hooks";
 import { getWindowCurrentUrl } from "../../__mocks__/window.mock";
 import { disableFeature, enableFeature } from "../../core/featureFlags";
 
+const noOp = () => { };
+
+const renderEntityPropsPanel = (entity: BaseEntity, options?: {
+    onNavigate?: ({ history, location }: { history: any; location: any }) => null;
+    onComponentUpdate?: (component: any) => void;
+    onAddComponent?: () => void;
+    onComponentRemove?: () => void;
+}) => {
+    let { onNavigate, onComponentUpdate, onAddComponent, onComponentRemove } = options || {};
+
+    if (!onComponentRemove) {
+        onComponentRemove = noOp;
+    }
+
+    render(
+        WithMemoryRouter(
+            <EntityPropsPanel
+                currentEntity={entity}
+                onComponentUpdate={onComponentUpdate}
+                onAddComponent={onAddComponent}
+                onComponentRemove={onComponentRemove}
+            />,
+            onNavigate
+        )
+    );
+}
+
 describe('EntityPropsPanel', () => {
     describe('TriggerEntity', () => {
         it('Should show the scripting prop', () => {
             const entity = new TriggerEntity();
 
-            render(
-                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-            );
+            renderEntityPropsPanel(entity);
+
             fireEvent.click(screen.getByText('Scripting'));
 
             const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
@@ -22,13 +48,11 @@ describe('EntityPropsPanel', () => {
         it('Should open the scripting panel on a blank tab when the link is clicked', () => {
             const entity = new TriggerEntity();
 
-            const onNavigate = jest.fn();
+            const onNavigate = jest.fn(() => null);
 
-            render(
-                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />, onNavigate)
-            );
+            renderEntityPropsPanel(entity, { onNavigate });
+
             fireEvent.click(screen.getByText('Scripting'));
-
             fireEvent.click(screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingLink'));
 
             expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({
@@ -52,9 +76,7 @@ describe('EntityPropsPanel', () => {
             entity.addComponent(new TransformComponent());
             entity.addComponent(new BoundingBoxComponent());
 
-            render(
-                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-            );
+            renderEntityPropsPanel(entity);
 
             expect(screen.queryByRole('region', { name: 'TransformComponent' })).toBeVisible();
             expect(screen.queryByRole('region', { name: 'BoundingBoxComponent' })).toBeVisible();
@@ -66,9 +88,7 @@ describe('EntityPropsPanel', () => {
 
             const onComponentUpdate = jest.fn();
 
-            render(
-                WithMemoryRouter(<EntityPropsPanel currentEntity={entity} onComponentUpdate={onComponentUpdate} />)
-            );
+            renderEntityPropsPanel(entity, { onComponentUpdate });
 
             fireEvent.click(screen.getByRole('button', { name: /TransformComponent/i }));
             const positionInput = screen.getByTestId('EntityPropsPanel.Position.X.InputField');
@@ -88,9 +108,7 @@ describe('EntityPropsPanel', () => {
             it('Should have an "Add component" button', () => {
                 const entity = new GameObject();
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
                 expect(addComponentButton).toBeVisible();
@@ -100,9 +118,7 @@ describe('EntityPropsPanel', () => {
                 const entity = new GameObject();
                 const cb = jest.fn();
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} onAddComponent={cb} />)
-                );
+                renderEntityPropsPanel(entity, { onAddComponent: cb });
                 const addComponentButton = screen.getByRole('button', { name: 'Add Component' });
                 fireEvent.click(addComponentButton);
 
@@ -113,9 +129,7 @@ describe('EntityPropsPanel', () => {
                 const entity = new GameObject();
                 entity.addComponent(new TransformComponent());
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 expect(screen.queryAllByRole('button', { name: 'X' })[0]).toBeVisible();
             });
@@ -123,9 +137,7 @@ describe('EntityPropsPanel', () => {
             it('Should disable delete button when components are required in the entity', () => {
                 const entity = new GameObject();
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 // GameObject has 3 required components: Transform, Shape, Material
                 const deleteButtons = screen.queryAllByRole('button', { name: 'X' });
@@ -141,9 +153,7 @@ describe('EntityPropsPanel', () => {
                 const entity = new GameObject();
                 entity.addComponent(new BoundingBoxComponent());
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 const deleteButtons = screen.queryAllByRole('button', { name: 'X' });
 
@@ -163,9 +173,7 @@ describe('EntityPropsPanel', () => {
             it('Should not have an "Add component" button', () => {
                 const entity = new GameObject();
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
                 expect(addComponentButton).not.toBeInTheDocument();
@@ -175,9 +183,7 @@ describe('EntityPropsPanel', () => {
                 const entity = new GameObject();
                 entity.addComponent(new TransformComponent());
 
-                render(
-                    WithMemoryRouter(<EntityPropsPanel currentEntity={entity} />)
-                );
+                renderEntityPropsPanel(entity);
 
                 expect(screen.queryByRole('button', { name: 'X' })).not.toBeInTheDocument();
             });
