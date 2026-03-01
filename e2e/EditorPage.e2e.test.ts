@@ -54,5 +54,47 @@ describe('Editor Page - Components Panel', () => {
             const componentsPanel = page.getByRole('listbox', { name: /Components Panel/i });
             await expect(componentsPanel).not.toBeVisible();
         });
+
+        it('Should display delete buttons disabled for required components', async () => {
+            const entity = page.getByText(/GameObject1/i);
+            await entity.click();
+
+            // GameObject has 3 required components: Transform, Shape, Material
+            const deleteButtons = await page.getByRole('button', { name: /X/ }).all();
+            expect(deleteButtons).toHaveLength(3);
+
+            // All required component buttons should be disabled
+            const firstButtonDisabled = await deleteButtons[0].isDisabled();
+            expect(firstButtonDisabled).toBe(true);
+        });
+
+        it('Should remove component when delete button is clicked', async () => {
+            const addComponentButton = page.getByText(/Add Component/i);
+            await addComponentButton.click();
+
+            const boundingBoxOption = page.getByRole('option', { name: /BoundingBox/ });
+            await boundingBoxOption.click();
+
+            const boundingBoxPanel = page.getByRole('region', { name: /BoundingBox/i });
+
+            const deleteButtons = page.getByRole('button', { name: /X/ });
+            const boundingBoxDeleteButton = deleteButtons.last();
+            await boundingBoxDeleteButton.click();
+
+            await expect(boundingBoxPanel).not.toBeVisible();
+        });
+    });
+
+    describe('Component Removal - Feature Flag DISABLED', () => {
+        it('Should not display delete buttons when feature flag is disabled', async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
+
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
+
+            const deleteButton = page.getByRole('button', { name: /X/ });
+            await expect(deleteButton).not.toBeVisible();
+        });
     });
 });
