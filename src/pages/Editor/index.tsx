@@ -62,6 +62,7 @@ export const Editor = () => {
                                 currentEntity={editorState.currentEntity}
                                 onAddComponent={() => editorService.openComponentsSelection()}
                                 onComponentUpdate={(component: IComponent, propName: string, newValue: any) => editorService.updateCurrentEntityComponentProperty(component, propName, newValue)}
+                                onComponentRemove={(uuid: string) => editorService.removeComponent(uuid)}
                             ></EntityPropsPanel>}
                     </FlexBox>
                 </Box>

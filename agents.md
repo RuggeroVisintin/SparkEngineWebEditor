@@ -16,8 +16,8 @@ SparkEngineWeb Editor is a browser-based visual editor for the SparkEngine game 
 ## Test-Driven Development (TDD) - MANDATORY
 
 **ALL code changes MUST follow strict TDD practices:**
-
 **New behaviours MUST be covered by new failing tests FIRST.**
+**You MUST stop and let human review a test once implemented or changed before implementing the code**
 
 ### The Red-Green-Refactor Cycle
 

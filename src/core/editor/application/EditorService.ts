@@ -252,6 +252,14 @@ export class EditorService {
         this.closeComponentSelection();
     }
 
+    public removeComponent(uuid: string): void {
+        this.currentEntity?.removeComponent(uuid);
+
+        this.stateRepository.update({
+            currentEntity: this._currentEntity
+        });
+    }
+
     private onScriptingEditorReadyEvent(e: ScriptingEditorReady): void {
         if (!this.currentEntity ||
             typeOf(this.currentEntity) !== 'TriggerEntity' ||
