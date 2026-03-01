@@ -36,12 +36,17 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
 export function describeWithFeature(
     flag: FeatureFlag,
     name: string,
-    fn: () => void
+    fn: () => void,
+    onFlagDisabled?: () => void
 ): void {
     if (isFeatureEnabled(flag)) {
         describe(name, fn);
     } else {
         describe.skip(`${name} [SKIPPED: FEATURE_${flag} disabled]`, fn);
+
+        if (onFlagDisabled) {
+            describe(`${name} [FLAG_${flag} DISABLED]`, onFlagDisabled);
+        }
     }
 }
 

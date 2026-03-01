@@ -56,7 +56,7 @@ describe('Editor Page - Components Panel', () => {
         });
     });
 
-    describe('Component Removal', () => {
+    describeWithFeature('ADD_COMPONENTS', 'Component Removal', () => {
         beforeEach(async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);
             await addEntityButton.click();
@@ -112,5 +112,17 @@ describe('Editor Page - Components Panel', () => {
             // BoundingBox panel should no longer be visible
             await expect(boundingBoxPanel).not.toBeVisible();
         });
-    })
+    }, () => {
+        it('It should not show delete component button', async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
+
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
+
+            const transformPanel = page.getByRole('region', { name: /Transform/i });
+            const deleteButton = transformPanel.getByRole('button', { name: ' X ', exact: true });
+            await expect(deleteButton).not.toBeVisible();
+        });
+    });
 });
