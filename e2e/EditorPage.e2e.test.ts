@@ -54,47 +54,63 @@ describe('Editor Page - Components Panel', () => {
             const componentsPanel = page.getByRole('listbox', { name: /Components Panel/i });
             await expect(componentsPanel).not.toBeVisible();
         });
+    });
+
+    describe('Component Removal', () => {
+        beforeEach(async () => {
+            const addEntityButton = page.getByText(/Add GameObject/i);
+            await addEntityButton.click();
+        });
 
         it('Should display delete buttons disabled for required components', async () => {
-            const entity = page.getByText(/GameObject1/i);
-            await entity.click();
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
 
-            // GameObject has 3 required components: Transform, Shape, Material
-            const deleteButtons = await page.getByRole('button', { name: /X/ }).all();
-            expect(deleteButtons).toHaveLength(3);
+            // Get all component regions in the panel
+            const transformPanel = page.getByRole('region', { name: /TransformComponent/i });
+            const shapePanel = page.getByRole('region', { name: /ShapeComponent/i });
+            const materialPanel = page.getByRole('region', { name: /MaterialComponent/i });
 
-            // All required component buttons should be disabled
-            const firstButtonDisabled = await deleteButtons[0].isDisabled();
-            expect(firstButtonDisabled).toBe(true);
+            // Check that all required components have disabled delete buttons
+            const transformDeleteBtn = transformPanel.getByRole('button', { name: ' X ', exact: true });
+            const shapeDeleteBtn = shapePanel.getByRole('button', { name: ' X ', exact: true });
+            const materialDeleteBtn = materialPanel.getByRole('button', { name: ' X ', exact: true });
+
+            const transformDisabled = await transformDeleteBtn.isDisabled();
+            const shapeDisabled = await shapeDeleteBtn.isDisabled();
+            const materialDisabled = await materialDeleteBtn.isDisabled();
+
+            expect(transformDisabled).toBe(true);
+            expect(shapeDisabled).toBe(true);
+            expect(materialDisabled).toBe(true);
         });
 
         it('Should remove component when delete button is clicked', async () => {
+            const entityItem = page.getByText(/GameObject1/i);
+            await entityItem.click();
+
             const addComponentButton = page.getByText(/Add Component/i);
             await addComponentButton.click();
 
             const boundingBoxOption = page.getByRole('option', { name: /BoundingBox/ });
             await boundingBoxOption.click();
 
-            const boundingBoxPanel = page.getByRole('region', { name: /BoundingBox/i });
+            // Get the BoundingBox component region
+            const boundingBoxPanel = page.getByRole('region', { name: /BoundingBoxComponent/i });
+            await expect(boundingBoxPanel).toBeVisible();
 
-            const deleteButtons = page.getByRole('button', { name: /X/ });
-            const boundingBoxDeleteButton = deleteButtons.last();
+            // Get the delete button specifically from the BoundingBox panel
+            const boundingBoxDeleteButton = boundingBoxPanel.getByRole('button', { name: ' X ', exact: true });
+
+            // Verify it's enabled (not a required component)
+            const isDisabled = await boundingBoxDeleteButton.isDisabled();
+            expect(isDisabled).toBe(false);
+
+            // Click the delete button
             await boundingBoxDeleteButton.click();
 
+            // BoundingBox panel should no longer be visible
             await expect(boundingBoxPanel).not.toBeVisible();
         });
-    });
-
-    describe('Component Removal - Feature Flag DISABLED', () => {
-        it('Should not display delete buttons when feature flag is disabled', async () => {
-            const addEntityButton = page.getByText(/Add GameObject/i);
-            await addEntityButton.click();
-
-            const entityItem = page.getByText(/GameObject1/i);
-            await entityItem.click();
-
-            const deleteButton = page.getByRole('button', { name: /X/ });
-            await expect(deleteButton).not.toBeVisible();
-        });
-    });
+    })
 });
