@@ -164,7 +164,7 @@ describe('EntityPropsPanel', () => {
                 expect(deleteButtons[3]).not.toBeDisabled();
             });
 
-            it('Should invoke the "onComponentRemove" callback when clicking the delete button', () => {
+            it('Should invoke the "onComponentRemove" callback when clicking the remove button', () => {
                 const entity = new GameObject();
                 entity.addComponent(new BoundingBoxComponent());
 
