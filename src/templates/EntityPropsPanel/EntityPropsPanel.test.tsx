@@ -13,7 +13,8 @@ const renderEntityPropsPanel = (entity: BaseEntity, options?: {
     onAddComponent?: () => void;
     onComponentRemove?: () => void;
 }) => {
-    let { onNavigate, onComponentUpdate, onAddComponent, onComponentRemove } = options || {};
+    const { onNavigate, onComponentUpdate, onAddComponent } = options || {};
+    let { onComponentRemove } = options || {};
 
     if (!onComponentRemove) {
         onComponentRemove = noOp;
