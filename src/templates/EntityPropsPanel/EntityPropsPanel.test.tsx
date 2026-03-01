@@ -163,6 +163,20 @@ describe('EntityPropsPanel', () => {
                 // BoundingBox should be the last one and should be enabled (not required for GameObject)
                 expect(deleteButtons[3]).not.toBeDisabled();
             });
+
+            it('Should invoke the "onComponentRemove" callback when clicking the delete button', () => {
+                const entity = new GameObject();
+                entity.addComponent(new BoundingBoxComponent());
+
+                const cb = jest.fn();
+
+                renderEntityPropsPanel(entity, { onComponentRemove: cb });
+
+                const deleteButtons = screen.queryAllByRole('button', { name: 'X' });
+                fireEvent.click(deleteButtons[3]);
+
+                expect(cb).toHaveBeenCalledWith(entity.components[3].uuid);
+            });
         });
 
         describe('Feature Flag DISABLED', () => {
