@@ -658,6 +658,41 @@ describe('EditorService', () => {
         })
     });
 
+    describe('removeComponent()', () => {
+        it('Should remove the component from the current entity', () => {
+            const entity = new GameObject();
+            const boundingBox = new BoundingBoxComponent();
+            entity.addComponent(boundingBox);
+
+            editorService.selectEntity(entity);
+
+            const initialComponentCount = entity.components.length;
+
+            editorService.removeComponent(boundingBox.uuid);
+
+            expect(entity.components.length).toBe(initialComponentCount - 1);
+            expect(entity.getComponent<BoundingBoxComponent>(typeOf(boundingBox))).toBeUndefined();
+        });
+
+        it('Should update the app state with current entity', () => {
+            const entity = new GameObject();
+            const boundingBox = new BoundingBoxComponent();
+            entity.addComponent(boundingBox);
+
+            editorService.selectEntity(entity);
+
+            const spy = jest.spyOn(appState, 'update');
+
+            editorService.removeComponent(boundingBox.uuid);
+
+            expect(spy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    currentEntity: entity
+                })
+            );
+        });
+    });
+
     describe('closeComponentSelection()', () => {
         it('Should close the components panel', () => {
             appState.update({
