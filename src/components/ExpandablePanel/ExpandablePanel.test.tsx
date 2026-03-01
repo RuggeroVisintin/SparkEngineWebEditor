@@ -53,5 +53,15 @@ describe('ExpandablePanel', () => {
 
         const title = screen.queryByText('My Expandable Panel');
         expect(title).toBeVisible();
-    })
+    });
+
+    it('Should display suffix content if provided', () => {
+        render(
+            <ExpandablePanel title="My Expandable Panel" suffix={<span data-testid="suffix">Suffix Content</span>}>
+            </ExpandablePanel>
+        );
+
+        const suffix = screen.queryByTestId('suffix');
+        expect(suffix).toBeVisible();
+    });
 });

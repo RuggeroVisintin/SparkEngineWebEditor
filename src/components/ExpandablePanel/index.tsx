@@ -1,12 +1,13 @@
 import { ReactNode, useState } from "react";
-import { BackgroundColor, Box, BoxProps, FlexBox, Spacing } from "../../primitives"
+import { BackgroundColor, Box, BoxProps, Button, FlexBox, Spacing } from "../../primitives"
 
 interface ExpandablePanelProps extends BoxProps {
     children?: ReactNode;
     title?: string;
+    suffix?: ReactNode;
 }
 
-export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePanelProps) => {
+export const ExpandablePanel = ({ children, title, suffix, ...boxProps }: ExpandablePanelProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -24,7 +25,15 @@ export const ExpandablePanel = ({ children, title, ...boxProps }: ExpandablePane
                 <FlexBox $direction="row">
                     <FlexBox $fill>{title}</FlexBox>
                     <FlexBox>{isExpanded ? '-' : '+'}</FlexBox>
+                    {
+                        suffix &&
+                        <FlexBox $spacing={Spacing.sm}>
+                            {suffix}
+                        </FlexBox>
+                    }
                 </FlexBox>
+
+
             </Box>
             {isExpanded &&
                 <Box
