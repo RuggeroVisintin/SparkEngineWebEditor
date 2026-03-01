@@ -681,11 +681,12 @@ describe('EditorService', () => {
 
             editorService.selectEntity(entity);
 
-            const spy = jest.spyOn(appState, 'update');
+            const mockStateUpdater = jest.fn();
+            appState.subscribe(mockStateUpdater);
 
             editorService.removeComponent(boundingBox.uuid);
 
-            expect(spy).toHaveBeenCalledWith(
+            expect(mockStateUpdater).toHaveBeenCalledWith(
                 expect.objectContaining({
                     currentEntity: entity
                 })
