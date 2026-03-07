@@ -56,6 +56,7 @@ jobs:
             npm run react-doctor
           env:
             REACT_DOCTOR_THRESHOLD: 90
+            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
           continue-on-error: true
 
         - name: generate report
@@ -64,6 +65,7 @@ jobs:
             bash ./scripts/react-doctor-report.sh > react-doctor-report.md
           env:
             REACT_DOCTOR_THRESHOLD: 90
+            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
             GITHUB_REPOSITORY: ${{ github.repository }}
             GITHUB_SHA: ${{ github.sha }}
 

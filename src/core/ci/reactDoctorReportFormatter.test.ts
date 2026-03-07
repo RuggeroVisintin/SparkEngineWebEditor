@@ -61,6 +61,29 @@ describe('buildReactDoctorMarkdownReport', () => {
         expect(report).not.toContain('https://github.com');
     });
 
+    it('does not apply formatter-side changed files filtering', () => {
+        const output = `react-doctor v0.0.30
+
+✔ Running lint checks.
+  ⚠ Array index "index" used as key — causes bugs when list is reordered or filtered (2)
+    src/templates/EntityPropsPanel/index.tsx: 30
+    src/components/PopupMenu/index.tsx: 44
+
+  │ ✗ 0 errors  ⚠ 2 warnings  across 2/160 files  in 502ms │
+`;
+
+        const report = buildReactDoctorMarkdownReport({
+            score: 94,
+            threshold: 90,
+            rawOutput: output,
+            changedFiles: ['src/templates/EntityPropsPanel/index.tsx'],
+        });
+
+        expect(report).toContain('src/templates/EntityPropsPanel/index.tsx');
+        expect(report).toContain('src/components/PopupMenu/index.tsx');
+        expect(report).not.toContain('_Showing findings only for files changed in this PR._');
+    });
+
     it('renders a warning status when score is below threshold', () => {
         const report = buildReactDoctorMarkdownReport({
             score: 82,

@@ -1,12 +1,18 @@
 #!/bin/bash
 set -e
 
-# Get score
-SCORE=$(npx react-doctor --offline -y --score 2>&1 | tail -1)
+DIFF_BASE=${REACT_DOCTOR_DIFF_BASE:-}
+DIFF_ARGS=()
+if [ -n "$DIFF_BASE" ]; then
+    DIFF_ARGS=(--diff "$DIFF_BASE")
+fi
+
+# Get score first
+SCORE=$(npx react-doctor --offline -y "${DIFF_ARGS[@]}" --score 2>&1 | tail -1)
 
 # Run react-doctor in verbose mode and capture output to a file
 OUTPUT_FILE="react-doctor-output.txt"
-npx react-doctor --offline -y --verbose > "$OUTPUT_FILE" 2>&1 || true
+npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose > "$OUTPUT_FILE" 2>&1 || true
 
 THRESHOLD=${REACT_DOCTOR_THRESHOLD:-90}
 
