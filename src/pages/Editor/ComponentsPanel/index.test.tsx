@@ -5,6 +5,33 @@ describe('ComponentsPanel', () => {
     const mockComponents = ['Transform', 'Material', 'BoundingBox'];
 
     describe('onClose', () => {
+        it('Should render close button with X text', () => {
+            render(
+                <ComponentsPanel
+                    components={mockComponents}
+                    onSelectComponent={() => { }}
+                    onClose={() => { }}
+                />
+            );
+
+            expect(screen.getByRole('button', { name: 'Close' })).toHaveTextContent('X');
+        });
+
+        it('Should invoke onClose callback when clicking close button', () => {
+            const onClose = jest.fn();
+            render(
+                <ComponentsPanel
+                    components={mockComponents}
+                    onSelectComponent={() => { }}
+                    onClose={onClose}
+                />
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+            expect(onClose).toHaveBeenCalled();
+        });
+
         it('Should invoke onClose callback when clicking outside the panel', () => {
             const onClose = jest.fn();
             render(
