@@ -4,6 +4,7 @@ set -e
 # Run react-doctor and get the score
 THRESHOLD=${REACT_DOCTOR_THRESHOLD:-90}
 echo "Running react-doctor with threshold: $THRESHOLD"
+echo "Running react-doctor in full scan mode"
 
 # First get just the score
 SCORE=$(npx react-doctor --offline -y --score 2>&1 | tail -1)

@@ -10,6 +10,10 @@ function escapeTable(value) {
     return value.replace(/\|/g, '\\|');
 }
 
+function normalizePath(value) {
+    return value.replace(/^\.\//, '').trim();
+}
+
 function parseSummary(rawOutput) {
     const summaryMatch = rawOutput.match(/✗\s*(\d+)\s*error[s]?\s*⚠\s*(\d+)\s*warning[s]?\s*across\s*(\d+\/\d+)\s*files/i);
 
@@ -31,6 +35,7 @@ function parseSummary(rawOutput) {
 function parseFindings(rawOutput) {
     const lines = stripAnsi(rawOutput).split('\n');
     const findings = [];
+    let currentFinding = null;
 
     for (const line of lines) {
         const markerMatch = line.match(/^\s*([✗⚠])\s+(.+)$/);
@@ -49,17 +54,98 @@ function parseFindings(rawOutput) {
 
             message = normalizeSpaces(message.split(/\s{2,}/)[0] || message);
 
-            findings.push({ severity, message, count });
+            currentFinding = { severity, message, count, files: [] };
+            findings.push(currentFinding);
             continue;
+        }
+
+        if (!currentFinding) {
+            continue;
+        }
+
+        const fileMatch = line.match(/^\s+([A-Za-z0-9_./\-]+\.[A-Za-z0-9]+):\s*(\d+)\s*$/);
+        if (fileMatch) {
+            currentFinding.files.push({
+                path: normalizePath(fileMatch[1]),
+                line: Number(fileMatch[2]),
+            });
         }
     }
 
     return findings;
 }
 
-function buildReactDoctorMarkdownReport({ score, threshold, rawOutput }) {
+function toChangedFilesSet(changedFiles) {
+    if (!Array.isArray(changedFiles) || changedFiles.length === 0) {
+        return null;
+    }
+
+    const normalized = changedFiles
+        .map((value) => normalizePath(String(value || '')))
+        .filter(Boolean);
+
+    if (normalized.length === 0) {
+        return null;
+    }
+
+    return new Set(normalized);
+}
+
+function buildFileLink(path, line, repository, commitSha) {
+    if (!repository || !commitSha) {
+        return path;
+    }
+
+    return `[${path}](https://github.com/${repository}/blob/${commitSha}/${path}#L${line})`;
+}
+
+function flattenRows(findings, changedFilesSet) {
+    const rows = [];
+
+    for (const finding of findings) {
+        if (finding.files.length === 0) {
+            if (!changedFilesSet) {
+                rows.push({
+                    severity: finding.severity,
+                    finding: finding.message,
+                    file: '-',
+                    line: '-',
+                    count: finding.count,
+                });
+            }
+            continue;
+        }
+
+        for (const fileRef of finding.files) {
+            if (changedFilesSet && !changedFilesSet.has(fileRef.path)) {
+                continue;
+            }
+
+            rows.push({
+                severity: finding.severity,
+                finding: finding.message,
+                file: fileRef.path,
+                line: fileRef.line,
+                count: finding.count,
+            });
+        }
+    }
+
+    return rows;
+}
+
+function buildReactDoctorMarkdownReport({
+    score,
+    threshold,
+    rawOutput,
+    changedFiles = [],
+    repository = '',
+    commitSha = '',
+}) {
     const summary = parseSummary(rawOutput);
     const findings = parseFindings(rawOutput);
+    const changedFilesSet = toChangedFilesSet(changedFiles);
+    const rows = flattenRows(findings, changedFilesSet);
     const status = score >= threshold ? '✅ Pass' : '⚠️ Below Threshold';
     const reportLines = [
         '## 🩺 React Doctor Report',
@@ -80,17 +166,26 @@ function buildReactDoctorMarkdownReport({ score, threshold, rawOutput }) {
         '',
     ];
 
-    if (findings.length === 0) {
-        reportLines.push('No findings detected.');
+    if (changedFilesSet) {
+        reportLines.push('_Showing findings only for files changed in this PR._');
+        reportLines.push('');
+    }
+
+    if (rows.length === 0) {
+        reportLines.push('No findings detected for the selected files.');
         return `${reportLines.join('\n')}\n`;
     }
 
-    reportLines.push('| Severity | Finding | Count |');
-    reportLines.push('| --- | --- | --- |');
+    reportLines.push('| Severity | Finding | File | Line | Count |');
+    reportLines.push('| --- | --- | --- | --- | --- |');
 
-    for (const finding of findings) {
+    for (const row of rows) {
+        const fileCell = row.file === '-'
+            ? '-'
+            : buildFileLink(row.file, row.line, repository, commitSha);
+
         reportLines.push(
-            `| ${finding.severity} | ${escapeTable(finding.message)} | ${finding.count} |`,
+            `| ${row.severity} | ${escapeTable(row.finding)} | ${escapeTable(fileCell)} | ${row.line} | ${row.count} |`,
         );
     }
 
