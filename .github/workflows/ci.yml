@@ -44,10 +44,6 @@ jobs:
         - name: install
           run: npm ci
 
-        - name: fetch PR base branch
-          if: github.event_name == 'pull_request'
-          run: git fetch origin "${{ github.base_ref }}" --depth=1
-
         - name: run react-doctor check
           id: react_doctor
           run: |
@@ -62,7 +58,6 @@ jobs:
             bash ./scripts/react-doctor-report.sh > react-doctor-report.md
           env:
             REACT_DOCTOR_THRESHOLD: 90
-            REACT_DOCTOR_DIFF_BASE: ${{ format('origin/{0}', github.base_ref) }}
             GITHUB_REPOSITORY: ${{ github.repository }}
             GITHUB_SHA: ${{ github.sha }}
 

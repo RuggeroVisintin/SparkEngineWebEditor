@@ -75,22 +75,6 @@ function parseFindings(rawOutput) {
     return findings;
 }
 
-function toChangedFilesSet(changedFiles) {
-    if (!Array.isArray(changedFiles) || changedFiles.length === 0) {
-        return null;
-    }
-
-    const normalized = changedFiles
-        .map((value) => normalizePath(String(value || '')))
-        .filter(Boolean);
-
-    if (normalized.length === 0) {
-        return null;
-    }
-
-    return new Set(normalized);
-}
-
 function buildFileLink(path, line, repository, commitSha) {
     if (!repository || !commitSha) {
         return path;
@@ -99,28 +83,22 @@ function buildFileLink(path, line, repository, commitSha) {
     return `[${path}](https://github.com/${repository}/blob/${commitSha}/${path}#L${line})`;
 }
 
-function flattenRows(findings, changedFilesSet) {
+function flattenRows(findings) {
     const rows = [];
 
     for (const finding of findings) {
         if (finding.files.length === 0) {
-            if (!changedFilesSet) {
-                rows.push({
-                    severity: finding.severity,
-                    finding: finding.message,
-                    file: '-',
-                    line: '-',
-                    count: finding.count,
-                });
-            }
+            rows.push({
+                severity: finding.severity,
+                finding: finding.message,
+                file: '-',
+                line: '-',
+                count: finding.count,
+            });
             continue;
         }
 
         for (const fileRef of finding.files) {
-            if (changedFilesSet && !changedFilesSet.has(fileRef.path)) {
-                continue;
-            }
-
             rows.push({
                 severity: finding.severity,
                 finding: finding.message,
@@ -138,14 +116,12 @@ function buildReactDoctorMarkdownReport({
     score,
     threshold,
     rawOutput,
-    changedFiles = [],
     repository = '',
     commitSha = '',
 }) {
     const summary = parseSummary(rawOutput);
     const findings = parseFindings(rawOutput);
-    const changedFilesSet = toChangedFilesSet(changedFiles);
-    const rows = flattenRows(findings, changedFilesSet);
+    const rows = flattenRows(findings);
     const status = score >= threshold ? '✅ Pass' : '⚠️ Below Threshold';
     const reportLines = [
         '## 🩺 React Doctor Report',
@@ -166,13 +142,8 @@ function buildReactDoctorMarkdownReport({
         '',
     ];
 
-    if (changedFilesSet) {
-        reportLines.push('_Showing findings only for files changed in this PR._');
-        reportLines.push('');
-    }
-
     if (rows.length === 0) {
-        reportLines.push('No findings detected for the selected files.');
+        reportLines.push('No findings detected.');
         return `${reportLines.join('\n')}\n`;
     }
 

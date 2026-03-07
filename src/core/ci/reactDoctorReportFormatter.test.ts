@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { buildReactDoctorMarkdownReport } = require('../../../scripts/react-doctor-report-formatter');
 
 describe('buildReactDoctorMarkdownReport', () => {
@@ -19,11 +20,6 @@ describe('buildReactDoctorMarkdownReport', () => {
             score: 94,
             threshold: 90,
             rawOutput: output,
-            changedFiles: [
-                'src/hooks/withMemoryRouter.tsx',
-                'src/templates/EntityPropsPanel/index.tsx',
-                'src/components/PopupMenu/index.tsx',
-            ],
             repository: 'RuggeroVisintin/SparkEngineWebEditor',
             commitSha: 'abc123',
         });
@@ -43,7 +39,7 @@ describe('buildReactDoctorMarkdownReport', () => {
         expect(report).toContain('[src/components/PopupMenu/index.tsx](https://github.com/RuggeroVisintin/SparkEngineWebEditor/blob/abc123/src/components/PopupMenu/index.tsx#L44)');
     });
 
-    it('filters findings to changed files only', () => {
+    it('renders findings when no repository or commit info provided', () => {
         const output = `react-doctor v0.0.30
 
 ✔ Running lint checks.
@@ -58,11 +54,11 @@ describe('buildReactDoctorMarkdownReport', () => {
             score: 94,
             threshold: 90,
             rawOutput: output,
-            changedFiles: ['src/templates/EntityPropsPanel/index.tsx'],
         });
 
         expect(report).toContain('src/templates/EntityPropsPanel/index.tsx');
-        expect(report).not.toContain('src/components/PopupMenu/index.tsx');
+        expect(report).toContain('src/components/PopupMenu/index.tsx');
+        expect(report).not.toContain('https://github.com');
     });
 
     it('renders a warning status when score is below threshold', () => {
