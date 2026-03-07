@@ -25,7 +25,9 @@
     "prepare": "husky",
     "test:e2e": "bash ./scripts/run-e2e.sh",
     "test:e2e:watch": "bash ./scripts/run-e2e.sh --watch",
-    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand"
+    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand",
+    "react-doctor": "bash ./scripts/react-doctor-check.sh",
+    "react-doctor:report": "bash ./scripts/react-doctor-report.sh"
   },
   "dependencies": {
     "@testing-library/react": "^16.3.2",
@@ -71,6 +73,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "jest-playwright-preset": "^4.0.0",
     "playwright": "^1.56.1",
+    "react-doctor": "^0.0.30",
     "release-please": "github:RuggeroVisintin/release-please",
     "ts-jest": "^29.4.6",
     "ts-jest-mock-import-meta": "^1.3.1",

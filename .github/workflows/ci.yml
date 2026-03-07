@@ -27,6 +27,81 @@ jobs:
           
         - name: build
           run: npm run build
+    react_doctor:
+      name: React Doctor
+      runs-on: ubuntu-latest
+      permissions:
+        pull-requests: write
+        contents: read
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+  
+        - name: install
+          run: npm ci
+
+        - name: run react-doctor check
+          id: react_doctor
+          run: |
+            npm run react-doctor
+          env:
+            REACT_DOCTOR_THRESHOLD: 80
+          continue-on-error: true
+
+        - name: generate report
+          if: github.event_name == 'pull_request'
+          id: report
+          run: |
+            REPORT=$(npm run react-doctor:report --silent)
+            echo "report<<EOF" >> $GITHUB_OUTPUT
+            echo "$REPORT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          env:
+            REACT_DOCTOR_THRESHOLD: 80
+
+        - name: comment on PR
+          if: github.event_name == 'pull_request'
+          uses: actions/github-script@v7
+          with:
+            script: |
+              const report = `${{ steps.report.outputs.report }}`;
+              const issue_number = context.issue.number;
+              
+              // Find existing comment
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+              });
+              
+              const botComment = comments.data.find(comment => 
+                comment.user.type === 'Bot' && 
+                comment.body.includes('🩺 React Doctor Report')
+              );
+              
+              if (botComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: report
+                });
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue_number,
+                  body: report
+                });
+              }
+
+        - name: fail if score below threshold
+          if: steps.react_doctor.outcome == 'failure'
+          run: exit 1
     test_unit:
       name: Unit Tests
       runs-on: ubuntu-latest
@@ -124,6 +199,6 @@ jobs:
           id: release
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
-      needs: [test_unit, test_e2e, build, code_scan]
+      needs: [test_unit, test_e2e, build, code_scan, react_doctor]
       if: github.ref_name == 'main'
         
