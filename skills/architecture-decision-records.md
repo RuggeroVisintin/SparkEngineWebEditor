@@ -47,4 +47,3 @@ What becomes easier or more difficult to do because of this change?
 
 - `docs/architecture/decisions/` - Existing ADR history
 - `npm run adr help` - ADR tooling documentation
-````
