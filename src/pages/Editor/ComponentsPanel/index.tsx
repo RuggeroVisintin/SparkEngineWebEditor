@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Box, Button, FlexBox } from "../../../primitives";
+import { Box, Button, Spacing } from "../../../primitives";
 import { ListItem } from "../../../components";
 
 interface ComponentPanelProps {
@@ -30,9 +30,9 @@ export const ComponentsPanel = ({
 
     return (
         <Box ref={panelRef} role="listbox" aria-label="Components Panel" style={{ overflowY: 'auto', height: '100%', display: 'block' }}>
-            <FlexBox style={{ justifyContent: 'flex-end' }}>
-                <Button aria-label="Close" onClick={() => onClose?.()}>Close</Button>
-            </FlexBox>
+            <Box $spacing={Spacing.xs} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button aria-label="Close" onClick={() => onClose?.()}> X </Button>
+            </Box>
             {
                 components.map(componentName => (
                     <ListItem
