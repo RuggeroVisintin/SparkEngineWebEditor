@@ -2,7 +2,7 @@
 set -e
 
 # Run react-doctor and get the score
-THRESHOLD=${REACT_DOCTOR_THRESHOLD:-80}
+THRESHOLD=${REACT_DOCTOR_THRESHOLD:-90}
 echo "Running react-doctor with threshold: $THRESHOLD"
 
 # First get just the score

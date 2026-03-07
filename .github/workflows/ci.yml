@@ -47,7 +47,7 @@ jobs:
           run: |
             npm run react-doctor
           env:
-            REACT_DOCTOR_THRESHOLD: 80
+            REACT_DOCTOR_THRESHOLD: 90
           continue-on-error: true
 
         - name: generate report
@@ -59,7 +59,7 @@ jobs:
             echo "$REPORT" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           env:
-            REACT_DOCTOR_THRESHOLD: 80
+            REACT_DOCTOR_THRESHOLD: 90
 
         - name: comment on PR
           if: github.event_name == 'pull_request'

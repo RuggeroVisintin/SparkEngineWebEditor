@@ -15,7 +15,7 @@ echo "**Score:** $SCORE / 100"
 echo ""
 
 # Check if score is below threshold
-THRESHOLD=${REACT_DOCTOR_THRESHOLD:-80}
+THRESHOLD=${REACT_DOCTOR_THRESHOLD:-90}
 if [ "$SCORE" -lt "$THRESHOLD" ]; then
     echo "⚠️ **Score is below threshold ($THRESHOLD)**"
     echo ""
