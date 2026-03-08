@@ -27,6 +27,7 @@ branches:
           - "Build"
           - "Code Scan / Analyze (javascript-typescript)"
           - "Unit Tests"
+          - "React Doctor"
 
       enforce_admins: false
       bypass_pull_request_allowances:
