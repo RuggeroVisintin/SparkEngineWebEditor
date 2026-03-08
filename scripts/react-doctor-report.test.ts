@@ -13,7 +13,7 @@ describe('react-doctor-report.sh', () => {
         fs.mkdirSync(fakeBinDir, { recursive: true });
         fs.writeFileSync(
             path.join(fakeBinDir, 'npm'),
-            `#!/bin/bash\necho called > \"${markerFile}\"\nexit 0\n`,
+            `#!/bin/bash\necho called > "${markerFile}"\nexit 0\n`,
             { mode: 0o755 },
         );
 
