@@ -1,21 +1,20 @@
 #!/bin/bash
 set -e
 
-DIFF_BASE=${REACT_DOCTOR_DIFF_BASE:-}
-DIFF_ARGS=()
-if [ -n "$DIFF_BASE" ]; then
-    DIFF_ARGS=(--diff "$DIFF_BASE")
-fi
-
-# Get score first
-SCORE=$(npx react-doctor --offline -y "${DIFF_ARGS[@]}" --score 2>&1 | tail -1)
-
-# Run react-doctor in verbose mode and capture output to a file
-OUTPUT_FILE="react-doctor-output.txt"
-npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose > "$OUTPUT_FILE" 2>&1 || true
-
+OUTPUT_FILE=${REACT_DOCTOR_OUTPUT_FILE:-"react-doctor-output.txt"}
 THRESHOLD=${REACT_DOCTOR_THRESHOLD:-90}
 
+# Check if output file already exists (from previous check run)
+if [ ! -f "$OUTPUT_FILE" ]; then
+    # If not, run the check command which will generate it
+    echo "Output file not found. Running react-doctor check..."
+    npm run react-doctor || true
+fi
+
+# Extract score from output
+SCORE=$(grep -oP '\d+(?=/100)' "$OUTPUT_FILE" | tail -1 || echo "0")
+
+# Generate the markdown report
 REACT_DOCTOR_SCORE="$SCORE" REACT_DOCTOR_THRESHOLD="$THRESHOLD" REACT_DOCTOR_OUTPUT_FILE="$OUTPUT_FILE" REACT_DOCTOR_GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-}" REACT_DOCTOR_GITHUB_SHA="${GITHUB_SHA:-}" node -e '
 const fs = require("fs");
 const { buildReactDoctorMarkdownReport } = require("./scripts/react-doctor-report-formatter");
@@ -34,6 +33,3 @@ const report = buildReactDoctorMarkdownReport({
 
 process.stdout.write(report);
 '
-
-# Cleanup
-rm -f "$OUTPUT_FILE"
