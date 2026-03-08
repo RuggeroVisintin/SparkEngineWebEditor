@@ -18,14 +18,24 @@ echo "Running react-doctor with threshold: $THRESHOLD"
 
 # Run react-doctor with verbose output and capture to file if specified
 if [ -n "$OUTPUT_FILE" ]; then
-    npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose > "$OUTPUT_FILE" 2>&1 || true
-    RAW_OUTPUT=$(cat "$OUTPUT_FILE")
+    TMP_OUTPUT_FILE="${OUTPUT_FILE}.raw"
+    npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose > "$TMP_OUTPUT_FILE" 2>&1 || true
+    RAW_OUTPUT=$(cat "$TMP_OUTPUT_FILE")
 else
     RAW_OUTPUT=$(npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose 2>&1 || true)
 fi
 
+# Strip ANSI color/control sequences before parsing score
+CLEAN_OUTPUT=$(printf '%s\n' "$RAW_OUTPUT" | sed -E 's/\x1B\[[0-9;]*[[:alpha:]]//g')
+
+# Persist a clean output file for downstream consumers (e.g. report step)
+if [ -n "$OUTPUT_FILE" ]; then
+    printf '%s\n' "$CLEAN_OUTPUT" > "$OUTPUT_FILE"
+    rm -f "$TMP_OUTPUT_FILE"
+fi
+
 # Extract score from output - handle both "94/100" and "94 / 100" formats
-SCORE=$(echo "$RAW_OUTPUT" | grep -o '[0-9][0-9]* */ *100' | sed 's/ *\/ *100//' | tail -1 || echo "")
+SCORE=$(printf '%s\n' "$CLEAN_OUTPUT" | grep -Eo '[0-9]{1,3}[[:space:]]*/[[:space:]]*100' | sed -E 's/[[:space:]]*\/[[:space:]]*100//' | tail -1 || echo "")
 
 if [ -z "$SCORE" ]; then
     echo "Error: Could not extract score from react-doctor output"

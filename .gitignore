@@ -47,3 +47,5 @@ yarn-error.log*
 /reports
 /vendors
 
+react-doctor-output.txt
+
