@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { buildReactDoctorMarkdownReport } = require('../../../scripts/react-doctor-report-formatter');
+const { buildReactDoctorMarkdownReport } = require('./react-doctor-report-formatter');
 
 describe('buildReactDoctorMarkdownReport', () => {
     it('renders score, summary, and findings as markdown tables with file links', () => {

@@ -79,25 +79,9 @@ jobs:
               });
 
         - name: validate score against threshold
-          run: |
-            if [ "${{ github.event_name }}" == "pull_request" ]; then
-              DIFF_FLAG="--diff origin/${{ github.event.pull_request.base.ref }}"
-            else
-              DIFF_FLAG=""
-            fi
-            SCORE=$(npx react-doctor --offline -y $DIFF_FLAG --score 2>&1 | tail -1)
-            THRESHOLD=${{ env.REACT_DOCTOR_THRESHOLD }}
-            if [ -z "$SCORE" ]; then
-              echo "⚠️ Could not extract react-doctor score"
-              exit 1
-            else
-              if [ "$SCORE" -lt "$THRESHOLD" ]; then
-                echo "❌ Score $SCORE is below threshold $THRESHOLD"
-                exit 1
-              else
-                echo "✅ Score $SCORE meets threshold $THRESHOLD"
-              fi
-            fi
+          env:
+            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || '' }}
+          run: npm run react-doctor
     test_unit:
       name: Unit Tests
       runs-on: ubuntu-latest

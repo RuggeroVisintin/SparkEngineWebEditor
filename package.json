@@ -16,6 +16,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "jest --config jest.unit.config.js --watch",
+    "test:scripts": "jest --config jest.scripts.config.js --watch",
     "test:ci": "bash ./scripts/test-ci.sh",
     "license-check": "bash ./scripts/check-licenses.sh",
     "lint": "eslint . --ext .ts,.tsx",
