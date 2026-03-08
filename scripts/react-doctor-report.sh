@@ -11,8 +11,8 @@ if [ ! -f "$OUTPUT_FILE" ]; then
     npm run react-doctor || true
 fi
 
-# Extract score from output
-SCORE=$(grep -oP '\d+(?=/100)' "$OUTPUT_FILE" | tail -1 || echo "0")
+# Extract score from output - handle both "94/100" and "94 / 100" formats
+SCORE=$(grep -o '[0-9][0-9]* */ *100' "$OUTPUT_FILE" | sed 's/ *\/ *100//' | tail -1 || echo "0")
 
 # Generate the markdown report
 REACT_DOCTOR_SCORE="$SCORE" REACT_DOCTOR_THRESHOLD="$THRESHOLD" REACT_DOCTOR_OUTPUT_FILE="$OUTPUT_FILE" REACT_DOCTOR_GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-}" REACT_DOCTOR_GITHUB_SHA="${GITHUB_SHA:-}" node -e '

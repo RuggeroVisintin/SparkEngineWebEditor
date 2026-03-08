@@ -24,8 +24,8 @@ else
     RAW_OUTPUT=$(npx react-doctor --offline -y "${DIFF_ARGS[@]}" --verbose 2>&1 || true)
 fi
 
-# Extract score from output
-SCORE=$(echo "$RAW_OUTPUT" | grep -oP '\d+(?=/100)' | tail -1 || echo "")
+# Extract score from output - handle both "94/100" and "94 / 100" formats
+SCORE=$(echo "$RAW_OUTPUT" | grep -o '[0-9][0-9]* */ *100' | sed 's/ *\/ *100//' | tail -1 || echo "")
 
 if [ -z "$SCORE" ]; then
     echo "Error: Could not extract score from react-doctor output"
