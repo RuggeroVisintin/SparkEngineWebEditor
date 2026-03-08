@@ -35,8 +35,10 @@ jobs:
       permissions:
         pull-requests: write
         contents: read
+      env:
+        REACT_DOCTOR_THRESHOLD: 90
       steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@v5
           with:
             fetch-depth: 0
         - uses: actions/setup-node@v4
@@ -45,72 +47,28 @@ jobs:
   
         - name: install
           run: npm ci
-
-        - name: fetch PR base branch
-          if: github.event_name == 'pull_request'
-          run: git fetch origin "${{ github.base_ref }}"
-
-        - name: run react-doctor check
+          
+        - uses: millionco/react-doctor@main
           id: react_doctor
-          run: |
-            npm run react-doctor
-          env:
-            REACT_DOCTOR_THRESHOLD: 90
-            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
-          continue-on-error: true
-
-        - name: generate report
-          if: github.event_name == 'pull_request'
-          run: |
-            bash ./scripts/react-doctor-report.sh > react-doctor-report.md
-          env:
-            REACT_DOCTOR_THRESHOLD: 90
-            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
-            GITHUB_REPOSITORY: ${{ github.repository }}
-            GITHUB_SHA: ${{ github.sha }}
-
-        - name: comment on PR
-          if: github.event_name == 'pull_request'
-          uses: actions/github-script@v7
           with:
-            script: |
-              const fs = require('fs');
-              const report = fs.readFileSync('react-doctor-report.md', 'utf8');
-              const issue_number = context.issue.number;
-              
-              // Find existing comment
-              const comments = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue_number,
-              });
-              
-              const botComment = comments.data.find(comment => 
-                comment.user.type === 'Bot' && 
-                comment.body.includes('🩺 React Doctor Report')
-              );
-              
-              if (botComment) {
-                // Update existing comment
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: botComment.id,
-                  body: report
-                });
-              } else {
-                // Create new comment
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue_number,
-                  body: report
-                });
-              }
+            diff: main
+            github-token: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: fail if score below threshold
-          if: steps.react_doctor.outcome == 'failure'
-          run: exit 1
+        - name: validate score against threshold
+          if: always()
+          run: |
+            SCORE="${{ steps.react_doctor.outputs.score }}"
+            THRESHOLD=${{ env.REACT_DOCTOR_THRESHOLD }}
+            if [ -z "$SCORE" ]; then
+              echo "⚠️ Could not extract score from react-doctor action"
+            else
+              if [ "$SCORE" -lt "$THRESHOLD" ]; then
+                echo "❌ Score $SCORE is below threshold $THRESHOLD"
+                exit 1
+              else
+                echo "✅ Score $SCORE meets threshold $THRESHOLD"
+              fi
+            fi
     test_unit:
       name: Unit Tests
       runs-on: ubuntu-latest
