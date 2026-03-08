@@ -38,20 +38,25 @@ jobs:
       env:
         REACT_DOCTOR_THRESHOLD: 90
       steps:
-        - uses: actions/checkout@v5
+        - uses: actions/checkout@v4
           with:
+            ref: ${{ github.event.pull_request.head.sha }}
             fetch-depth: 0
+            filter: blob:none
         - uses: actions/setup-node@v4
           with:
             node-version: 20
   
         - name: install
           run: npm ci
+
+        - name: create branch for diff detection
+          run: git checkout -b pr-head
           
         - uses: millionco/react-doctor@main
           id: react_doctor
           with:
-            diff: main
+            diff: origin/${{ github.event.pull_request.base.ref }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
         - name: validate score against threshold
