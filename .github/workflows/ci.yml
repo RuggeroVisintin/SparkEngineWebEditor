@@ -40,7 +40,7 @@ jobs:
       steps:
         - uses: actions/checkout@v4
           with:
-            ref: ${{ github.event.pull_request.head.sha }}
+            ref: ${{ github.event.pull_request.head.sha || github.sha }}
             fetch-depth: 0
             filter: blob:none
         - uses: actions/setup-node@v4
@@ -51,9 +51,11 @@ jobs:
           run: npm ci
 
         - name: create branch for diff detection
+          if: github.event_name == 'pull_request'
           run: git checkout -b pr-head
           
         - name: run react-doctor and generate report
+          if: github.event_name == 'pull_request'
           env:
             REACT_DOCTOR_DIFF_BASE: origin/${{ github.event.pull_request.base.ref }}
           run: |
@@ -78,7 +80,12 @@ jobs:
 
         - name: validate score against threshold
           run: |
-            SCORE=$(npx react-doctor --offline -y --diff "origin/${{ github.event.pull_request.base.ref }}" --score 2>&1 | tail -1)
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
+              DIFF_FLAG="--diff origin/${{ github.event.pull_request.base.ref }}"
+            else
+              DIFF_FLAG=""
+            fi
+            SCORE=$(npx react-doctor --offline -y $DIFF_FLAG --score 2>&1 | tail -1)
             THRESHOLD=${{ env.REACT_DOCTOR_THRESHOLD }}
             if [ -z "$SCORE" ]; then
               echo "⚠️ Could not extract react-doctor score"
