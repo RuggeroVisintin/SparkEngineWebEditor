@@ -7,7 +7,7 @@ function normalizeSpaces(value) {
 }
 
 function escapeTable(value) {
-    return value.replace(/\|/g, '\\|');
+    return value.replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
 }
 
 function normalizePath(value) {
