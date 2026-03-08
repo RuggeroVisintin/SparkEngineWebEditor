@@ -47,6 +47,14 @@ describe('Editor Page - Components Panel', () => {
             await expect((await page.getByText(componentName).all()).at(0)).toBeVisible();
         });
 
+        it('Should close the Components Panel when clicking Close button', async () => {
+            const closeButton = page.getByRole('button', { name: /Close/i });
+            await closeButton.click();
+
+            const componentsPanel = page.getByRole('listbox', { name: /Components Panel/i });
+            await expect(componentsPanel).not.toBeVisible();
+        });
+
         it('Should close the Components Panel when clicking outside', async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);
             await addEntityButton.click();
