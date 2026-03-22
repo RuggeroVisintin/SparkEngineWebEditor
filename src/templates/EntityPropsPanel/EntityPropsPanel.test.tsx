@@ -1,9 +1,7 @@
-import { BaseEntity, BoundingBoxComponent, GameObject, TransformComponent, TriggerEntity } from "@sparkengine";
-import { SerializableCallback } from "sparkengineweb";
+import { BaseEntity, BoundingBoxComponent, GameObject, SoundComponent, TransformComponent } from "@sparkengine";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";
-import { getWindowCurrentUrl } from "../../__mocks__/window.mock";
 import { disableFeature, enableFeature } from "../../core/featureFlags";
 
 const noOp = () => { };
@@ -92,6 +90,15 @@ describe('EntityPropsPanel', () => {
             fireEvent.click(screen.getByRole('button', { name: /TransformComponent/i }));
 
             expect(screen.queryByRole('button', { name: /Open Scripting/i })).not.toBeInTheDocument();
+        });
+
+        it('Should not render unavailable components such as SoundComponent', () => {
+            const entity = new BaseEntity();
+            entity.addComponent(new SoundComponent({ filePath: 'assets/test.mp3' }));
+
+            renderEntityPropsPanel(entity);
+
+            expect(screen.queryByRole('region', { name: 'SoundComponent' })).not.toBeInTheDocument();
         });
     })
 

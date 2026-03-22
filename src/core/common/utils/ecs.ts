@@ -1,7 +1,7 @@
 import { allOf, IComponent, IEntity, typeOf, create } from "sparkengineweb";
 
 function isComponentUnavaibleFromType(componentType: string): boolean {
-    return componentType === 'AnimationComponent';
+    return componentType === 'AnimationComponent' || componentType === 'SoundComponent';
 }
 
 export function isComponentUnavaible(component: IComponent): boolean {

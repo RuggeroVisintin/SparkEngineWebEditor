@@ -1,7 +1,21 @@
-import { BaseEntity, GameObject, StaticObject, TriggerEntity, TransformComponent, ShapeComponent, MaterialComponent, BoundingBoxComponent, IEntity, typeOf } from "sparkengineweb";
-import { getRequiredComponents, isComponentRequired } from "./ecs";
+import { BaseEntity, GameObject, SoundComponent, StaticObject, TransformComponent, TriggerEntity } from "sparkengineweb";
+import { getAllAvailableComponents, getRequiredComponents, isComponentRequired, isComponentUnavaible } from "./ecs";
 
 describe('core/common/utils/ecs', () => {
+    describe('component availability', () => {
+        it('Should mark SoundComponent as unavailable', () => {
+            const soundComponent = new SoundComponent({ filePath: 'assets/test.mp3' });
+
+            expect(isComponentUnavaible(soundComponent)).toBe(true);
+        });
+
+        it('Should exclude SoundComponent from the available components list', () => {
+            const availableComponents = getAllAvailableComponents();
+
+            expect(availableComponents.SoundComponent).toBeUndefined();
+        });
+    });
+
     describe('getRequiredComponents()', () => {
         it('Should return empty array for BaseEntity', () => {
             const requiredComponents = getRequiredComponents('BaseEntity');
