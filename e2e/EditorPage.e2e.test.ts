@@ -11,7 +11,7 @@ const openScriptingFromTriggerObject = async (options?: { addEntity?: boolean })
     const entityItem = page.getByText(/TriggerEntity/i).first();
     await entityItem.click();
 
-    const boundingBoxPanel = page.getByRole('button', { name: /BoundingBoxComponent/i }).first();
+    const boundingBoxPanel = page.getByRole('button', { name: /TriggerComponent/i }).first();
     const isExpanded = await boundingBoxPanel.getAttribute('aria-expanded');
 
     // Keep this helper idempotent: only expand when currently collapsed.
