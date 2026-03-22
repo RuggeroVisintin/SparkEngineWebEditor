@@ -98,6 +98,19 @@ describe('EntityPropsPanel', () => {
 
             expect(onComponentUpdate).toHaveBeenCalled();
         });
+
+        it('Should show the scripting prop when any component has a scriptable callback', () => {
+            const entity = new GameObject();
+
+            entity.addComponent(new BoundingBoxComponent());
+
+            renderEntityPropsPanel(entity);
+
+            fireEvent.click(screen.getByText('Scripting'));
+
+            const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
+            expect(scriptingPanel).toBeInTheDocument();
+        });
     })
 
     describe('Add Component', () => {

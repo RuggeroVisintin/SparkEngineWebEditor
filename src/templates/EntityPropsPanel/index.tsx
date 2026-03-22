@@ -1,4 +1,5 @@
-import { IComponent, IEntity, typeOf } from "@sparkengine";
+import { IComponent, IEntity } from "@sparkengine";
+import { EcsUtils, isOptionallyInstanceOf, SerializableCallback, typeOf } from "sparkengineweb";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";
@@ -15,6 +16,11 @@ interface EntityPropsPanelProps {
 
 export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate, onComponentRemove }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
+    const hasScriptableCallbacks = components?.some(component => {
+        const props = EcsUtils.getPublicProperties(component, { writable: true });
+
+        return Object.keys(props).some((propertyName) => isOptionallyInstanceOf(component, propertyName, SerializableCallback));
+    }) ?? false;
 
     return (
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
@@ -36,8 +42,7 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                     </ExpandablePanel>
                 )
             })}
-            {typeOf(currentEntity) === 'TriggerEntity' && (
-                // TODO: scripting should be done at a component level
+            {hasScriptableCallbacks && (
                 <ExpandablePanel title="Scripting" $divide>
                     <Box data-testid="EntityPropsPanel.TriggerEntity.ScriptingProp">
                         <Button
