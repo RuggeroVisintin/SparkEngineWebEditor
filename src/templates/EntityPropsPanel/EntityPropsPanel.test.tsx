@@ -1,4 +1,5 @@
 import { BaseEntity, BoundingBoxComponent, GameObject, TransformComponent, TriggerEntity } from "@sparkengine";
+import { SerializableCallback } from "sparkengineweb";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";
@@ -34,36 +35,6 @@ const renderEntityPropsPanel = (entity: BaseEntity, options?: {
 }
 
 describe('EntityPropsPanel', () => {
-    describe('TriggerEntity', () => {
-        it('Should show the scripting prop', () => {
-            const entity = new TriggerEntity();
-
-            renderEntityPropsPanel(entity);
-
-            fireEvent.click(screen.getByText('Scripting'));
-
-            const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
-            expect(scriptingPanel).toBeInTheDocument();
-        });
-
-        it('Should open the scripting panel on a blank tab when the link is clicked', () => {
-            const entity = new TriggerEntity();
-
-            const onNavigate = jest.fn(() => null);
-
-            renderEntityPropsPanel(entity, { onNavigate });
-
-            fireEvent.click(screen.getByText('Scripting'));
-            fireEvent.click(screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingLink'));
-
-            expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({
-                location: expect.objectContaining({ pathname: '/' }),
-            }));
-
-            expect(getWindowCurrentUrl('scripting')).toBe(`/scripting/${entity.uuid}`);
-        });
-    });
-
     describe('Components', () => {
         let entity: BaseEntity;
 
@@ -97,6 +68,30 @@ describe('EntityPropsPanel', () => {
             fireEvent.change(positionInput, { target: { value: 10 } });
 
             expect(onComponentUpdate).toHaveBeenCalled();
+        });
+
+        it('Should show the scripting prop when any component has a scriptable callback', () => {
+            const entity = new GameObject();
+
+            entity.addComponent(new BoundingBoxComponent());
+
+            renderEntityPropsPanel(entity);
+
+            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
+
+            const scriptingButton = screen.getByRole('button', { name: /Open Scripting/i });
+            expect(scriptingButton).toBeInTheDocument();
+        });
+
+        it('Should not show open scripting in components without scriptable callbacks', () => {
+            const entity = new BaseEntity();
+            entity.addComponent(new TransformComponent());
+
+            renderEntityPropsPanel(entity);
+
+            fireEvent.click(screen.getByRole('button', { name: /TransformComponent/i }));
+
+            expect(screen.queryByRole('button', { name: /Open Scripting/i })).not.toBeInTheDocument();
         });
     })
 

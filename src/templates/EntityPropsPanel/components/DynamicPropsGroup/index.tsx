@@ -13,6 +13,7 @@ type ComponentProp = PrimitiveProp | ComplexProp;
 export interface DynamicPropsGroupProps {
     component: IComponent,
     onChange?: CallableFunction,
+    onOpenScripting?: (callbackPropertyName: string) => void,
 }
 
 const valueToFormInput = (propertyName: string, value: ComponentProp, component: any, onChange?: CallableFunction, label?: string): React.ReactNode | React.ReactNode[] => {
@@ -99,7 +100,7 @@ const camelCaseToCapitalizedWords = (str: string) => {
         .replace(/^./, function (str) { return str.toUpperCase(); })
 }
 
-export const DynamicPropsGroup = ({ component, onChange }: DynamicPropsGroupProps) => {
+export const DynamicPropsGroup = ({ component, onChange, onOpenScripting }: DynamicPropsGroupProps) => {
     const props = EcsUtils.getPublicProperties(component, { writable: true });
 
     if (typeOf(component) === 'MaterialComponent') {
@@ -108,12 +109,25 @@ export const DynamicPropsGroup = ({ component, onChange }: DynamicPropsGroupProp
 
     return (
         <>
-            {Object.entries(props).map(([key, value]) => (
-                isOptionallyInstanceOf(component, key, SerializableCallback) === false && <Inputs.Row key={key} $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
-                    <Inputs.Legend>{camelCaseToCapitalizedWords(key)}</Inputs.Legend>
-                    {valueToFormInput(key, value as ComponentProp, component as any, onChange)}
-                </Inputs.Row>
-            ))}
+            {Object.entries(props).map(([key, value]) => {
+                if (isOptionallyInstanceOf(component, key, SerializableCallback)) {
+                    return (
+                        <Inputs.Row key={key} $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                            <Inputs.Legend>{camelCaseToCapitalizedWords(key)}</Inputs.Legend>
+                            <Button onClick={() => onOpenScripting?.(key)}>
+                                Open Scripting
+                            </Button>
+                        </Inputs.Row>
+                    );
+                }
+
+                return (
+                    <Inputs.Row key={key} $direction="row" $fill={false} $wrap={true} $fillMethod="flex">
+                        <Inputs.Legend>{camelCaseToCapitalizedWords(key)}</Inputs.Legend>
+                        {valueToFormInput(key, value as ComponentProp, component as any, onChange)}
+                    </Inputs.Row>
+                );
+            })}
         </>
     )
 }

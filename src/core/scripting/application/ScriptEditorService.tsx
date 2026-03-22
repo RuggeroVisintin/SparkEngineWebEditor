@@ -19,6 +19,8 @@ export class ScriptEditorService {
     constructor(
         private readonly eventBus: EventBus,
         private readonly entityUuid: string,
+        private readonly componentUuid: string,
+        private readonly callbackPropertyName: string,
         private readonly state: StateRepository<ScriptEditorState>
     ) {
         this.eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', this.handle.bind(this));
@@ -26,7 +28,9 @@ export class ScriptEditorService {
 
     public onEditorReady(): void {
         this.eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-            entityUuid: this.entityUuid
+            entityUuid: this.entityUuid,
+            componentUuid: this.componentUuid,
+            callbackPropertyName: this.callbackPropertyName,
         });
     }
 
@@ -39,12 +43,18 @@ export class ScriptEditorService {
 
         this.eventBus.publish<ScriptSaved>('ScriptSaved', {
             entityUuid: this.entityUuid,
+            componentUuid: this.componentUuid,
+            callbackPropertyName: this.callbackPropertyName,
             script: this.currentScript || ''
         });
     }
 
     private handle(message: OpenScriptingEditorCommand): void {
-        if (message.entityUuid !== this.entityUuid) {
+        if (
+            message.entityUuid !== this.entityUuid ||
+            message.componentUuid !== this.componentUuid ||
+            message.callbackPropertyName !== this.callbackPropertyName
+        ) {
             return;
         }
 

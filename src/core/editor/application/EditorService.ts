@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, TriggerEntity, typeOf, SerializableCallback, CameraComponent, GameObject, toRounded, IComponent, create } from "sparkengineweb";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create } from "sparkengineweb";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
@@ -262,29 +262,45 @@ export class EditorService {
 
     private onScriptingEditorReadyEvent(e: ScriptingEditorReady): void {
         if (!this.currentEntity ||
-            typeOf(this.currentEntity) !== 'TriggerEntity' ||
             e.entityUuid !== this.currentEntity.uuid
         ) return;
 
+        const component = this.currentEntity.components.find(component => component.uuid === e.componentUuid);
+
+        if (!component) return;
+
+        const callbackValue = (component as any)[e.callbackPropertyName];
+
+        if (callbackValue !== undefined && !(callbackValue instanceof SerializableCallback)) return;
+
         const defaultScript = 'function () {\n    \n}';
+        const callbackSource = callbackValue?.toString();
 
         this.eventBus.publish<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', {
-            currentScript: `${(<TriggerEntity>this.currentEntity).onTriggerCB?.toString() ?? defaultScript}`,
-            entityUuid: this.currentEntity?.uuid
+            currentScript: `${callbackSource === 'function [not serializable]' ? defaultScript : callbackSource ?? defaultScript}`,
+            entityUuid: this.currentEntity.uuid,
+            componentUuid: e.componentUuid,
+            callbackPropertyName: e.callbackPropertyName,
         });
     }
 
     private onScriptSavedEvent(e: ScriptSaved): void {
         this.currentScene?.entities.forEach(entity => {
-            if (entity.uuid === e.entityUuid) {
-                if (typeOf(entity) === 'TriggerEntity') {
-                    try {
-                        (<TriggerEntity>entity).onTriggerCB = SerializableCallback.fromString(e.script);
-                    } catch (error) {
-                        console.error('Failed to execute script:', error);
-                        console.error('Script content:', e.script);
-                    }
-                }
+            if (entity.uuid !== e.entityUuid) return;
+
+            const component = entity.components.find(component => component.uuid === e.componentUuid);
+
+            if (!component) return;
+
+            const callbackValue = (component as any)[e.callbackPropertyName];
+
+            if (callbackValue !== undefined && !(callbackValue instanceof SerializableCallback)) return;
+
+            try {
+                (component as any)[e.callbackPropertyName] = SerializableCallback.fromString(e.script);
+            } catch (error) {
+                console.error('Failed to execute script:', error);
+                console.error('Script content:', e.script);
             }
         })
     }

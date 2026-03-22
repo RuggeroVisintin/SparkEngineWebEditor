@@ -1,10 +1,10 @@
-import { IComponent, IEntity, typeOf } from "@sparkengine";
+import { IComponent, IEntity } from "@sparkengine";
+import { typeOf } from "sparkengineweb";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
 import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
-import { UUID } from "crypto";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -30,31 +30,25 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                     <ExpandablePanel key={index} title={componentType} $divide={index > 0} suffix={
                         isFeatureEnabled('ADD_COMPONENTS') && <Button disabled={isRequired} onClick={() => onComponentRemove(component.uuid)}> X </Button>
                     }>
-                        <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
-                            onComponentUpdate?.(component, propName, value);
-                        }} />
-                    </ExpandablePanel>
-                )
-            })}
-            {typeOf(currentEntity) === 'TriggerEntity' && (
-                // TODO: scripting should be done at a component level
-                <ExpandablePanel title="Scripting" $divide>
-                    <Box data-testid="EntityPropsPanel.TriggerEntity.ScriptingProp">
-                        <Button
-                            data-testid="EntityPropsPanel.TriggerEntity.ScriptingLink"
-                            onClick={() => {
-                                const namedWindow = window.open(`/scripting/${currentEntity?.uuid}`, 'scripting');
+                        <DynamicPropsGroup 
+                            component={component} 
+                            onChange={(propName: string, value: any) => {
+                                onComponentUpdate?.(component, propName, value);
+                            }} 
+                            onOpenScripting={(callbackPropertyName: string) => {
+                                const namedWindow = window.open(
+                                    `/scripting/${currentEntity?.uuid}/${component.uuid}/${callbackPropertyName}`,
+                                    'scripting'
+                                );
 
                                 if (namedWindow) {
                                     namedWindow.focus();
                                 }
-                            }}
-                        >
-                            <Box> Open Scripting </Box>
-                        </Button>
-                    </Box>
-                </ExpandablePanel>
-            )}
+                            }} 
+                        />
+                    </ExpandablePanel>
+                )
+            })}
 
             {isFeatureEnabled('ADD_COMPONENTS') && <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
                 <FlexBox >

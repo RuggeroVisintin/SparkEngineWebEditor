@@ -1,4 +1,4 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -61,6 +61,12 @@ class ContextualUiServiceTestDouble extends ContextualUiService {
     public reset(): void {
         Object.assign(this, new ContextualUiServiceTestDouble());
     }
+}
+
+class ScriptableBoundingBoxComponent extends BoundingBoxComponent {
+    public onCollisionCB = SerializableCallback.fromFunction(function () {
+        return 0;
+    });
 }
 
 const sceneToLoad = new Scene();
@@ -537,9 +543,14 @@ describe('EditorService', () => {
     });
 
     describe('on ScriptingEditorReady event', () => {
-        it('Should emit an OpenScriptingEditor command w/ the current entity script set', () => {
-            const entity = new TriggerEntity();
-            entity.onTriggerCB = SerializableCallback.fromFunction(() => { });
+        it('Should emit an OpenScriptingEditor command for a targeted component callback', () => {
+            const entity = new GameObject();
+            const scriptableComponent = new ScriptableBoundingBoxComponent();
+            scriptableComponent.onCollisionCB = SerializableCallback.fromFunction(function () {
+                return 3;
+            });
+
+            entity.addComponent(scriptableComponent);
 
             const cb = jest.fn();
             eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
@@ -547,27 +558,17 @@ describe('EditorService', () => {
             editorService.selectEntity(entity);
 
             eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: entity.uuid
-            });
+                entityUuid: entity.uuid,
+                componentUuid: scriptableComponent.uuid,
+                callbackPropertyName: 'onCollisionCB',
+            } as ScriptingEditorReady);
 
             expect(cb).toHaveBeenCalledWith({
-                currentScript: `${entity.onTriggerCB.toString()}`,
-                entityUuid: entity.uuid
+                currentScript: `${scriptableComponent.onCollisionCB.toString()}`,
+                entityUuid: entity.uuid,
+                componentUuid: scriptableComponent.uuid,
+                callbackPropertyName: 'onCollisionCB',
             });
-        });
-
-        it('Should just skip if the currentEntity is not a TriggerEntity', () => {
-            const entity = new GameObject();
-            const cb = jest.fn();
-            eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
-
-            editorService.selectEntity(entity);
-
-            eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: entity.uuid
-            });
-
-            expect(cb).not.toHaveBeenCalled();
         });
 
         it('Should skip if currentEntity is not set', () => {
@@ -575,63 +576,96 @@ describe('EditorService', () => {
             eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
 
             eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: 'test-entity-uuid'
-            });
+                entityUuid: 'test-entity-uuid',
+                componentUuid: 'test-component-uuid',
+                callbackPropertyName: 'onCollisionCB',
+            } as ScriptingEditorReady);
 
             expect(cb).not.toHaveBeenCalled();
         });
 
         it('Should skip if the currentEntity id does not match event entityUuid', () => {
-            const entity = new TriggerEntity();
+            const entity = new GameObject();
             const cb = jest.fn();
             eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
 
             editorService.selectEntity(entity);
 
             eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: 'test-entity-uuid'
-            });
+                entityUuid: 'test-entity-uuid',
+                componentUuid: 'test-component-uuid',
+                callbackPropertyName: 'onCollisionCB',
+            } as ScriptingEditorReady);
 
             expect(cb).not.toHaveBeenCalled();
         });
 
-        it('Should sent through a default script if the script is not defined', () => {
-            const entity = new TriggerEntity();
+        it('Should sent through a default script if the callback script is not defined', () => {
+            const entity = new GameObject();
+            const scriptableComponent = new ScriptableBoundingBoxComponent();
+            (scriptableComponent as any).onCollisionCB = undefined;
+            entity.addComponent(scriptableComponent);
+
             const cb = jest.fn();
             eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
 
             editorService.selectEntity(entity);
 
             eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: entity.uuid
-            });
+                entityUuid: entity.uuid,
+                componentUuid: scriptableComponent.uuid,
+                callbackPropertyName: 'onCollisionCB',
+            } as ScriptingEditorReady);
 
             expect(cb).toHaveBeenCalledWith({
                 currentScript: 'function () {\n    \n}',
-                entityUuid: entity.uuid
+                entityUuid: entity.uuid,
+                componentUuid: scriptableComponent.uuid,
+                callbackPropertyName: 'onCollisionCB',
             });
         });
     });
 
     describe('on ScriptSaved event', () => {
-        it('Should update the given entity script', async () => {
-            const entity = new TriggerEntity();
-            entity.onTriggerCB = SerializableCallback.fromFunction(function () {
-            });
+        it('Should update the targeted component callback script', () => {
+            const entity = new GameObject();
+            const scriptableComponent = new ScriptableBoundingBoxComponent();
+
+            entity.addComponent(scriptableComponent);
 
             editorService.start(context, { width: 800, height: 600 });
             editorService.currentScene?.registerEntity(entity);
 
-            const script = 'function () {\n    return 1;\n}';
+            const script = 'function () {\n    return 2;\n}';
 
             eventBus.publish<ScriptSaved>('ScriptSaved', {
                 entityUuid: entity.uuid,
-                script
-            });
+                componentUuid: scriptableComponent.uuid,
+                callbackPropertyName: 'onCollisionCB',
+                script,
+            } as ScriptSaved);
 
+            expect(scriptableComponent.onCollisionCB.call(this)).toEqual(2);
+        });
 
-            expect(entity.onTriggerCB.call(this)).toEqual(1);
-        })
+        it('Should skip update when component is not found', () => {
+            const entity = new GameObject();
+            const scriptableComponent = new ScriptableBoundingBoxComponent();
+
+            entity.addComponent(scriptableComponent);
+
+            editorService.start(context, { width: 800, height: 600 });
+            editorService.currentScene?.registerEntity(entity);
+
+            eventBus.publish<ScriptSaved>('ScriptSaved', {
+                entityUuid: entity.uuid,
+                componentUuid: 'missing-component-uuid',
+                callbackPropertyName: 'onCollisionCB',
+                script: 'function () {\n    return 9;\n}',
+            } as ScriptSaved);
+
+            expect(scriptableComponent.onCollisionCB.call(this)).toEqual(0);
+        });
     });
 
     describe('addComponent()', () => {

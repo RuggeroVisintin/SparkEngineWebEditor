@@ -4,14 +4,20 @@ import { ScriptEditorService, ScriptEditorState } from "../core/scripting/applic
 import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
 import { useAppState } from "./useAppState";
 
-export const useScriptEditorService = (currentEntityUuid: string): [ScriptEditorService, ScriptEditorState] => {
+export const useScriptEditorService = (
+    entityUuid: string,
+    componentUuid: string,
+    callbackPropertyName: string
+): [ScriptEditorService, ScriptEditorState] => {
     const [stateRepo] = useState(() => new ReactStateRepository<ScriptEditorState>());
     const [appState] = useAppState(stateRepo);
 
     const [service] = useState(() =>
         new ScriptEditorService(
             new EventBusWithBrowserBroadcast("scripting"),
-            currentEntityUuid,
+            entityUuid,
+            componentUuid,
+            callbackPropertyName,
             stateRepo
         )
     );
