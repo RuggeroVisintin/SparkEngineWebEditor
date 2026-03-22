@@ -44,7 +44,7 @@ describe('core/common/utils/ecs', () => {
                     'TransformComponent',
                     'ShapeComponent',
                     'MaterialComponent',
-                    'BoundingBoxComponent'
+                    'TriggerComponent',
                 ])
             );
             expect(requiredComponents.length).toBe(4);
@@ -87,7 +87,7 @@ describe('core/common/utils/ecs', () => {
             const entity = new TriggerEntity();
 
             expect(isComponentRequired(entity, 'TransformComponent')).toBe(true);
-            expect(isComponentRequired(entity, 'BoundingBoxComponent')).toBe(true);
+            expect(isComponentRequired(entity, 'TriggerComponent')).toBe(true);
         });
 
         it('Should work correctly with BaseEntity (no requirements)', () => {

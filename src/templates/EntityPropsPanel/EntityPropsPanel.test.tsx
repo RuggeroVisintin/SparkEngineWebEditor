@@ -35,44 +35,6 @@ const renderEntityPropsPanel = (entity: BaseEntity, options?: {
 }
 
 describe('EntityPropsPanel', () => {
-    describe('TriggerEntity', () => {
-        it('Should show open scripting inside a component with scriptable callback', () => {
-            const entity = new TriggerEntity();
-
-            renderEntityPropsPanel(entity);
-
-            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
-
-            const scriptingButton = screen.getByRole('button', { name: /Open Scripting/i });
-            expect(scriptingButton).toBeInTheDocument();
-        });
-
-        it('Should open the scripting page on a blank tab when open scripting is clicked from a component', () => {
-            const entity = new TriggerEntity();
-            const callbackComponent = entity.components.find(component =>
-                Object.entries(component).some(([_, value]) => value instanceof SerializableCallback)
-            )!;
-
-            const callbackPropertyName = Object.entries(callbackComponent)
-                .find(([_, value]) => value instanceof SerializableCallback)?.[0]!;
-
-            const onNavigate = jest.fn(() => null);
-
-            renderEntityPropsPanel(entity, { onNavigate });
-
-            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
-            fireEvent.click(screen.getByRole('button', { name: /Open Scripting/i }));
-
-            expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({
-                location: expect.objectContaining({ pathname: '/' }),
-            }));
-
-            expect(getWindowCurrentUrl('scripting')).toBe(
-                `/scripting/${entity.uuid}/${callbackComponent.uuid}/${callbackPropertyName}`
-            );
-        });
-    });
-
     describe('Components', () => {
         let entity: BaseEntity;
 

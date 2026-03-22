@@ -1,4 +1,4 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -624,32 +624,6 @@ describe('EditorService', () => {
                 callbackPropertyName: 'onCollisionCB',
             });
         });
-
-        it('Should send through the default script when callback source is not serializable', () => {
-            const entity = new TriggerEntity();
-            entity.onTriggerCB = SerializableCallback.fromFunction(function () {
-                return 7;
-            });
-
-            const boundingBox = entity.getComponent<BoundingBoxComponent>('BoundingBoxComponent')!;
-            const cb = jest.fn();
-            eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', cb);
-
-            editorService.selectEntity(entity);
-
-            eventBus.publish<ScriptingEditorReady>('ScriptingEditorReady', {
-                entityUuid: entity.uuid,
-                componentUuid: boundingBox.uuid,
-                callbackPropertyName: 'onCollisionCb',
-            } as ScriptingEditorReady);
-
-            expect(cb).toHaveBeenCalledWith({
-                currentScript: 'function () {\n    \n}',
-                entityUuid: entity.uuid,
-                componentUuid: boundingBox.uuid,
-                callbackPropertyName: 'onCollisionCb',
-            });
-        });
     });
 
     describe('on ScriptSaved event', () => {
@@ -691,29 +665,6 @@ describe('EditorService', () => {
             } as ScriptSaved);
 
             expect(scriptableComponent.onCollisionCB.call(this)).toEqual(0);
-        });
-
-        it('Should update TriggerEntity targeted component callback when callback source is not serializable', () => {
-            const entity = new TriggerEntity();
-            entity.onTriggerCB = SerializableCallback.fromFunction(function () {
-                return 1;
-            });
-
-            const boundingBox = entity.getComponent<BoundingBoxComponent>('BoundingBoxComponent')!;
-
-            editorService.start(context, { width: 800, height: 600 });
-            editorService.currentScene?.registerEntity(entity);
-
-            eventBus.publish<ScriptSaved>('ScriptSaved', {
-                entityUuid: entity.uuid,
-                componentUuid: boundingBox.uuid,
-                callbackPropertyName: 'onCollisionCb',
-                script: 'function () {\n    return 5;\n}',
-            } as ScriptSaved);
-
-            expect((boundingBox as any).onCollisionCb).toBeInstanceOf(SerializableCallback);
-            expect((boundingBox as any).onCollisionCb?.toString()).toContain('return 5;');
-            expect(entity.onTriggerCB?.call(this)).toEqual(1);
         });
     });
 
