@@ -10,6 +10,10 @@
 - MUST: Follow Conventional Commits.
 - MUST: Maintain documentation and skills updated
 
+# Skills
+
+You can find relevant skills in the `./skills` directory
+
 ## Testing
 
 Run checks before committing

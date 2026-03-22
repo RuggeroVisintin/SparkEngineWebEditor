@@ -13,7 +13,7 @@ description: Use this skill for implementing behavior changes and bug fixes thro
 
 ## The Red-Green-Refactor Cycle
 
-1. **RED** - Write a sinle failing test FIRST
+1. **RED** - Write a single failing test FIRST
    - Write ONE test that describes the desired behavior
    - The test MUST fail initially (proving it's testing the right thing)
    - Run the test to confirm it fails: `npm test`
