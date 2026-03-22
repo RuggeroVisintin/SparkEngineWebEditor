@@ -35,26 +35,26 @@ const renderEntityPropsPanel = (entity: BaseEntity, options?: {
 
 describe('EntityPropsPanel', () => {
     describe('TriggerEntity', () => {
-        it('Should show the scripting prop', () => {
+        it('Should show open scripting inside a component with scriptable callback', () => {
             const entity = new TriggerEntity();
 
             renderEntityPropsPanel(entity);
 
-            fireEvent.click(screen.getByText('Scripting'));
+            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
 
-            const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
-            expect(scriptingPanel).toBeInTheDocument();
+            const scriptingButton = screen.getByRole('button', { name: /Open Scripting/i });
+            expect(scriptingButton).toBeInTheDocument();
         });
 
-        it('Should open the scripting panel on a blank tab when the link is clicked', () => {
+        it('Should open the scripting page on a blank tab when open scripting is clicked from a component', () => {
             const entity = new TriggerEntity();
 
             const onNavigate = jest.fn(() => null);
 
             renderEntityPropsPanel(entity, { onNavigate });
 
-            fireEvent.click(screen.getByText('Scripting'));
-            fireEvent.click(screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingLink'));
+            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
+            fireEvent.click(screen.getByRole('button', { name: /Open Scripting/i }));
 
             expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({
                 location: expect.objectContaining({ pathname: '/' }),
@@ -106,10 +106,21 @@ describe('EntityPropsPanel', () => {
 
             renderEntityPropsPanel(entity);
 
-            fireEvent.click(screen.getByText('Scripting'));
+            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
 
-            const scriptingPanel = screen.getByTestId('EntityPropsPanel.TriggerEntity.ScriptingProp');
-            expect(scriptingPanel).toBeInTheDocument();
+            const scriptingButton = screen.getByRole('button', { name: /Open Scripting/i });
+            expect(scriptingButton).toBeInTheDocument();
+        });
+
+        it('Should not show open scripting in components without scriptable callbacks', () => {
+            const entity = new BaseEntity();
+            entity.addComponent(new TransformComponent());
+
+            renderEntityPropsPanel(entity);
+
+            fireEvent.click(screen.getByRole('button', { name: /TransformComponent/i }));
+
+            expect(screen.queryByRole('button', { name: /Open Scripting/i })).not.toBeInTheDocument();
         });
     })
 

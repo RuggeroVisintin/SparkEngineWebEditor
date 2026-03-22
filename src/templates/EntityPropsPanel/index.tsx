@@ -1,11 +1,10 @@
 import { IComponent, IEntity } from "@sparkengine";
-import { EcsUtils, isOptionallyInstanceOf, SerializableCallback, typeOf } from "sparkengineweb";
+import { typeOf } from "sparkengineweb";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";
 import { isFeatureEnabled } from "../../core/featureFlags";
 import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
-import { UUID } from "crypto";
 
 interface EntityPropsPanelProps {
     currentEntity?: IEntity,
@@ -16,11 +15,6 @@ interface EntityPropsPanelProps {
 
 export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate, onComponentRemove }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
-    const hasScriptableCallbacks = components?.some(component => {
-        const props = EcsUtils.getPublicProperties(component, { writable: true });
-
-        return Object.keys(props).some((propertyName) => isOptionallyInstanceOf(component, propertyName, SerializableCallback));
-    }) ?? false;
 
     return (
         <Box $size={1} $scroll $divide $spacing={Spacing.sm}>
@@ -36,30 +30,22 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                     <ExpandablePanel key={index} title={componentType} $divide={index > 0} suffix={
                         isFeatureEnabled('ADD_COMPONENTS') && <Button disabled={isRequired} onClick={() => onComponentRemove(component.uuid)}> X </Button>
                     }>
-                        <DynamicPropsGroup component={component} onChange={(propName: string, value: any) => {
-                            onComponentUpdate?.(component, propName, value);
-                        }} />
-                    </ExpandablePanel>
-                )
-            })}
-            {hasScriptableCallbacks && (
-                <ExpandablePanel title="Scripting" $divide>
-                    <Box data-testid="EntityPropsPanel.TriggerEntity.ScriptingProp">
-                        <Button
-                            data-testid="EntityPropsPanel.TriggerEntity.ScriptingLink"
-                            onClick={() => {
+                        <DynamicPropsGroup 
+                            component={component} 
+                            onChange={(propName: string, value: any) => {
+                                onComponentUpdate?.(component, propName, value);
+                            }} 
+                            onOpenScripting={() => {
                                 const namedWindow = window.open(`/scripting/${currentEntity?.uuid}`, 'scripting');
 
                                 if (namedWindow) {
                                     namedWindow.focus();
                                 }
-                            }}
-                        >
-                            <Box> Open Scripting </Box>
-                        </Button>
-                    </Box>
-                </ExpandablePanel>
-            )}
+                            }} 
+                        />
+                    </ExpandablePanel>
+                )
+            })}
 
             {isFeatureEnabled('ADD_COMPONENTS') && <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
                 <FlexBox >
