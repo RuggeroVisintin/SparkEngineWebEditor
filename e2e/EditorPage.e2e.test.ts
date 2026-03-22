@@ -52,10 +52,6 @@ describe('Editor Page - Components Panel', () => {
             await expect(page.getByRole('region', { name: /Transform/i })).toBeVisible();
         });
 
-        // it('Should open the scripting page from a scriptable component', async () => {
-        //     await openScriptingFromTriggerObject({ addEntity: true });
-        // });
-
         it('Should save the edited script and show it again when reopening scripting', async () => {
             const scriptingPage = await openScriptingFromTriggerObject({ addEntity: true });
 
