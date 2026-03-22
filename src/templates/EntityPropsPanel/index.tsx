@@ -35,8 +35,11 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                             onChange={(propName: string, value: any) => {
                                 onComponentUpdate?.(component, propName, value);
                             }} 
-                            onOpenScripting={() => {
-                                const namedWindow = window.open(`/scripting/${currentEntity?.uuid}`, 'scripting');
+                            onOpenScripting={(callbackPropertyName: string) => {
+                                const namedWindow = window.open(
+                                    `/scripting/${currentEntity?.uuid}/${component.uuid}/${callbackPropertyName}`,
+                                    'scripting'
+                                );
 
                                 if (namedWindow) {
                                     namedWindow.focus();

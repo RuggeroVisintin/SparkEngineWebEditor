@@ -7,13 +7,15 @@ import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBus
 describe('core/scripting/application/ScriptEditorService', () => {
     let service: ScriptEditorService;
     const entityUuid = 'test-entity-uuid';
+    const componentUuid = 'test-component-uuid';
+    const callbackPropertyName = 'onCollisionCB';
     let eventBus: InMemoryEventBusDouble;
     let state: ReactStateRepository<ScriptEditorState>;
 
     beforeEach(() => {
         eventBus = new InMemoryEventBusDouble();
         state = new ReactStateRepository<ScriptEditorState>();
-        service = new ScriptEditorService(eventBus, entityUuid, state);
+        service = new ScriptEditorService(eventBus, entityUuid, componentUuid, callbackPropertyName, state);
     })
 
     describe('on OpenScriptingEditorCommand', () => {
@@ -23,6 +25,8 @@ describe('core/scripting/application/ScriptEditorService', () => {
         ])('should set the current script when the current entity id matches', (currentScript?: string) => {
             const command: OpenScriptingEditorCommand = {
                 entityUuid: 'test-entity-uuid',
+                componentUuid,
+                callbackPropertyName,
                 currentScript,
             };
 
@@ -37,6 +41,24 @@ describe('core/scripting/application/ScriptEditorService', () => {
         ])('Should not set current script if entityUuid does not match', (entityUuid: string) => {
             const command: OpenScriptingEditorCommand = {
                 entityUuid,
+                componentUuid: 'another-component-uuid',
+                callbackPropertyName,
+                currentScript: 'console.log("This should not be set");',
+            };
+
+            eventBus.publish('OpenScriptingEditorCommand', command);
+
+            expect(service.currentScript).toBe(undefined);
+        });
+
+        it.each([
+            'another-callback-name',
+            ''
+        ])('Should not set current script if callback property does not match', (targetCallbackPropertyName: string) => {
+            const command: OpenScriptingEditorCommand = {
+                entityUuid,
+                componentUuid,
+                callbackPropertyName: targetCallbackPropertyName,
                 currentScript: 'console.log("This should not be set");',
             };
 
@@ -48,6 +70,8 @@ describe('core/scripting/application/ScriptEditorService', () => {
         it('Should trigger a state update', () => {
             const command: OpenScriptingEditorCommand = {
                 entityUuid: 'test-entity-uuid',
+                componentUuid,
+                callbackPropertyName,
                 currentScript: 'console.log("Hello World");',
             };
 
@@ -69,7 +93,11 @@ describe('core/scripting/application/ScriptEditorService', () => {
 
             service.onEditorReady();
 
-            expect(cb).toHaveBeenCalledWith({ entityUuid });
+            expect(cb).toHaveBeenCalledWith({
+                entityUuid,
+                componentUuid,
+                callbackPropertyName,
+            });
         })
     });
 
@@ -93,6 +121,34 @@ describe('core/scripting/application/ScriptEditorService', () => {
 
             expect(cb).toHaveBeenCalledWith({
                 entityUuid,
+                componentUuid,
+                callbackPropertyName,
+                script: newScript,
+            });
+        });
+
+        it('Should emit ScriptSaved with a strict script target', () => {
+            const cb = jest.fn();
+            eventBus.subscribe('ScriptSaved', cb);
+
+            const componentUuid = 'test-component-uuid';
+            const callbackPropertyName = 'onCollisionCB';
+
+            eventBus.publish('OpenScriptingEditorCommand', {
+                entityUuid,
+                componentUuid: 'test-component-uuid',
+                callbackPropertyName: 'onCollisionCB',
+                currentScript: 'console.log("New Script");',
+            } as OpenScriptingEditorCommand);
+
+            const newScript = 'console.log("Saved Script");';
+            service.edit(newScript);
+            service.save();
+
+            expect(cb).toHaveBeenCalledWith({
+                entityUuid,
+                componentUuid,
+                callbackPropertyName,
                 script: newScript,
             });
         });

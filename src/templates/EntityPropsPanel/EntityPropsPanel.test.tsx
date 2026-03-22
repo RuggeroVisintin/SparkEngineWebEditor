@@ -1,4 +1,5 @@
 import { BaseEntity, BoundingBoxComponent, GameObject, TransformComponent, TriggerEntity } from "@sparkengine";
+import { SerializableCallback } from "sparkengineweb";
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";
@@ -48,6 +49,12 @@ describe('EntityPropsPanel', () => {
 
         it('Should open the scripting page on a blank tab when open scripting is clicked from a component', () => {
             const entity = new TriggerEntity();
+            const callbackComponent = entity.components.find(component =>
+                Object.entries(component).some(([_, value]) => value instanceof SerializableCallback)
+            )!;
+
+            const callbackPropertyName = Object.entries(callbackComponent)
+                .find(([_, value]) => value instanceof SerializableCallback)?.[0]!;
 
             const onNavigate = jest.fn(() => null);
 
@@ -60,7 +67,9 @@ describe('EntityPropsPanel', () => {
                 location: expect.objectContaining({ pathname: '/' }),
             }));
 
-            expect(getWindowCurrentUrl('scripting')).toBe(`/scripting/${entity.uuid}`);
+            expect(getWindowCurrentUrl('scripting')).toBe(
+                `/scripting/${entity.uuid}/${callbackComponent.uuid}/${callbackPropertyName}`
+            );
         });
     });
 

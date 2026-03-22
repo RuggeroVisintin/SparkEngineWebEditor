@@ -52,9 +52,17 @@ const loadESLintConfig = async (editor: monaco.editor.IStandaloneCodeEditor) => 
 export const Scripting: FC = () => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
-    const { currentEntityId } = useParams<{ currentEntityId: string }>();
+    const { entityUuid, componentUuid, callbackPropertyName } = useParams<{
+        entityUuid: string;
+        componentUuid: string;
+        callbackPropertyName: string;
+    }>();
 
-    const [service, state] = useScriptEditorService(currentEntityId!);
+    const [service, state] = useScriptEditorService(
+        entityUuid!,
+        componentUuid!,
+        callbackPropertyName!,
+    );
 
     useEffect(() => {
         if (monacoEl.current) {
