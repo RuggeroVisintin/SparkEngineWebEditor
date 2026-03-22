@@ -10,3 +10,4 @@ vite
 vitejs
 babel
 env
+scriptable
