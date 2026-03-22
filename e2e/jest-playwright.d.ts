@@ -9,6 +9,7 @@ declare global {
     interface Matchers<R> {
       toBeVisible(): Promise<R>;
       toHaveText(expected: string): Promise<R>;
+      toLookSame(expected: string | null | undefined): R;
     }
   }
 }

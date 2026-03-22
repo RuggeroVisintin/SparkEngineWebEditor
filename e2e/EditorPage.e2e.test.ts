@@ -2,6 +2,36 @@
 import { allOf } from 'sparkengineweb'
 import { describeWithFeature } from './featureFlags';
 
+const openScriptingFromTriggerObject = async (options?: { addEntity?: boolean }) => {
+    if (options?.addEntity) {
+        const addTriggerButton = page.getByText(/Add TriggerObject/i);
+        await addTriggerButton.click();
+    }
+
+    const entityItem = page.getByText(/TriggerEntity/i).first();
+    await entityItem.click();
+
+    const boundingBoxPanel = page.getByRole('button', { name: /BoundingBoxComponent/i }).first();
+    const isExpanded = await boundingBoxPanel.getAttribute('aria-expanded');
+
+    // Keep this helper idempotent: only expand when currently collapsed.
+    if (isExpanded !== 'true') {
+        await boundingBoxPanel.click();
+    }
+
+    const openScriptingButton = page.getByRole('button', { name: /Open Scripting/i });
+    const newTabPromise = page.context().waitForEvent('page', { timeout: 5000 });
+    await openScriptingButton.click();
+
+    const scriptingPage = await newTabPromise;
+    await scriptingPage.waitForLoadState('domcontentloaded');
+
+    await expect(scriptingPage.getByTestId('ScriptingPage')).toBeVisible();
+    await expect(scriptingPage.getByText(/Save/i)).toBeVisible();
+
+    return scriptingPage;
+};
+
 describe('Editor Page - Components Panel', () => {
 
     it('Should add a new GameObject to the scene', async () => {
@@ -20,6 +50,34 @@ describe('Editor Page - Components Panel', () => {
             await entityItem.click();
 
             await expect(page.getByRole('region', { name: /Transform/i })).toBeVisible();
+        });
+
+        // it('Should open the scripting page from a scriptable component', async () => {
+        //     await openScriptingFromTriggerObject({ addEntity: true });
+        // });
+
+        it('Should save the edited script and show it again when reopening scripting', async () => {
+            const scriptingPage = await openScriptingFromTriggerObject({ addEntity: true });
+
+            const monacoSurface = scriptingPage.locator('.monaco-editor .view-lines').first();
+            await monacoSurface.click();
+
+            const updatedScript = 'function test () { return 42; }';
+            await scriptingPage.keyboard.press(`${process.platform === 'darwin' ? 'Meta' : 'Control'}+A`);
+            await scriptingPage.keyboard.press('Delete');
+            await scriptingPage.keyboard.insertText(updatedScript);
+
+            // wait 500ms
+            await scriptingPage.waitForTimeout(500);
+            await scriptingPage.getByText(/^Save$/).click();
+
+            // The scripting tab name is reused; close it so reopening creates a fresh tab.
+            await scriptingPage.close();
+
+            const reopenedScriptingPage = await openScriptingFromTriggerObject();
+            const editorText = await reopenedScriptingPage.locator('.view-lines').textContent();
+
+            expect(editorText).toLookSame(updatedScript);
         });
     })
 
