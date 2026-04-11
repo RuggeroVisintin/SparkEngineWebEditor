@@ -34,6 +34,10 @@ const openScriptingFromTriggerObject = async (options?: { addEntity?: boolean })
 
     await expect(scriptingPage.getByTestId('ScriptingPage')).toBeVisible();
     await expect(scriptingPage.getByText(/Save/i)).toBeVisible();
+    await scriptingPage.waitForFunction(() => {
+        const editorText = document.querySelector('.view-lines')?.textContent ?? '';
+        return editorText.trim() !== '// Write your code here';
+    });
 
     return scriptingPage;
 };
