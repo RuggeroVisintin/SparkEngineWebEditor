@@ -185,32 +185,39 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         with:
           node-version: 20
 
       - name: install
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         run: npm ci
 
       - name: build demo for GitHub Pages
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         env:
           VITE_BASE_PATH: /SparkEngineWebEditor/
         run: npm run build -- --base="$VITE_BASE_PATH"
 
       - name: add SPA fallback for GitHub Pages
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         run: cp build/index.html build/404.html
 
       - name: setup pages
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         uses: actions/configure-pages@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           enablement: true
 
       - name: upload pages artifact
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./build
 
       - name: deploy to github pages
+        if: ${{ steps.release.outputs.release_created == 'true' }}
         id: deployment
         uses: actions/deploy-pages@v4
     needs: [test_unit, test_e2e, build, code_scan, react_doctor]
