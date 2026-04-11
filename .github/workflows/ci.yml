@@ -166,7 +166,7 @@ jobs:
       token: ${{ secrets.GITHUB_TOKEN }}
   publish:
     name: Publish
-    timeout-minutes: 2
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -183,5 +183,29 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install
+        run: npm ci
+
+      - name: build demo for GitHub Pages
+        env:
+          VITE_BASE_PATH: /SparkEngineWebEditor/
+        run: npm run build -- --base="$VITE_BASE_PATH"
+
+      - name: setup pages
+        uses: actions/configure-pages@v5
+
+      - name: upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+      - name: deploy to github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
     needs: [test_unit, test_e2e, build, code_scan, react_doctor]
     if: github.ref_name == 'main'
