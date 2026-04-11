@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.17](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.16...sparkenginewebeditor-v0.0.17) (2026-04-11)
+
+
+### Bug Fixes
+
+* **router:** preserve GitHub Pages base path for scripting editor ([37e542c](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/37e542c0aea7668400bad4875fdcfeecd2e43a1c))
+* **webapp:** align manifest logos with favicon ([c173f4c](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/c173f4ce7a814f63a2387d9b6dc3475fa77d3d19)), closes [#350](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/350)
+* **webapp:** update favicon and app name ([#352](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/352)) ([4248a6c](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/4248a6c605ab5708a63d3944b3d4ec58075c27f5)), closes [#350](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/350)
+
 ## [0.0.16](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.15...sparkenginewebeditor-v0.0.16) (2026-04-11)
 
 
