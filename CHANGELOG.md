@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.16](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.15...sparkenginewebeditor-v0.0.16) (2026-04-11)
+
+
+### Features
+
+* **editor:** add close button functionality to components panel ([f728f60](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/f728f601d95b11d8e128e5f5878c32ef05c13bb0))
+* **editor:** add components panel ([ddc64bf](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/ddc64bfb210ae3e156af5d3d9fe5e0ab8bec8b97))
+* **entity-explorer:** add selected component to current entity ([c4df2c7](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/c4df2c722fc5f3275aa932522bd0025f38a38a52))
+* **entity-props:** add remove component button ([5945acc](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/5945accb7f509dce7d824b190958a48b52bb93ef))
+* filter out SoundComponent ([2b2e53c](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/2b2e53ce33a0ccda5cb39bfb47fc1e9faecc718e))
+
 ## [0.0.15](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.14...sparkenginewebeditor-v0.0.15) (2026-03-22)
 
 
