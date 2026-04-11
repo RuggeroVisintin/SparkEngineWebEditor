@@ -1,184 +1,187 @@
 name: Continuos Integration
 on:
-    push:
-      branches:
-        - main
-    workflow_dispatch:
-    pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  pull_request:
 
 jobs:
-    build:
-      name: Build
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-  
-        - name: install
-          run: npm ci
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-        - name: check licenses
-          run: npm run license-check
-        
-        - name: eslint
-          run: npm run lint
-          
-        - name: build
-          run: npm run build
-    react_doctor:
-      name: React Doctor
-      runs-on: ubuntu-latest
-      permissions:
-        pull-requests: write
-        contents: read
-      env:
-        REACT_DOCTOR_THRESHOLD: 90
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            ref: ${{ github.event.pull_request.head.sha || github.sha }}
-            fetch-depth: 0
-            filter: blob:none
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-  
-        - name: install
-          run: npm ci
+      - name: install
+        run: npm ci
 
-        - name: create branch for diff detection
-          if: github.event_name == 'pull_request'
-          run: git checkout -b pr-head
-          
-        - name: run react-doctor
-          id: react_doctor_check
-          env:
-            REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || '' }}
-            REACT_DOCTOR_OUTPUT_FILE: react-doctor-output.txt
-          run: npm run react-doctor
+      - name: check licenses
+        run: npm run license-check
 
-        - name: generate and post report to PR
-          if: always() && github.event_name == 'pull_request'
-          uses: actions/github-script@v7
-          with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-              const { execSync } = require('child_process');
-              const report = execSync('npm run react-doctor:report', { 
-                encoding: 'utf8',
-                env: { 
-                  ...process.env,
-                  REACT_DOCTOR_OUTPUT_FILE: 'react-doctor-output.txt'
-                }
-              });
-              
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: report,
-              });
-    test_unit:
-      name: Unit Tests
-      runs-on: ubuntu-latest
-  
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-  
-        - name: install
-          run: npm ci
-  
-        - name: test
-          run: npm run test:ci
+      - name: eslint
+        run: npm run lint
 
-        - name: issue badge
-          run: |
-            mkdir -p .github/pages/badges
-            npx make-coverage-badge --report-path .coverage/coverage-summary.json --output-path .github/pages/badges/coverage.badge.svg
-          
-        - uses: actions/upload-artifact@master
-          with:
-            name: coverage-badge-artifact
-            path: .github/pages/badges/coverage.badge.svg
-    get_playwright_version:
-      name: Get Playwright Version
-      runs-on: ubuntu-latest
-      outputs:
-        version: ${{ steps.get_version.outputs.version }}
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            sparse-checkout: |
-              package.json
+      - name: build
+        run: npm run build
+  react_doctor:
+    name: React Doctor
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    env:
+      REACT_DOCTOR_THRESHOLD: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-        - name: Get Playwright version from package.json
-          id: get_version
-          run: |
-            VERSION=$(node -p "require('./package.json').devDependencies['@playwright/test'].replace(/[\^~]/, '')")
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "Using Playwright version: $VERSION"
-    test_e2e:
-      name: E2E Tests
-      needs: get_playwright_version
-      timeout-minutes: 10
-      runs-on: ubuntu-latest
-      container:
-        image: mcr.microsoft.com/playwright:v${{ needs.get_playwright_version.outputs.version }}-jammy
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-        
-        - name: install jq
-          run: apt-get update && apt-get install -y jq
-  
-        - name: install
-          run: npm ci
+      - name: install
+        run: npm ci
 
-        - name: build production app
-          run: npm run build
+      - name: create branch for diff detection
+        if: github.event_name == 'pull_request'
+        run: git checkout -b pr-head
 
-        - name: start production server
-          run: npm run preview > server.log 2>&1 &
-          
-        - name: wait for server to start
-          run: sleep 5
+      - name: run react-doctor
+        id: react_doctor_check
+        env:
+          REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || '' }}
+          REACT_DOCTOR_OUTPUT_FILE: react-doctor-output.txt
+        run: npm run react-doctor
 
-        - name: run e2e tests
-          run: npm run test:e2e
+      - name: generate and post report to PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { execSync } = require('child_process');
+            const report = execSync('npm run react-doctor:report', { 
+              encoding: 'utf8',
+              env: { 
+                ...process.env,
+                REACT_DOCTOR_OUTPUT_FILE: 'react-doctor-output.txt'
+              }
+            });
 
-    code_scan:
-      name: "Code Scan"
-      uses: './.github/workflows/codeql.yml'
-      permissions:
-        security-events: write
-        actions: read
-        contents: read
-      secrets:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    publish:
-      name: Publish
-      timeout-minutes: 2
-      runs-on: ubuntu-latest
-      permissions: 
-        contents: write
-        pull-requests: write
-        pages: write
-        id-token: write
-        
-      steps:
-        - uses: RuggeroVisintin/release-please-action@main
-          id: release
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-      needs: [test_unit, test_e2e, build, code_scan, react_doctor]
-      if: github.ref_name == 'main'
-        
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report,
+            });
+  test_unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install
+        run: npm ci
+
+      - name: test
+        run: npm run test:ci
+
+      - name: issue badge
+        run: |
+          mkdir -p .github/pages/badges
+          npx make-coverage-badge --report-path .coverage/coverage-summary.json --output-path .github/pages/badges/coverage.badge.svg
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: coverage-badge-artifact
+          path: .github/pages/badges/coverage.badge.svg
+  get_playwright_version:
+    name: Get Playwright Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            package.json
+
+      - name: Get Playwright version from package.json
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').devDependencies['@playwright/test'].replace(/[\^~]/, '')")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using Playwright version: $VERSION"
+  test_e2e:
+    name: E2E Tests
+    needs: get_playwright_version
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.get_playwright_version.outputs.version }}-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install jq
+        run: apt-get update && apt-get install -y jq
+
+      - name: install
+        run: npm ci
+
+      - name: build production app
+        run: npm run build
+
+      - name: start production server
+        run: npm run preview > server.log 2>&1 &
+
+      - name: wait for server to start
+        run: sleep 5
+
+      - name: run e2e tests
+        run: npm run test:e2e
+
+  code_scan:
+    name: "Code Scan"
+    uses: "./.github/workflows/codeql.yml"
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    name: Publish
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: RuggeroVisintin/release-please-action@main
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+    needs: [test_unit, test_e2e, build, code_scan, react_doctor]
+    if: github.ref_name == 'main'
