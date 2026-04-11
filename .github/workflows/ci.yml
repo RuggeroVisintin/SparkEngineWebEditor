@@ -196,8 +196,14 @@ jobs:
           VITE_BASE_PATH: /SparkEngineWebEditor/
         run: npm run build -- --base="$VITE_BASE_PATH"
 
+      - name: add SPA fallback for GitHub Pages
+        run: cp build/index.html build/404.html
+
       - name: setup pages
         uses: actions/configure-pages@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          enablement: true
 
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v3

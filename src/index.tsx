@@ -4,11 +4,13 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { App } from './App';
 import { withStrictMode } from './hooks';
+import { toRouterBasename } from './config/routerBase';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
+const routerBasename = toRouterBasename(import.meta.env.BASE_URL ?? '/');
 root.render(
     withStrictMode(
-        <BrowserRouter>
+        <BrowserRouter basename={routerBasename}>
             <App />
         </BrowserRouter>
     )
