@@ -3,7 +3,7 @@
 - MUST: Keep human in the loop unless specified otherwhise
 - MUST: Follow strict TDD for all code changes
 - MUST: For new user-facing features, use ATDD
-- MUST: Follow Trunk Based Development
+- MUST: Follow Trunk Based Development to resolve issues
 - MUST: Document significant architectural decisions with an ADR.
 - MUST: Use feature flags to hide user facing functionalities and enable trunk based development
 - MUST: Follow linting and style rules

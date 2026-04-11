@@ -81,6 +81,28 @@ describe('EntityPropsPanel', () => {
             expect(scriptingButton).toBeInTheDocument();
         });
 
+        it('Should keep repository prefix when opening scripting editor', () => {
+            const entity = new GameObject();
+            entity.addComponent(new BoundingBoxComponent());
+
+            const openSpy = jest.spyOn(window, 'open').mockImplementation(
+                () => ({ focus: jest.fn() } as unknown as Window)
+            );
+
+            window.history.pushState({}, '', '/SparkEngineWebEditor/');
+
+            renderEntityPropsPanel(entity);
+            fireEvent.click(screen.getByRole('button', { name: /BoundingBoxComponent/i }));
+            fireEvent.click(screen.getByRole('button', { name: /Open Scripting/i }));
+
+            expect(openSpy).toHaveBeenCalled();
+            const targetUrl = openSpy.mock.calls[0][0] as string;
+            expect(targetUrl.startsWith('/SparkEngineWebEditor/scripting/')).toBe(true);
+
+            openSpy.mockRestore();
+            window.history.pushState({}, '', '/');
+        });
+
         it('Should not show open scripting in components without scriptable callbacks', () => {
             const entity = new BaseEntity();
             entity.addComponent(new TransformComponent());

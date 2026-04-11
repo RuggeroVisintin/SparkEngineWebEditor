@@ -1,4 +1,4 @@
-import { IComponent, IEntity } from "@sparkengine";
+import { IEntity } from "@sparkengine";
 import { typeOf } from "sparkengineweb";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
@@ -12,6 +12,16 @@ interface EntityPropsPanelProps {
     onComponentUpdate?: CallableFunction,
     onComponentRemove: Function<string>,
 }
+
+const toScriptingPath = (
+    pathname: string,
+    entityUuid: string,
+    componentUuid: string,
+    callbackPropertyName: string,
+) => {
+    const trimmedPath = pathname === '/' ? '' : pathname.replace(/\/+$/, '');
+    return `${trimmedPath}/scripting/${entityUuid}/${componentUuid}/${callbackPropertyName}`;
+};
 
 export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpdate, onComponentRemove }: EntityPropsPanelProps) => {
     const components = currentEntity?.components;
@@ -37,7 +47,12 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                             }} 
                             onOpenScripting={(callbackPropertyName: string) => {
                                 const namedWindow = window.open(
-                                    `/scripting/${currentEntity?.uuid}/${component.uuid}/${callbackPropertyName}`,
+                                    toScriptingPath(
+                                        window.location.pathname,
+                                        currentEntity?.uuid ?? '',
+                                        component.uuid,
+                                        callbackPropertyName,
+                                    ),
                                     'scripting'
                                 );
 
