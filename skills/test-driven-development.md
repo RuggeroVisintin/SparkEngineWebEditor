@@ -6,7 +6,9 @@ description: Use this skill for implementing behavior changes and bug fixes thro
 # Test-Driven Development (TDD) - MANDATORY
 
 **ALL code changes MUST follow strict TDD practices:**
+
 **New behaviours MUST be covered by new failing tests FIRST.**
+
 **You MUST stop and let human review a test once implemented or changed before implementing the code**
 
 > **For new features**, use [Acceptance Test Driven Development (ATDD)](acceptance-test-driven-development.md) first, then TDD for implementation.
