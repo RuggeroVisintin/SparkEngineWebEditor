@@ -69,12 +69,6 @@ export default defineConfig(({ mode, command }) => {
         optimizeDeps: {
             // Pre-bundle sparkengineweb to handle its CommonJS exports
             include: ['@sparkengine', 'sparkengineweb'],
-            esbuildOptions: {
-                // Ensure esbuild processes sparkengineweb's CommonJS properly
-                loader: {
-                    '.js': 'jsx',
-                },
-            },
         },
         server: {
             port: 3000,
@@ -90,15 +84,12 @@ export default defineConfig(({ mode, command }) => {
             minify: 'esbuild',
             rollupOptions: {
                 output: {
-                    manualChunks: {
-                        'monaco-editor': ['monaco-editor'],
+                    manualChunks: (id: string) => {
+                        if (id.includes('monaco-editor')) {
+                            return 'monaco-editor';
+                        }
                     },
                 },
-            },
-        },
-        esbuild: {
-            logOverride: {
-                'this-is-undefined-in-esm': 'silent',
             },
         },
     };
