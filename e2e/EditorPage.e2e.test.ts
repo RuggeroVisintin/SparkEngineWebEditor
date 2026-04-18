@@ -46,10 +46,14 @@ describe('Editor Page - Components Panel', () => {
 
     describeWithFeature('PREVIEW_MODE', 'Preview Mode', () => {
         it('Should open preview workspace with engine view only when clicking Preview', async () => {
+            const newTabPromise = page.context().waitForEvent('page', { timeout: 5000 });
             await page.getByRole('option', { name: /Preview/i }).click();
+            const previewPage = await newTabPromise;
 
-            await expect(page.getByLabel(/Engine View/i)).toBeVisible();
-            await expect(page.getByRole('option', { name: /Add GameObject/i })).not.toBeVisible();
+            await previewPage.waitForLoadState('domcontentloaded');
+
+            await expect(previewPage.getByLabel(/Engine View/i)).toBeVisible();
+            await expect(previewPage.getByRole('option', { name: /Add GameObject/i })).not.toBeVisible();
         });
     });
 
