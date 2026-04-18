@@ -134,6 +134,7 @@ export const EngineView = memo(({ onEngineViewReady, onClick, onMouseDragging, o
                 ref={canvasRef}
                 id="canvas"
                 data-testid="EngineView.canvas"
+                aria-label="Engine View"
                 width={width}
                 height={height}
                 onWheel={(e) => {
