@@ -49,7 +49,7 @@ describe('Editor Page - Components Panel', () => {
             await page.getByRole('option', { name: /Preview/i }).click();
 
             await expect(page.getByLabel(/Engine View/i)).toBeVisible();
-            await expect(page.getByRole('button', { name: /Add GameObject/i })).not.toBeVisible();
+            await expect(page.getByRole('option', { name: /Add GameObject/i })).not.toBeVisible();
         });
     });
 

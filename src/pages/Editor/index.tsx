@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { GameEngine, IComponent, IEntity } from '@sparkengine';
 import { EngineView } from '../../components';
 import { Box, FlexBox } from '../../primitives';
@@ -13,6 +14,7 @@ import { getAllAvailableComponents } from '../../core/common';
 export const Editor = () => {
     const engine = useRef<GameEngine>();
     const [editorService, editorState] = useEditorService();
+    const navigate = useNavigate();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
         editorService.start(context, resolution);
@@ -26,6 +28,7 @@ export const Editor = () => {
             <ActionMenu
                 onProjectFileOpen={() => editorService.openProject()}
                 onProjectFileSave={() => editorService.saveProject()}
+                onPreviewOpen={() => navigate('/preview')}
             />
             <FlexBox $direction='row' $fill style={{ overflow: 'hidden' }}>
                 <EntityFactoryPanel
