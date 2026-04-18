@@ -46,6 +46,8 @@ describe('Editor Page - Components Panel', () => {
 
     describeWithFeature('PREVIEW_MODE', 'Preview Mode', () => {
         it('Should open preview workspace with engine view only when clicking Preview', async () => {
+            await page.setViewportSize({ width: 1000, height: 1000 });
+
             const newTabPromise = page.context().waitForEvent('page', { timeout: 5000 });
             await page.getByRole('option', { name: /Preview/i }).click();
             const previewPage = await newTabPromise;
@@ -54,6 +56,32 @@ describe('Editor Page - Components Panel', () => {
 
             await expect(previewPage.getByLabel(/Engine View/i)).toBeVisible();
             await expect(previewPage.getByRole('option', { name: /Add GameObject/i })).not.toBeVisible();
+
+            const overflowMetrics = await previewPage.evaluate(() => {
+                const doc = document.documentElement;
+
+                return {
+                    hasVerticalOverflow: doc.scrollHeight > window.innerHeight,
+                    hasHorizontalOverflow: doc.scrollWidth > window.innerWidth,
+                };
+            });
+
+            expect(overflowMetrics.hasVerticalOverflow).toBe(false);
+            expect(overflowMetrics.hasHorizontalOverflow).toBe(false);
+
+            const viewport = previewPage.viewportSize();
+            const canvasBounds = await previewPage.getByLabel(/Engine View/i).boundingBox();
+
+            expect(viewport).toBeTruthy();
+            expect(canvasBounds).toBeTruthy();
+
+            const viewportCenterX = (viewport?.width ?? 0) / 2;
+            const viewportCenterY = (viewport?.height ?? 0) / 2;
+            const canvasCenterX = (canvasBounds?.x ?? 0) + ((canvasBounds?.width ?? 0) / 2);
+            const canvasCenterY = (canvasBounds?.y ?? 0) + ((canvasBounds?.height ?? 0) / 2);
+
+            expect(Math.round(canvasCenterX)).toBe(Math.round(viewportCenterX));
+            expect(Math.round(canvasCenterY)).toBe(Math.round(viewportCenterY));
         });
     });
 

@@ -17,7 +17,7 @@ export const Preview = () => {
     };
 
     return (
-        <FlexBox $fill={true}>
+        <FlexBox $fill={true} style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
             <EngineView onEngineViewReady={onEngineViewReady} />
         </FlexBox>
     )
