@@ -44,6 +44,15 @@ const openScriptingFromTriggerObject = async (options?: { addEntity?: boolean })
 
 describe('Editor Page - Components Panel', () => {
 
+    describeWithFeature('PREVIEW_MODE', 'Preview Mode', () => {
+        it('Should open preview workspace with engine view only when clicking Preview', async () => {
+            await page.getByRole('option', { name: /Preview/i }).click();
+
+            await expect(page.getByLabel(/Engine View/i)).toBeVisible();
+            await expect(page.getByRole('button', { name: /Add GameObject/i })).not.toBeVisible();
+        });
+    });
+
     it('Should add a new GameObject to the scene', async () => {
         const addEntityButton = page.getByText(/Add GameObject/i);
         await addEntityButton.click();

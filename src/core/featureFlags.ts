@@ -20,7 +20,8 @@
 declare const __FEATURE_FLAGS__: Record<string, boolean>;
 
 export type FeatureFlag =
-    | 'ADD_COMPONENTS';
+    | 'ADD_COMPONENTS'
+    | 'PREVIEW_MODE';
 
 
 const flagsStatus: Record<string, string | undefined> = {};
@@ -65,7 +66,7 @@ export function withFeature<T>(
  * Get all enabled feature flags (useful for debugging)
  */
 export function getEnabledFeatures(): FeatureFlag[] {
-    const flags: FeatureFlag[] = ['ADD_COMPONENTS'];
+    const flags: FeatureFlag[] = ['ADD_COMPONENTS', 'PREVIEW_MODE'];
 
     return flags.filter(flag => isFeatureEnabled(flag));
 }

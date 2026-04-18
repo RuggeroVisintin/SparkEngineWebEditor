@@ -1,10 +1,12 @@
 import { PopupMenu } from "../../components/PopupMenu";
 import { BackgroundColor, FlexBox, TextColor } from "../../primitives";
 import { Function } from "../../core/common";
+import { isFeatureEnabled } from "../../core/featureFlags";
 
 export interface ActionMenuProps {
     onProjectFileOpen: Function;
     onProjectFileSave: Function;
+    onPreviewOpen?: Function;
 }
 
 export const ActionMenu = (props: ActionMenuProps) => {
@@ -22,6 +24,13 @@ export const ActionMenu = (props: ActionMenuProps) => {
                     action: props.onProjectFileSave
                 }]}
             />
+            {isFeatureEnabled('PREVIEW_MODE') &&
+                <PopupMenu
+                    data-testid="action-menu.preview"
+                    label="Preview"
+                    action={() => props.onPreviewOpen?.()}
+                />
+            }
         </FlexBox>
     )
 }
