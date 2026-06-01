@@ -10,13 +10,13 @@ import { useEditorService } from '../../hooks/useEditorService';
 import { ComponentsPanel } from './ComponentsPanel';
 import { getAllAvailableComponents } from '../../core/common';
 
-const toPreviewPath = (pathname: string): string => {
+const toPreviewPath = (pathname: string, sceneId: string): string => {
     const trimmedPath = pathname === '/' ? '' : pathname.replace(/\/+$/, '');
-    return `${trimmedPath}/preview`;
+    return `${trimmedPath}/preview/${sceneId}`;
 };
 
 export const Editor = () => {
-    const engine = useRef<GameEngine>();
+    const engine = useRef<GameEngine>(undefined);
     const [editorService, editorState] = useEditorService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
@@ -32,8 +32,12 @@ export const Editor = () => {
                 onProjectFileOpen={() => editorService.openProject()}
                 onProjectFileSave={() => editorService.saveProject()}
                 onPreviewOpen={() => {
+                    if(!editorService.currentScene) {
+                        return;
+                    }
+
                     const previewWindow = window.open(
-                        toPreviewPath(window.location.pathname),
+                        toPreviewPath(window.location.pathname, editorService.currentScene.uuid),
                         'preview'
                     );
 
