@@ -2,6 +2,10 @@
   "name": "sparkenginewebeditor",
   "version": "0.0.17",
   "private": true,
+  "engines": {
+    "node": "^22",
+    "npm": "^10"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RuggeroVisintin/spark-engine-web-editor.git"
@@ -21,6 +25,7 @@
     "license-check": "bash ./scripts/check-licenses.sh",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
+
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
     "prepare": "husky",
