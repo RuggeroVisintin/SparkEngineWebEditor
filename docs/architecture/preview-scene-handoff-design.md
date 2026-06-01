@@ -104,6 +104,8 @@ Validation:
 - Ensure messages are accepted only from trusted origin/source.
 - Keep behavior deterministic: successful handoff starts preview, failed handoff shows error.
 
+4) Assets serialization/deserialization - See [ADR](./decisions/0005-preview-scene-assets-sharing.md)
+
 ## Failure modes and behavior
 
 1) If scene handoff is unavailable, delayed, or invalid for any reason, preview shows an explicit error message and does not start with a fallback scene.
