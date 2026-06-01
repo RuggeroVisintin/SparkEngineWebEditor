@@ -12,16 +12,10 @@ export const Preview = () => {
         sceneId: string;
     }>();
 
-    const engine = useRef<GameEngine | undefined>(undefined);
-    const [editorService] = useEditorService();
     const [previewService] = usePreviewService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
-        editorService.start(context, resolution);
-        const newEngine = editorService.engine;
-        engine.current = newEngine;
-
-        previewService.onPreviewStart(sceneId);
+        previewService.onPreviewStart(sceneId!, context, resolution);
     };
 
     return (

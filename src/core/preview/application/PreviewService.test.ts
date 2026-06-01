@@ -10,7 +10,7 @@ describe(__dirname, () => {
                 const eventBus = new InMemoryEventBusDouble();
                 const previewService = new PreviewService(eventBus);
 
-                previewService.onPreviewStart(testSceneId);
+                previewService.onPreviewStart(testSceneId, {} as CanvasRenderingContext2D, { width: 800, height: 600 });
 
                 expect(eventBus).toHavePublished({
                     name: 'PreviewViewReady',
