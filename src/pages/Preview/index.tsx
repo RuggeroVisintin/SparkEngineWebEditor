@@ -14,8 +14,9 @@ export const Preview = () => {
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
         editorService.start(context, resolution);
         const newEngine = editorService.engine;
-
         engine.current = newEngine;
+
+        previewService.onPreviewStart();
     };
 
     return (
