@@ -8,6 +8,9 @@ import './__mocks__/fs-api.mock';
 import './__mocks__/utils/image.mock';
 import './__mocks__/broadcast.mock';
 import './__mocks__/window.mock';
+import eventBusMatchers from './test-utils/matchers/eventBusMatchers';
+
+expect.extend(eventBusMatchers as any);
 
 import { TextEncoder } from 'text-encoding';
 import { webcrypto } from 'crypto';
