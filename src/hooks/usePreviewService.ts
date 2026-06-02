@@ -4,8 +4,9 @@ import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
 
 export const usePreviewService = () => {
     const [service] = useState(() => {
+        console.log('[POC] usePreviewService - Creating PreviewService with shared event channel');
         return new PreviewService(
-            new EventBusWithBrowserBroadcast('preview')
+            new EventBusWithBrowserBroadcast('spark-engine')
         );
     });
 

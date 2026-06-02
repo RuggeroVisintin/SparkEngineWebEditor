@@ -11,6 +11,7 @@ import { FileSystemSceneRepository } from "../core/scene";
 import { ContextualUiService } from "../core/editor/domain/ContextualUiService";
 import { WeakRef } from "../core/common";
 import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
+import { SendSceneToPreviewUseCase } from "../core/preview/application/SendSceneToPreviewUseCase";
 
 export const useEditorService = (): [EditorService, EditorState] => {
     const [stateRepo] = useState(() => new ReactStateRepository<EditorState>());
@@ -24,7 +25,9 @@ export const useEditorService = (): [EditorService, EditorState] => {
         const objectPikcer = new ColorObjectPicker((...params) => new Renderer(...params), { width: 1920, height: 1080 }, imageRepository);
         const objectPickingService = new ObjectPickingService(objectPikcer);
         const contextualUiService = new ContextualUiService();
-        const eventBus = new EventBusWithBrowserBroadcast('scripting');
+        console.log('[POC] useEditorService - Creating EditorService with shared event channel');
+        const eventBus = new EventBusWithBrowserBroadcast('spark-engine');
+        const sendSceneToPreviewUseCase = new SendSceneToPreviewUseCase(eventBus);
 
         return new EditorService(
             imageRepository,
@@ -34,7 +37,8 @@ export const useEditorService = (): [EditorService, EditorState] => {
             objectPickingService,
             stateRepo,
             contextualUiService,
-            eventBus
+            eventBus,
+            sendSceneToPreviewUseCase
         );
     });
 
