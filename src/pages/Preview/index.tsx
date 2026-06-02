@@ -5,17 +5,17 @@ import { FlexBox } from '../../primitives';
 import { OnEngineViewReadyCBProps } from '../../components/EngineView';
 import { useEditorService } from '../../hooks/useEditorService';
 import { usePreviewService } from '../../hooks';
+import { useParams } from 'react-router';
 
 export const Preview = () => {
-    const engine = useRef<GameEngine | undefined>(undefined);
-    const [editorService] = useEditorService();
+    const { sceneId } = useParams<{
+        sceneId: string;
+    }>();
+
     const [previewService] = usePreviewService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
-        editorService.start(context, resolution);
-        const newEngine = editorService.engine;
-
-        engine.current = newEngine;
+        previewService.onPreviewStart(sceneId!, context, resolution);
     };
 
     return (

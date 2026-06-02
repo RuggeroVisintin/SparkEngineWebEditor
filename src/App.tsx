@@ -6,7 +6,7 @@ export const App = () => {
     return (
         <Routes>
             <Route path="/" element={<Editor />} />
-            <Route path="/preview" element={<Preview />} />
+            <Route path="/preview/:sceneUuid" element={<Preview />} />
             <Route path="/scripting/:entityUuid/:componentUuid/:callbackPropertyName" element={<Scripting />} />
             {/* Add more routes as needed */}
         </Routes>
