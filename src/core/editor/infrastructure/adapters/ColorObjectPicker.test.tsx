@@ -12,7 +12,7 @@ class RendererTestDouble extends Renderer {
     }
 }
 
-describeClass(ColorObjectPicker, () => {
+describeClass(ColorObjectPicker, ({ describeMethod }) => {
     let renderSystem: ColorObjectPicker;
     let renderer: RendererTestDouble
     let canvasContext: CanvasRenderingContext2D;
@@ -29,7 +29,7 @@ describeClass(ColorObjectPicker, () => {
         renderer.renderCommands = [];
     });
 
-    describe('.update()', () => {
+    describeMethod('update', () => {
         it('Should render objects with a diffuse color based on their parent entity uuid', () => {
             const gameObject = new GameObject();
             const gameObject2 = new GameObject();
@@ -94,7 +94,7 @@ describeClass(ColorObjectPicker, () => {
         });
     });
 
-    describe('.pick()', () => {
+    describeMethod('pick', () => {
         it('Should return the entity from a given x,y coordinate', () => {
             const gameObject = new GameObject();
             const gameObject2 = new GameObject();

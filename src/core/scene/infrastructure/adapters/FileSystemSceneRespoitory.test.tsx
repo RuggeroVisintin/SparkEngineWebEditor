@@ -4,12 +4,12 @@ import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedF
 import { parseJsonString, WeakRef } from "../../../common";
 import { Scene } from "sparkengineweb";
 
-describeClass(FileSystemSceneRepository, () => {
+describeClass(FileSystemSceneRepository, ({ describeMethod }) => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    describe('.read()', () => {
+    describeMethod('read', () => {
         it('Should use FileSystem Web APIs to prompt the user to pick a scene file', async () => {
             const stringifiedJson = JSON.stringify(testSceneJson);
             setMockedFile(stringifiedJson);
@@ -39,7 +39,7 @@ describeClass(FileSystemSceneRepository, () => {
         });
     });
 
-    describe('.save()', () => {
+    describeMethod('save', () => {
         it('Should use FileSystem web APIs to save a scene file at given filePath', async () => {
             const stringifiedScene = JSON.stringify(testSceneJson);
             const writableSpy = jest.spyOn(FileSystemWritableFileStreamMock, 'write');

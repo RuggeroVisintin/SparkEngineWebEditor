@@ -5,7 +5,7 @@ interface TestState {
   currentEntity?: GameObject
 }
 
-describeClass(ReactStateRepository, () => {
+describeClass(ReactStateRepository, ({ describeMethod }) => {
     it('Should trigger the subscribers on a state update', () => {
         const stateRepo = new ReactStateRepository<TestState>();
         const subscriber = jest.fn();
@@ -41,7 +41,7 @@ describeClass(ReactStateRepository, () => {
         expect(subscriber).toHaveBeenCalledWith(newState);
     });
 
-    describe('.get()', () => {
+    describeMethod('get', () => {
         it('Should return the current state', () => {
             const newEntity = new GameObject();
             const stateRepo = new ReactStateRepository<TestState>({ currentEntity: newEntity });

@@ -4,8 +4,8 @@ import { FileSystemProjectRepository } from "./FileSystemProjectRepository";
 import { Project } from "../../domain";
 import { WeakRef } from "../../../common";
 
-describeClass(FileSystemProjectRepository, () => {
-    describe('read', () => {
+describeClass(FileSystemProjectRepository, ({ describeMethod }) => {
+    describeMethod('read', () => {
         it('Should use FileSystem Web APIs to load a file at the given filePath', async () => {
             setMockedFile(JSON.stringify(testProjectJson));
 
@@ -16,7 +16,7 @@ describeClass(FileSystemProjectRepository, () => {
         })
     });
 
-    describe('update', () => {
+    describeMethod('update', () => {
         it('Should use FileSystem web APIs to save the project in its original location when the project as a valid directory handle', async () => {
             const directoryHandleRef = createDirectoryHandleMock();
             const projectToSave = new Project(testProjectJson, new WeakRef(directoryHandleRef));
@@ -28,7 +28,7 @@ describeClass(FileSystemProjectRepository, () => {
         });
     })
 
-    describe('save', () => {
+    describeMethod('save', () => {
         it('Should use FileSystem web APIs to save the project in a new location when the project does not have a valid directory handle', async () => {
             const projectToSave = new Project(testProjectJson);
 

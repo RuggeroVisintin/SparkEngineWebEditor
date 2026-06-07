@@ -2,10 +2,10 @@ import { GameObject } from "sparkengineweb";
 import { ObjectPickingService } from "./ObjectPickingService";
 
 
-describeClass(ObjectPickingService, () => {
+describeClass(ObjectPickingService, ({ describeMethod }) => {
     const event = { button: 0, targetX: 100, targetY: 200, modifiers: {} };
 
-    describe('.handleMouseClick()', () => {
+    describeMethod('handleMouseClick', () => {
         it('Should pick the object at the given coordinates on left mouse click', () => {
             const objectPickerMock = {
                 pick: jest.fn(() => new GameObject()),

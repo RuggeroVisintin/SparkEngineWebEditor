@@ -71,7 +71,7 @@ class ScriptableBoundingBoxComponent extends BoundingBoxComponent {
 
 const sceneToLoad = new Scene();
 
-describeClass(EditorService, () => {
+describeClass(EditorService, ({ describeMethod }) => {
     let editorService: EditorService;
     let imageLoader: FileSystemImageRepository;
     let context: CanvasRenderingContext2D;
@@ -106,7 +106,7 @@ describeClass(EditorService, () => {
         sceneRepository.save(sceneToLoad, { path: 'test-scene.spark.json', accessScope: new WeakRef<null>(null) });
     });
 
-    describe('.start()', () => {
+    describeMethod('start', () => {
         it('Should create a new engine with the given configuration', () => {
             const resolution = { width: 800, height: 600 };
 
@@ -172,7 +172,7 @@ describeClass(EditorService, () => {
         it.todo('Should start the engine');
     });
 
-    describe('.openProject()', () => {
+    describeMethod('openProject', () => {
         it('Should load a new project from the given repository', async () => {
             const resolution = { width: 800, height: 600 };
             projectRepositoryDouble.project = new Project({
@@ -189,7 +189,7 @@ describeClass(EditorService, () => {
 
     });
 
-    describe('.handleMouseClick()', () => {
+    describeMethod('handleMouseClick', () => {
         describe('left mouse button', () => {
             it('Should focus on the entity at the given position if any and left mouse button', () => {
                 const resolution = { width: 800, height: 600 };
@@ -279,7 +279,7 @@ describeClass(EditorService, () => {
         });
     });
 
-    describe('.handleMouseDrag()', () => {
+    describeMethod('handleMouseDrag', () => {
         describe('on left mouse button pressed', () => {
             it.each([
                 // zoom-in
@@ -373,7 +373,7 @@ describeClass(EditorService, () => {
         })
     });
 
-    describe('.handleMouseWheel()', () => {
+    describeMethod('handleMouseWheel', () => {
         it('Should zoom the editor camera by the given factor', () => {
             const resolution = { width: 800, height: 600 };
             editorService.start(context, resolution);
@@ -387,7 +387,7 @@ describeClass(EditorService, () => {
         });
     });
 
-    describe('.selectEntity()', () => {
+    describeMethod('selectEntity', () => {
         it('Should set the given entity as the current entity', () => {
             const entity = { uuid: 'test-uuid' } as IEntity;
 
@@ -425,7 +425,7 @@ describeClass(EditorService, () => {
         it.todo('Should match the editor entities to the new entity');
     });
 
-    describe('.addNewEntity()', () => {
+    describeMethod('addEntity', () => {
         it('Should register the entity into the current scene', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -463,7 +463,7 @@ describeClass(EditorService, () => {
         });
     });
 
-    describe('.removeEntity()', () => {
+    describeMethod('removeEntity', () => {
         it('Should remove the entity from the current scene', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -504,7 +504,7 @@ describeClass(EditorService, () => {
         });
     })
 
-    describe('.updateCurrentEntityComponentProperty()', () => {
+    describeMethod('updateCurrentEntityComponentProperty', () => {
         it('Should update the given component property with the new value', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -740,7 +740,7 @@ describeClass(EditorService, () => {
         });
     });
 
-    describe('.updateCurrentEntityMaterial()', () => {
+    describeMethod('updateCurrentEntityMaterial', () => {
         it('Should update the material diffuseColor when a valid color is provided', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();

@@ -1,7 +1,7 @@
 import { CameraComponent, GameObject, Scene, toRounded, Vec2 } from "sparkengineweb";
 import { ContextualUiService } from "./ContextualUiService";
 
-describeClass(ContextualUiService, () => {
+describeClass(ContextualUiService, ({ describeMethod }) => {
     let service: ContextualUiService;
     let contextualUiScene: Scene;
 
@@ -12,7 +12,7 @@ describeClass(ContextualUiService, () => {
         service.start(contextualUiScene);
     });
 
-    describe('.start()', () => {
+    describeMethod('start', () => {
         it('Should initialize the given scene with contextual UI elements', () => {
             expect(contextualUiScene.entities).toEqual(expect.arrayContaining([
                 service.currentEntityOriginPivot,
@@ -22,7 +22,7 @@ describeClass(ContextualUiService, () => {
         });
     });
 
-    describe('.moveSpawnPoint()', () => {
+    describeMethod('moveSpawnOrigin', () => {
         it.each([
             {
                 cameraPosition: new Vec2(0, 0),
@@ -62,7 +62,7 @@ describeClass(ContextualUiService, () => {
         })
     });
 
-    describe('.focusOnEntity()', () => {
+    describeMethod('focusOnEntity', () => {
         it('Should move the current entity origin pivot to the entity position', () => {
             const entity = new GameObject();
 

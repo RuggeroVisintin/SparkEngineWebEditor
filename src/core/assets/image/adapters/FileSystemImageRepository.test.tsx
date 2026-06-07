@@ -4,7 +4,7 @@ import { FileSystemImageRepository } from "./FileSystemImageRepository";
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 
-describeClass(FileSystemImageRepository, () => {
+describeClass(FileSystemImageRepository, ({ describeMethod }) => {
     let fileSystemImageRepository: FileSystemImageRepository;
 
     beforeEach(() => {
@@ -13,7 +13,7 @@ describeClass(FileSystemImageRepository, () => {
         );
     });
 
-    describe('.load()', () => {
+    describeMethod('load', () => {
         it('Should load an image within the given project scope from the file system from the source path when given', async () => {
             const result = await fileSystemImageRepository.load('assets/test.png');
 
@@ -37,7 +37,7 @@ describeClass(FileSystemImageRepository, () => {
         })
     });
 
-    describe('.save()', () => {
+    describeMethod('save', () => {
         it('Shoudld save a given ImageAsset to the given path within the project scope', async () => {
             const asset = new ImageAsset(new FakeBitmap(), 'png');
 
@@ -52,7 +52,7 @@ describeClass(FileSystemImageRepository, () => {
         it.todo('Should throw an error when trying to save an image without a project scope');
     });
 
-    describe('.changeScope()', () => {
+    describeMethod('changeScope', () => {
         it('Should change the project scope', async () => {
             fileSystemImageRepository.changeScope(new WeakRef(createDirectoryHandleMock({
                 getFileHandle: jest.fn(() => { throw new Error('File not found') })

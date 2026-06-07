@@ -1,8 +1,8 @@
 import { GameObject, Rgb, Vec2 } from "sparkengineweb";
 import Pivot from "./Pivot";
 
-describeClass(Pivot, () => {
-    describe('.match()', () => {
+describeClass(Pivot, ({ describeMethod }) => {
+    describeMethod('match', () => {
         it('Should match the pivot position to the one of the target', () => {
             const target = new GameObject({
                 transform: {

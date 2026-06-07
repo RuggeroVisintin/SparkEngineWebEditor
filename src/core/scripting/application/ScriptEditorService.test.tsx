@@ -4,7 +4,7 @@ import { ScriptEditorService } from "./ScriptEditorService";
 import { ScriptEditorState } from "./ScriptEditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 
-describeClass(ScriptEditorService, () => {
+describeClass(ScriptEditorService, ({ describeMethod }) => {
     let service: ScriptEditorService;
     const entityUuid = 'test-entity-uuid';
     const componentUuid = 'test-component-uuid';
@@ -86,7 +86,7 @@ describeClass(ScriptEditorService, () => {
         })
     });
 
-    describe('.onEditorReady', () => {
+    describeMethod('onEditorReady', () => {
         it('Should emit an ScriptingEditorReady event', () => {
             const cb = jest.fn();
             eventBus.subscribe('ScriptingEditorReady', cb);
@@ -101,7 +101,7 @@ describeClass(ScriptEditorService, () => {
         })
     });
 
-    describe('.onScriptEdited', () => {
+    describeMethod('edit', () => {
         it('Should update the current script in state', () => {
             const newScript = 'console.log("Edited Script");';
             service.edit(newScript);
@@ -110,7 +110,7 @@ describeClass(ScriptEditorService, () => {
         });
     });
 
-    describe('.saveScript', () => {
+    describeMethod('save', () => {
         it('Should emit a ScriptSaved event', () => {
             const cb = jest.fn();
             eventBus.subscribe('ScriptSaved', cb);

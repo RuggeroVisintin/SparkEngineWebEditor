@@ -5,10 +5,10 @@ import { parseJsonString, WeakRef } from "../../common";
 import { createDirectoryHandleMock, setMockedFile } from "../../../__mocks__/fs-api.mock";
 import testSceneJson from '../../../__mocks__/assets/test-scene.json';
 
-describeClass(Project, () => {
+describeClass(Project, ({ describeMethod, describeConstructor, describeStaticMethod }) => {
     const sceneRepo = new FileSystemSceneRepository();
 
-    describe('.constructor()', () => {
+    describeConstructor(() => {
         it('should create a new instance of Project with the given props', () => {
             expect(new Project({
                 name: 'test-project',
@@ -22,7 +22,7 @@ describeClass(Project, () => {
         })
     });
 
-    describe('.fromProject()', () => {
+    describeStaticMethod('fromProject', () => {
         it('Should copy the source project scenes in the new project instance', () => {
             const sourceProject = new Project({
                 name: 'test-project',
@@ -50,7 +50,7 @@ describeClass(Project, () => {
     });
 
 
-    describe('.loadScenes()', () => {
+    describeMethod('loadScenes', () => {
         const jsonString = JSON.stringify(testSceneJson);
 
         beforeEach(() => {
@@ -80,7 +80,7 @@ describeClass(Project, () => {
         })
     })
 
-    describe('.toJson()', () => {
+    describeMethod('toJson', () => {
         it('Should return a Json representation of the project', () => {
             const projectJson = {
                 name: 'test-project',
@@ -91,7 +91,7 @@ describeClass(Project, () => {
         });
     })
 
-    describe('.addScene()', () => {
+    describeMethod('addScene', () => {
         it('Should add the scene to the list of scenes in the project', () => {
             const project = new Project({
                 name: 'test-project',
