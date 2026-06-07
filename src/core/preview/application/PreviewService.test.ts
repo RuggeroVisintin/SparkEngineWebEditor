@@ -1,5 +1,4 @@
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
-import { describeClass } from "../../../test-utils/describeClass";
 import { PreviewService } from "./PreviewService";
 
 describeClass(PreviewService, ({ describeMethod }) => {

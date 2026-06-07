@@ -1,5 +1,4 @@
 import { CameraComponent, GameObject, Scene, toRounded, Vec2 } from "sparkengineweb";
-import { describeClass } from "../../../test-utils/describeClass";
 import { ContextualUiService } from "./ContextualUiService";
 
 describeClass(ContextualUiService, () => {

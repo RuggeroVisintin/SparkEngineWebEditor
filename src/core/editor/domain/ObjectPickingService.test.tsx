@@ -1,5 +1,4 @@
 import { GameObject } from "sparkengineweb";
-import { describeClass } from "../../../test-utils/describeClass";
 import { ObjectPickingService } from "./ObjectPickingService";
 
 

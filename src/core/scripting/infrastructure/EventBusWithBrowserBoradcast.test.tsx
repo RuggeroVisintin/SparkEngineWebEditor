@@ -1,5 +1,4 @@
 import { getTestBroadcastChannel } from "../../../__mocks__/broadcast.mock";
-import { describeClass } from "../../../test-utils/describeClass";
 import { EventBusWithBrowserBroadcast } from "./EventBusWithBrowserBroadcast";
 
 describeClass(EventBusWithBrowserBroadcast, () => {

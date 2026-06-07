@@ -1,5 +1,4 @@
 import { Scene } from "@sparkengine";
-import { describeClass } from "../../../test-utils/describeClass";
 import { FileSystemSceneRepository } from "../../scene"
 import { Project } from "./Project"
 import { parseJsonString, WeakRef } from "../../common";

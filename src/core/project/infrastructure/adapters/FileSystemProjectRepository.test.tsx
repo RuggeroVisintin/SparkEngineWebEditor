@@ -1,6 +1,5 @@
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
 import testProjectJson from "../../../../__mocks__/assets/test-project.json";
-import { describeClass } from "../../../../test-utils/describeClass";
 import { FileSystemProjectRepository } from "./FileSystemProjectRepository";
 import { Project } from "../../domain";
 import { WeakRef } from "../../../common";

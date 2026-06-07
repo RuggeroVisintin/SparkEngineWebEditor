@@ -8,6 +8,7 @@ import './__mocks__/fs-api.mock';
 import './__mocks__/utils/image.mock';
 import './__mocks__/broadcast.mock';
 import './__mocks__/window.mock';
+import { describeClass as registerDescribeClass } from './test-utils/describeClass';
 import eventBusMatchers from './test-utils/matchers/eventBusMatchers';
 
 expect.extend(eventBusMatchers as any);
@@ -16,6 +17,8 @@ import { TextEncoder } from 'text-encoding';
 import { webcrypto } from 'crypto';
 
 jest.disableAutomock();
+
+globalThis.describeClass = registerDescribeClass;
 
 global.TextEncoder = TextEncoder;
 

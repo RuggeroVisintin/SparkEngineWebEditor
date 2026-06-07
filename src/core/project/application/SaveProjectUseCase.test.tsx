@@ -1,5 +1,4 @@
 import { FakeBitmap } from "../../../__mocks__/bitmap.mock";
-import { describeClass } from "../../../test-utils/describeClass";
 import { WeakRef } from "../../common";
 import { SceneRepository } from "../../scene";
 import { Project, ProjectRepository } from "../domain";

@@ -1,5 +1,4 @@
 import { GameObject, Rgb, Vec2 } from "sparkengineweb";
-import { describeClass } from "../../../../test-utils/describeClass";
 import Pivot from "./Pivot";
 
 describeClass(Pivot, () => {

@@ -1,5 +1,4 @@
 import { BaseEntity, CameraComponent, typeOf } from 'sparkengineweb';
-import { describeClass } from '../../../../test-utils/describeClass';
 import { EditorCamera } from './EditrorCamera';
 
 describeClass(EditorCamera, () => {

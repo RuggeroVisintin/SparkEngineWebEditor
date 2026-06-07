@@ -1,5 +1,4 @@
 import { ReactStateRepository } from "../../editor";
-import { describeClass } from "../../../test-utils/describeClass";
 import { OpenScriptingEditorCommand } from "../domain/commands";
 import { ScriptEditorService } from "./ScriptEditorService";
 import { ScriptEditorState } from "./ScriptEditorState";

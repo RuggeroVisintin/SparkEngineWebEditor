@@ -1,5 +1,4 @@
 import { Scene } from "@sparkengine";
-import { describeClass } from "../../../test-utils/describeClass";
 import { LoadSceneUseCase } from "./LoadSceneUseCase";
 import testSceneJson from '../../../__mocks__/assets/test-scene.json';
 import { SceneRepository } from "../domain";

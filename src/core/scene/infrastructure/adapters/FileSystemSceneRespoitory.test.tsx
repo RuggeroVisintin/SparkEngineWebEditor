@@ -1,7 +1,6 @@
 import { FileSystemSceneRepository } from "./FileSystemSceneRepository";
 import testSceneJson from '../../../../__mocks__/assets/test-scene.json';
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
-import { describeClass } from "../../../../test-utils/describeClass";
 import { parseJsonString, WeakRef } from "../../../common";
 import { Scene } from "sparkengineweb";
 

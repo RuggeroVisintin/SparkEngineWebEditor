@@ -1,5 +1,4 @@
 import { GameObject, Vec2 } from "sparkengineweb";
-import { describeClass } from "../../../../test-utils/describeClass";
 import { EntityOutline } from "./EntityOtuline";
 
 describeClass(EntityOutline, () => {
