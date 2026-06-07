@@ -16,6 +16,7 @@ import { EventBus } from "../../common/ports/EventBus";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
 import { EditorCamera } from "../domain/entities/EditrorCamera";
+import { SendSceneToPreviewUseCase } from "../../preview/application/SendSceneToPreviewUseCase";
 
 export class EditorService {
     private _currentEntity?: IEntity;
@@ -57,9 +58,14 @@ export class EditorService {
         private readonly stateRepository: StateRepository<EditorState>,
         private readonly contextualUiService: ContextualUiService,
         private readonly eventBus: EventBus,
+        private readonly sendSceneToPreviewUseCase: SendSceneToPreviewUseCase,
     ) {
+        console.log('[POC] EditorService - Constructor: Setting up event subscriptions');
         eventBus.subscribe('ScriptingEditorReady', this.onScriptingEditorReadyEvent.bind(this));
         eventBus.subscribe('ScriptSaved', this.onScriptSavedEvent.bind(this));
+        console.log('[POC] EditorService - Subscribing to PreviewViewReady event');
+        eventBus.subscribe('PreviewViewReady', this.onPreviewViewReady.bind(this));
+        console.log('[POC] EditorService - Event subscriptions complete');
     }
 
     public start(context: CanvasRenderingContext2D, resolution: { width: number, height: number }): void {
@@ -303,6 +309,25 @@ export class EditorService {
                 console.error('Script content:', e.script);
             }
         })
+    }
+
+    private async onPreviewViewReady(e: any): Promise<void> {
+        if (!this._currentScene) {
+            console.warn('[POC] EditorService.onPreviewViewReady() - No current scene available');
+            return;
+        }
+
+        try {
+            console.log('[POC] EditorService.onPreviewViewReady() - Preview ready signal received', { sceneId: e.sceneId });
+            
+            await this.sendSceneToPreviewUseCase.execute(
+                this._currentScene,
+                e.sceneId || 'current-scene'
+            );
+            console.log('[POC] EditorService.onPreviewViewReady() - ✓ Scene serialized and sent to preview with embedded assets');
+        } catch (error) {
+            console.error('[POC] EditorService.onPreviewViewReady() - Failed to send scene to preview:', error);
+        }
     }
 
     private deselectCurrentEntity(): void {

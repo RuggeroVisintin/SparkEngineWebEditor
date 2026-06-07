@@ -14,6 +14,7 @@ import { EditorState } from "./EditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
+import { SendSceneToPreviewUseCase } from "../../preview/application/SendSceneToPreviewUseCase";
 
 class ProjectRepositoryTestDouble implements ProjectRepository {
     public read(): Promise<Project> {
@@ -100,7 +101,8 @@ describe('EditorService', () => {
             objectPicking,
             appState,
             contextualUiServiceDouble,
-            eventBus
+            eventBus,
+            new SendSceneToPreviewUseCase(eventBus)
         );
 
         sceneRepository.save(sceneToLoad, { path: 'test-scene.spark.json', accessScope: new WeakRef<null>(null) });
