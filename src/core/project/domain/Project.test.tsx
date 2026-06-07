@@ -1,11 +1,12 @@
 import { Scene } from "@sparkengine";
+import { describeClass } from "../../../test-utils/describeClass";
 import { FileSystemSceneRepository } from "../../scene"
 import { Project } from "./Project"
 import { parseJsonString, WeakRef } from "../../common";
 import { createDirectoryHandleMock, setMockedFile } from "../../../__mocks__/fs-api.mock";
 import testSceneJson from '../../../__mocks__/assets/test-scene.json';
 
-describe('core/project/models/Project', () => {
+describeClass(Project, () => {
     const sceneRepo = new FileSystemSceneRepository();
 
     describe('.constructor()', () => {

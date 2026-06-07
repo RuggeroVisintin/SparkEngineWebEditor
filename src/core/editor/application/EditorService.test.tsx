@@ -1,4 +1,5 @@
 import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { describeClass } from "../../../test-utils/describeClass";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
@@ -71,7 +72,7 @@ class ScriptableBoundingBoxComponent extends BoundingBoxComponent {
 
 const sceneToLoad = new Scene();
 
-describe('EditorService', () => {
+describeClass(EditorService, () => {
     let editorService: EditorService;
     let imageLoader: FileSystemImageRepository;
     let context: CanvasRenderingContext2D;

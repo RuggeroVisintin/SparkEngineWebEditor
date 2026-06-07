@@ -1,7 +1,8 @@
 import { BaseEntity, CameraComponent, typeOf } from 'sparkengineweb';
+import { describeClass } from '../../../../test-utils/describeClass';
 import { EditorCamera } from './EditrorCamera';
 
-describe('core/debug/EditorCamera', () => {
+describeClass(EditorCamera, () => {
     it('Should be an instance of BaseEntity', () => {
         const camera = new EditorCamera();
         expect(camera).toBeInstanceOf(BaseEntity);

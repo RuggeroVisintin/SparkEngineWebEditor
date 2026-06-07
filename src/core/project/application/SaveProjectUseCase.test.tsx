@@ -1,4 +1,5 @@
 import { FakeBitmap } from "../../../__mocks__/bitmap.mock";
+import { describeClass } from "../../../test-utils/describeClass";
 import { WeakRef } from "../../common";
 import { SceneRepository } from "../../scene";
 import { Project, ProjectRepository } from "../domain";
@@ -23,7 +24,7 @@ class MockImageRepository {
     save = jest.fn();
 }
 
-describe('core/project/usecases/SaveProjectuseCase', () => {
+describeClass(SaveProjectUseCase, () => {
     let projectRepository: MockProjectReposioty;
     let sceneRepository: MockSceneRepository;
     let imageRepository: MockImageRepository;

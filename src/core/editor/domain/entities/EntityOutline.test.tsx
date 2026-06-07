@@ -1,7 +1,8 @@
 import { GameObject, Vec2 } from "sparkengineweb";
+import { describeClass } from "../../../../test-utils/describeClass";
 import { EntityOutline } from "./EntityOtuline";
 
-describe('core/debug/EntityOutline', () => {
+describeClass(EntityOutline, () => {
     describe('.match()', () => {
         it('Should match the outline position to the one of the target', () => {
             const target = new GameObject({

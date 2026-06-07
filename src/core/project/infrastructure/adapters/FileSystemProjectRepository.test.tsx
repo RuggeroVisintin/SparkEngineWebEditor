@@ -1,10 +1,11 @@
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
 import testProjectJson from "../../../../__mocks__/assets/test-project.json";
+import { describeClass } from "../../../../test-utils/describeClass";
 import { FileSystemProjectRepository } from "./FileSystemProjectRepository";
 import { Project } from "../../domain";
 import { WeakRef } from "../../../common";
 
-describe('core/project/adapters/FileSystemProjectRepository', () => {
+describeClass(FileSystemProjectRepository, () => {
     describe('read', () => {
         it('Should use FileSystem Web APIs to load a file at the given filePath', async () => {
             setMockedFile(JSON.stringify(testProjectJson));

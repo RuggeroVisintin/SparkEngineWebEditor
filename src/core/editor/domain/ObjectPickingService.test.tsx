@@ -1,8 +1,9 @@
 import { GameObject } from "sparkengineweb";
+import { describeClass } from "../../../test-utils/describeClass";
 import { ObjectPickingService } from "./ObjectPickingService";
 
 
-describe('core/editor/ObjectPickingService', () => {
+describeClass(ObjectPickingService, () => {
     const event = { button: 0, targetX: 100, targetY: 200, modifiers: {} };
 
     describe('.handleMouseClick()', () => {

@@ -1,11 +1,12 @@
 import { GameObject } from 'sparkengineweb';
+import { describeClass } from '../../../test-utils/describeClass';
 import { ReactStateRepository } from './ReactStateRepository';
 
 interface TestState {
   currentEntity?: GameObject
 }
 
-describe('ReactStateRepository', () => {
+describeClass(ReactStateRepository, () => {
     it('Should trigger the subscribers on a state update', () => {
         const stateRepo = new ReactStateRepository<TestState>();
         const subscriber = jest.fn();

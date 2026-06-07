@@ -1,7 +1,8 @@
 import { getTestBroadcastChannel } from "../../../__mocks__/broadcast.mock";
+import { describeClass } from "../../../test-utils/describeClass";
 import { EventBusWithBrowserBroadcast } from "./EventBusWithBrowserBroadcast";
 
-describe('core/scripting/infrastructure/EventBusWithBrowserBoradcast', () => {
+describeClass(EventBusWithBrowserBroadcast, () => {
     describe('.constructor()', () => {
         it('should create a BroadcastChannel with the given topic name', () => {
             const topicName = 'test-channel';

@@ -1,10 +1,11 @@
 import { ReactStateRepository } from "../../editor";
+import { describeClass } from "../../../test-utils/describeClass";
 import { OpenScriptingEditorCommand } from "../domain/commands";
 import { ScriptEditorService } from "./ScriptEditorService";
 import { ScriptEditorState } from "./ScriptEditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 
-describe('core/scripting/application/ScriptEditorService', () => {
+describeClass(ScriptEditorService, () => {
     let service: ScriptEditorService;
     const entityUuid = 'test-entity-uuid';
     const componentUuid = 'test-component-uuid';

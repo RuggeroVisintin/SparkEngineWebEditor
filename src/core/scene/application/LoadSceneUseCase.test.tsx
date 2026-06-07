@@ -1,4 +1,5 @@
 import { Scene } from "@sparkengine";
+import { describeClass } from "../../../test-utils/describeClass";
 import { LoadSceneUseCase } from "./LoadSceneUseCase";
 import testSceneJson from '../../../__mocks__/assets/test-scene.json';
 import { SceneRepository } from "../domain";
@@ -13,7 +14,7 @@ class MockSceneRepository implements SceneRepository {
     save = jest.fn();
 }
 
-describe('core/scene/usecases/LoadSceneUseCase', () => {
+describeClass(LoadSceneUseCase, () => {
     it('Should return the loaded scene', async () => {
         const loadedScene = await new LoadSceneUseCase(new MockSceneRepository())
             .execute();

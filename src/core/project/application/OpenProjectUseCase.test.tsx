@@ -1,4 +1,5 @@
 import testProjectJson from "../../../__mocks__/assets/test-project.json";
+import { describeClass } from "../../../test-utils/describeClass";
 import { OpenProjectUseCase } from "./OpenProjectUseCase";
 import { SceneRepository } from "../../scene";
 import { ProjectRepository, Project } from "../domain";
@@ -23,7 +24,7 @@ class MockSceneRepository implements SceneRepository {
     save = jest.fn();
 }
 
-describe('core/project/usecases/OpenProjectUseCase', () => {
+describeClass(OpenProjectUseCase, () => {
     it('Should load the project from the chosen filesystem directory', async () => {
         const result = await new OpenProjectUseCase(new MockProjectRepository(), new MockSceneRepository()).execute();
 

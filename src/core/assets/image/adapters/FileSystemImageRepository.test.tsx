@@ -1,10 +1,11 @@
 import { ImageAsset } from "@sparkengine";
+import { describeClass } from "../../../../test-utils/describeClass";
 import { bitmapToBlob, WeakRef } from "../../../common";
 import { FileSystemImageRepository } from "./FileSystemImageRepository";
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 
-describe('core/assets/image/adapters/FileSystemImageLoader', () => {
+describeClass(FileSystemImageRepository, () => {
     let fileSystemImageRepository: FileSystemImageRepository;
 
     beforeEach(() => {
