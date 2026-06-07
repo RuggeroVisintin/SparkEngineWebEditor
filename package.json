@@ -1,6 +1,6 @@
 {
   "name": "sparkenginewebeditor",
-  "version": "0.0.17",
+  "version": "0.1.0",
   "private": true,
   "engines": {
     "node": "^22",
@@ -25,7 +25,6 @@
     "license-check": "bash ./scripts/check-licenses.sh",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
     "prepare": "husky",
