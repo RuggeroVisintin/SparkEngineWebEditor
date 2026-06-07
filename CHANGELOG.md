@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.0](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.17...sparkenginewebeditor-v0.1.0) (2026-06-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump node to latest LTS
+
+### Build System
+
+* bump node to latest LTS ([9bc5693](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/9bc5693254569d4bec156665cf27672d8b5acbdd))
+
 ## [0.0.17](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.16...sparkenginewebeditor-v0.0.17) (2026-04-11)
 
 
