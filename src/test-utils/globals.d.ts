@@ -1,7 +1,7 @@
 import type { describeClass as describeClassType } from "./describeClass";
 
 declare global {
-    let describeClass: typeof describeClassType;
+    const describeClass: typeof describeClassType;
 }
 
 export { };

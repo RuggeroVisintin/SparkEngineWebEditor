@@ -1,4 +1,4 @@
-export * from './adapters/FileSystemRepository';
+export * from './infrastructure';
 export * from './uuidToRgb';
 export * from './dependencyInjection';
 export * from './utils';

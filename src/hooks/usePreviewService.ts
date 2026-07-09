@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PreviewService } from "../core/preview/application/PreviewService";
-import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
+import { EventBusWithBrowserBroadcast } from "../core/common";
 
 export const usePreviewService = () => {
     const [service] = useState(() => {
