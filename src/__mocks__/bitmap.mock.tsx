@@ -11,3 +11,9 @@ export class FakeBitmap implements ImageBitmap {
         return 0;
     }
 }
+
+beforeEach(() => {
+    global.createImageBitmap = jest.fn(async (image: ImageBitmapSource) => {
+        return new FakeBitmap();
+    });
+});

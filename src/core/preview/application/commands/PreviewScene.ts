@@ -1,3 +1,9 @@
+import { SceneJsonProps } from "sparkengineweb";
+
 export interface PreviewSceneCommand {
-    sceneData: string;
+    scene: SceneJsonProps;
+    assets: Record<string, {
+        buffer: Uint8Array;
+        format: string
+    }>
 }
