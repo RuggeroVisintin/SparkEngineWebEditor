@@ -1,4 +1,4 @@
-import { EventBus } from "../../common/ports/EventBus";
+import { EventBus } from "../ports/EventBus";
 
 export class EventBusWithBrowserBroadcast implements EventBus {
     private readonly channel: BroadcastChannel;

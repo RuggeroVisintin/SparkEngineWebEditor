@@ -4,4 +4,4 @@ declare global {
     var describeClass: typeof describeClassType;
 }
 
-export {};
+export { };

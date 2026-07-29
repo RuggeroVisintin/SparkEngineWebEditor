@@ -1,2 +1,2 @@
 export * from './ColorObjectPicker';
-export * from '../../../common/adapters/ReactStateRepository'
+export * from '../../../common/infrastructure/ReactStateRepository'

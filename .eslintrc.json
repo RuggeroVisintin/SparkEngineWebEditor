@@ -58,6 +58,14 @@
     "overrides": [
         {
             "files": [
+                "**/*.d.ts"
+            ],
+            "rules": {
+                "no-var": "off"
+            }
+        },
+        {
+            "files": [
                 "**/__mocks__/**/*.{ts,tsx}"
             ],
             "rules": {

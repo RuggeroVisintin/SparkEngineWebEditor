@@ -7,7 +7,7 @@ import { SceneRepositoryTestDouble } from "../../../__mocks__/core/scene/SceneRe
 import { Optional, WeakRef } from "../../common";
 import { ObjectPickingService } from "../domain/ObjectPickingService";
 import { ColorObjectPicker } from "../infrastructure";
-import { ReactStateRepository } from "../../common/adapters/ReactStateRepository";
+import { ReactStateRepository } from "../../common/infrastructure/ReactStateRepository";
 import { StateRepository } from "../../common/ports/StateRepository";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";

@@ -10,7 +10,7 @@ import { FileSystemProjectRepository } from "../core/project/infrastructure/adap
 import { FileSystemSceneRepository } from "../core/scene";
 import { ContextualUiService } from "../core/editor/domain/ContextualUiService";
 import { WeakRef } from "../core/common";
-import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
+import { EventBusWithBrowserBroadcast } from "../core/common";
 
 export const useEditorService = (): [EditorService, EditorState] => {
     const [stateRepo] = useState(() => new ReactStateRepository<EditorState>());

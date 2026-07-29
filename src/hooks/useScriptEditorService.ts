@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ReactStateRepository } from "../core/editor"
 import { ScriptEditorService, ScriptEditorState } from "../core/scripting/application"
-import { EventBusWithBrowserBroadcast } from "../core/scripting/infrastructure";
+import { EventBusWithBrowserBroadcast } from "../core/common";
 import { useAppState } from "./useAppState";
 
 export const useScriptEditorService = (
