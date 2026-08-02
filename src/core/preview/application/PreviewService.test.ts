@@ -23,7 +23,6 @@ describeClass(PreviewService, ({ describeMethod }) => {
     });
 
     describe('onMessage: PreviewSceneCommand', () => {
-        it.failing('Should deserialize the scene data and render it in the preview', () => {
-        });
+        it.todo('Should deserialize the scene data and render it in the preview');
     });
 });

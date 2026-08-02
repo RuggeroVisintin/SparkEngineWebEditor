@@ -1,6 +1,6 @@
 import { ImageAsset } from "sparkengineweb";
 import { ImageRepository } from "../../../../core/assets";
-import { LocationParameters } from "../../../../core/common";
+import { LocationParameters, WeakRef } from "../../../../core/common";
 
 export class ImageRepositoryTestDouble implements ImageRepository {
     public images: Map<string, ImageAsset> = new Map();
@@ -9,4 +9,6 @@ export class ImageRepositoryTestDouble implements ImageRepository {
         this.images.set(location.path, image);
     }
 
+    changeScope(scopeRef: WeakRef): void {
+    }
 }
