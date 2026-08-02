@@ -7,7 +7,6 @@ export class PreviewService {
     public constructor(
         private readonly eventBus: EventBus,
         private readonly imageLoader: ImageLoader,
-        private readonly 
     ) {
         eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
     }
