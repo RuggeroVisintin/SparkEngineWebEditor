@@ -1,6 +1,7 @@
 import { ImageAsset, ImageLoader } from "sparkengineweb";
-import { bitmapToBlob, LocationParameters } from "../../../common";
+import { bitmapToBlob, LocationParameters, WeakRef } from "../../../common";
 import { ImageSerializer, SerializedImageAsset, SerializedImageAssetSnapshot } from "../ports/ImageSerializer";
+import { ImageRepository } from "../ports";
 
 class InMemoryImageAsset {
     constructor(
@@ -33,8 +34,15 @@ class InMemoryImageAsset {
     }
 }
 
-export class InMemoryImageSerializer implements ImageLoader, ImageSerializer {
+export class InMemoryImageSerializer implements ImageLoader, ImageSerializer, ImageRepository {
     private readonly images: Map<string, InMemoryImageAsset> = new Map();
+
+    public constructor(
+        private readonly imageRepository?: ImageRepository,
+        private readonly imageLoader?: ImageLoader
+    ) {
+
+    }
 
     public async importSnapshot(snapshot: SerializedImageAssetSnapshot): Promise<void> {
         Object.entries(snapshot).forEach(([path, image]) => {
@@ -54,9 +62,18 @@ export class InMemoryImageSerializer implements ImageLoader, ImageSerializer {
 
     public async save(image: ImageAsset, location: LocationParameters): Promise<void> {
         this.images.set(location.path, await InMemoryImageAsset.fromImageAsset(image));
+
+        if (this.imageRepository) {
+            await this.imageRepository.save(image, location);
+        }
     }
 
     public async load(src: string): Promise<ImageAsset> {
+        if (this.imageLoader) {
+            const loaded = await this.imageLoader.load(src);
+            this.images.set(src, await InMemoryImageAsset.fromImageAsset(loaded));
+        }
+
         const image = this.images.get(src);
 
         if (!image) {
@@ -64,6 +81,11 @@ export class InMemoryImageSerializer implements ImageLoader, ImageSerializer {
         }
 
         return image.toImageAsset();
+    }
 
+    public changeScope(scopeRef: WeakRef<FileSystemDirectoryHandle>): void {
+        if (this.imageRepository) {
+            this.imageRepository.changeScope?.(scopeRef);
+        }
     }
 }

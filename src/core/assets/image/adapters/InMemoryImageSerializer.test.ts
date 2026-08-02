@@ -2,6 +2,8 @@ import { ImageAsset } from "sparkengineweb";
 import { InMemoryImageSerializer } from "./InMemoryImageSerializer";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { bitmapToBlob, WeakRef } from "../../../common";
+import { ImageRepositoryTestDouble } from "../../../../__mocks__/core/assets/image/ImageRepositoryTestDouble";
+import { ImageLoaderTestDouble } from "../../../../__mocks__/core/assets/image/ImageLoaderTestDouble";
 
 const IMAGE_PATH = 'test/path/to/image.png';
 
@@ -32,6 +34,19 @@ describeClass(InMemoryImageSerializer, ({ describeMethod }) => {
 
             expect(loaded.media).not.toBe(testImageAsset.media);
         });
+
+        it('Should also store the image asset in the image repoisitory if provided', async () => {
+            const imageRepository = new ImageRepositoryTestDouble();
+            const imageSerializer = new InMemoryImageSerializer(imageRepository);
+            const testImageAsset = new ImageAsset(new FakeBitmap(), 'image/png');
+
+            await imageSerializer.save(testImageAsset, {
+                accessScope: new WeakRef(),
+                path: IMAGE_PATH
+            });
+
+            expect(imageRepository.images.get(IMAGE_PATH)).toEqual(testImageAsset);
+        });
     });
 
     describeMethod('load', () => {
@@ -41,6 +56,45 @@ describeClass(InMemoryImageSerializer, ({ describeMethod }) => {
             await expect(imageSerializer.load('non/existent/image.png'))
                 .rejects.toThrow('Image with src non/existent/image.png not found');
 
+        });
+
+        it('Should load images from in memory if no image loader is provided', async () => {
+            const imageSerializer = new InMemoryImageSerializer();
+            const testImageAsset = new ImageAsset(new FakeBitmap(), 'image/png');
+
+            await imageSerializer.save(testImageAsset, {
+                accessScope: new WeakRef(),
+                path: IMAGE_PATH
+            });
+
+            return expect(imageSerializer.load(IMAGE_PATH)).resolves.toEqual(testImageAsset);
+        });
+
+        it('Should load images from the image loader if given', () => {
+            const imageLoader = new ImageLoaderTestDouble();
+            const imageSerializer = new InMemoryImageSerializer(undefined, imageLoader);
+
+            const testImageAsset = new ImageAsset(new FakeBitmap(), 'image/png');
+            imageLoader.images.set(IMAGE_PATH, testImageAsset);
+
+            return expect(imageSerializer.load(IMAGE_PATH)).resolves.toEqual(testImageAsset);
+        });
+
+        it('Should store the loaded image in memory if the image loader is provided', async () => {
+            const imageLoader = new ImageLoaderTestDouble();
+            const imageSerializer = new InMemoryImageSerializer(undefined, imageLoader);
+
+            const testImageAsset = new ImageAsset(new FakeBitmap(), 'image/png');
+            imageLoader.images.set(IMAGE_PATH, testImageAsset);
+
+            const loaded = await imageSerializer.load(IMAGE_PATH);
+
+            expect(await imageSerializer.toSnapshot()).toEqual({
+                [IMAGE_PATH]: {
+                    type: 'image/png',
+                    media: new Uint8Array(await (await bitmapToBlob(loaded.media)).arrayBuffer())
+                }
+            });
         });
     });
 
