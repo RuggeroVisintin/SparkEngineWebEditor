@@ -5,9 +5,12 @@ import { InMemoryImageSerializer } from "../core/assets";
 
 export const usePreviewService = () => {
     const [service] = useState(() => {
+        const imageSerializer = new InMemoryImageSerializer();
+
         return new PreviewService(
             new EventBusWithBrowserBroadcast('preview'),
-            new InMemoryImageSerializer()
+            imageSerializer,
+            imageSerializer
         );
     });
 

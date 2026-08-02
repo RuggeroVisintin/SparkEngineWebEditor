@@ -2,11 +2,13 @@ import { GameEngine, ImageLoader } from "sparkengineweb";
 import { EventBus } from "../../common/ports";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewViewReadyEvent } from "../domain/events";
+import { ImageSerializer } from "../../assets";
 
 export class PreviewService {
     public constructor(
         private readonly eventBus: EventBus,
         private readonly imageLoader: ImageLoader,
+        private readonly imageSerializer: ImageSerializer
     ) {
         eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
     }

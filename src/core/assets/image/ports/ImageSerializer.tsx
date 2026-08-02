@@ -8,6 +8,6 @@ export interface SerializedImageAsset {
 export type SerializedImageAssetSnapshot = Record<string, SerializedImageAsset>;
 
 export interface ImageSerializer extends ImageRepository {
-    importSnapshot(snapshot: SerliazedImageAssetSnapshot): Promise<void>;
+    importSnapshot(snapshot: SerializedImageAssetSnapshot): Promise<void>;
     toSnapshot(): Promise<SerializedImageAssetSnapshot>;
 }
