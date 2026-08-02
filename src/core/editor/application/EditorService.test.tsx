@@ -1,6 +1,6 @@
 import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
 import { EditorService } from "./EditorService";
-import { FileSystemImageRepository } from "../../assets";
+import { FileSystemImageRepository, InMemoryImageSerializer } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
 import { Project } from "../../project/domain";
 import { SceneRepositoryTestDouble } from "../../../__mocks__/core/scene/SceneRepositoryTestDouble";
@@ -14,6 +14,8 @@ import { EditorState } from "./EditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
+import { PreviewSceneCommand } from "../../preview/application/commands";
+import { PreviewViewReadyEvent } from "../../preview/domain/events";
 
 class ProjectRepositoryTestDouble implements ProjectRepository {
     public read(): Promise<Project> {
@@ -74,6 +76,7 @@ const sceneToLoad = new Scene();
 describeClass(EditorService, ({ describeMethod }) => {
     let editorService: EditorService;
     let imageLoader: FileSystemImageRepository;
+    let imageSerializer: InMemoryImageSerializer;
     let context: CanvasRenderingContext2D;
     let projectRepositoryDouble: ProjectRepositoryTestDouble;
     let sceneRepository: SceneRepositoryTestDouble;
@@ -87,14 +90,16 @@ describeClass(EditorService, ({ describeMethod }) => {
         sceneRepository = new SceneRepositoryTestDouble();
         context = new CanvasRenderingContext2D();
         imageLoader = new FileSystemImageRepository();
+        imageSerializer = new InMemoryImageSerializer(imageLoader, imageLoader);
         objectPicking = new ObjectPickingServiceTestDouble(new ColorObjectPicker(() => new Renderer(new CanvasDevice(), { width: 0, height: 0 }, context), { width: 0, height: 0 }, imageLoader));
         appState = new ReactStateRepository<EditorState>();
         contextualUiServiceDouble = new ContextualUiServiceTestDouble();
         eventBus = new InMemoryEventBusDouble();
 
         editorService = new EditorService(
-            imageLoader,
-            imageLoader,
+            imageSerializer,
+            imageSerializer,
+            imageSerializer,
             projectRepositoryDouble,
             sceneRepository,
             objectPicking,
@@ -113,7 +118,7 @@ describeClass(EditorService, ({ describeMethod }) => {
             editorService.start(context, resolution);
 
             expect(editorService.engine?.renderer.resolution).toEqual(resolution);
-            expect(editorService.engine?.imageLoader).toEqual(imageLoader);
+            expect(editorService.engine?.imageLoader).toEqual(imageSerializer);
         });
 
         it('Should create a new scene', () => {
@@ -665,6 +670,43 @@ describeClass(EditorService, ({ describeMethod }) => {
             } as ScriptSaved);
 
             expect(scriptableComponent.onCollisionCB.call(this)).toEqual(0);
+        });
+    });
+
+    describe('on PreviewViewReadyEvent', () => {
+        it('Should emit a PreviewSceneCommand with the current scene data', async () => {
+            const resolution = { width: 800, height: 600 };
+            const assetsSnapshot = {
+                'assets/test.png': {
+                    type: 'image/png',
+                    media: new Uint8Array([1, 2, 3])
+                }
+            };
+
+            imageSerializer.toSnapshot = jest.fn().mockResolvedValue(assetsSnapshot);
+
+            editorService.start(context, resolution);
+
+            eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
+                sceneId: editorService.currentScene!.uuid,
+            });
+
+            await Promise.resolve();
+
+            expect(imageSerializer.toSnapshot).toHaveBeenCalled();
+
+            const previewScene = eventBus.publishedEvents['PreviewScene'] as PreviewSceneCommand;
+
+            expect(previewScene).toEqual(expect.objectContaining({
+                assets: {
+                    'assets/test.png': {
+                        format: 'image/png',
+                        buffer: new Uint8Array([1, 2, 3])
+                    }
+                }
+            }));
+
+            expect(JSON.stringify(previewScene.scene)).toEqual(JSON.stringify(editorService.currentScene?.toJson()));
         });
     });
 

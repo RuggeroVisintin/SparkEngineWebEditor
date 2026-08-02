@@ -7,15 +7,15 @@ import { ObjectPickingService } from "../domain/ObjectPickingService";
 import { StateRepository } from "../../common/ports/StateRepository";
 import { v4 } from 'uuid';
 import { SaveProjectUseCase } from "../../project/application";
-import { FileSystemImageRepository } from "../../assets/image/adapters";
-import { WeakRef } from "../../common";
-import { ImageRepository } from "../../assets";
+import { ImageRepository, ImageSerializer } from "../../assets";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";
 import { EventBus } from "../../common/ports/EventBus";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
 import { EditorCamera } from "../domain/entities/EditrorCamera";
+import { PreviewViewReadyEvent } from "../../preview/domain/events";
+import { PreviewSceneCommand } from "../../preview/application/commands";
 
 export class EditorService {
     private _currentEntity?: IEntity;
@@ -51,6 +51,7 @@ export class EditorService {
     constructor(
         private readonly imageLoader: ImageLoader,
         private readonly imageRepository: ImageRepository,
+        private readonly imageSerializer: ImageSerializer,
         private readonly projectRepository: ProjectRepository,
         private readonly sceneRepository: SceneRepository,
         private readonly objectPicking: ObjectPickingService,
@@ -60,6 +61,8 @@ export class EditorService {
     ) {
         eventBus.subscribe('ScriptingEditorReady', this.onScriptingEditorReadyEvent.bind(this));
         eventBus.subscribe('ScriptSaved', this.onScriptSavedEvent.bind(this));
+        eventBus.subscribe('PreviewViewReady', this.onPreviewReadyEvent);
+
     }
 
     public start(context: CanvasRenderingContext2D, resolution: { width: number, height: number }): void {
@@ -82,13 +85,12 @@ export class EditorService {
         this._project = await this.projectRepository.read();
         await this._project.loadScenes(this.sceneRepository);
 
-        (this.imageLoader as FileSystemImageRepository).changeScope(this._project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
+        this.imageRepository.changeScope(this._project.scopeRef);
 
         const newScene = this._project.scenes[0];
 
         this._currentScene?.dispose();
-        // FIXME: hiding the scene causes the camera to no longer being added to the renderer loop
-        // call ContextualUiService.loseFocus instead to avoid issues for now
+
         this.contextualUiService.loseFocus();
 
         this._engine && newScene?.draw(this._engine);
@@ -303,6 +305,22 @@ export class EditorService {
                 console.error('Script content:', e.script);
             }
         })
+    }
+
+    private onPreviewReadyEvent = async (e: PreviewViewReadyEvent): Promise<void> => {
+        if (!this.currentScene || this.currentScene.uuid !== e.sceneId) return;
+
+        const snapshot = await this.imageSerializer.toSnapshot();
+
+        this.eventBus.publish<PreviewSceneCommand>('PreviewScene', {
+            scene: this.currentScene.toJson(),
+            assets: Object.fromEntries(
+                Object.entries(snapshot).map(([path, image]) => [path, {
+                    format: image.type,
+                    buffer: image.media
+                }])
+            )
+        });
     }
 
     private deselectCurrentEntity(): void {

@@ -3,7 +3,7 @@ import { ColorObjectPicker, ObjectPickingService, ReactStateRepository } from ".
 import { useAppState } from "./useAppState";
 import { EditorService } from "../core/editor/application";
 import { EditorState } from "../core/editor/application/EditorState";
-import { FileSystemImageRepository } from "../core/assets";
+import { FileSystemImageRepository, InMemoryImageSerializer } from "../core/assets";
 import { Renderer } from "sparkengineweb";
 import { Project } from "../core/project/domain";
 import { FileSystemProjectRepository } from "../core/project/infrastructure/adapters";
@@ -21,14 +21,16 @@ export const useEditorService = (): [EditorService, EditorState] => {
         const projectRepo = new FileSystemProjectRepository();
         const sceneRepo = new FileSystemSceneRepository();
         const imageRepository = new FileSystemImageRepository(project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
+        const imageSerializer = new InMemoryImageSerializer(imageRepository, imageRepository);
         const objectPikcer = new ColorObjectPicker((...params) => new Renderer(...params), { width: 1920, height: 1080 }, imageRepository);
         const objectPickingService = new ObjectPickingService(objectPikcer);
         const contextualUiService = new ContextualUiService();
         const eventBus = new EventBusWithBrowserBroadcast('scripting');
 
         return new EditorService(
-            imageRepository,
-            imageRepository,
+            imageSerializer,
+            imageSerializer,
+            imageSerializer,
             projectRepo,
             sceneRepo,
             objectPickingService,

@@ -21,6 +21,7 @@ class MockSceneRepository implements SceneRepository {
 class MockImageRepository {
     read = jest.fn();
     save = jest.fn();
+    changeScope = jest.fn();
 }
 
 describeClass(SaveProjectUseCase, () => {

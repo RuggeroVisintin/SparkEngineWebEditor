@@ -1,3 +1,5 @@
+import { ImageLoaderTestDouble } from "../../../__mocks__/core/assets/image/ImageLoaderTestDouble";
+import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { PreviewService } from "./PreviewService";
 
@@ -7,7 +9,7 @@ describeClass(PreviewService, ({ describeMethod }) => {
             const testSceneId = 'test-scene-id';
 
             const eventBus = new InMemoryEventBusDouble();
-            const previewService = new PreviewService(eventBus);
+            const previewService = new PreviewService(eventBus, new ImageLoaderTestDouble(), new ImageSerializerTestDouble());
 
             previewService.onPreviewStart(testSceneId, {} as CanvasRenderingContext2D, { width: 800, height: 600 });
 
@@ -18,5 +20,9 @@ describeClass(PreviewService, ({ describeMethod }) => {
                 }
             });
         });
+    });
+
+    describe('onMessage: PreviewSceneCommand', () => {
+        it.todo('Should deserialize the scene data and render it in the preview');
     });
 });

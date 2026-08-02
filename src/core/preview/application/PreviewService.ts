@@ -1,11 +1,17 @@
-import { GameEngine, GameEngineOptions } from "sparkengineweb";
+import { GameEngine, ImageLoader } from "sparkengineweb";
 import { EventBus } from "../../common/ports";
 import { PreviewSceneCommand } from "./commands";
+import { PreviewViewReadyEvent } from "../domain/events";
+import { ImageSerializer } from "../../assets";
 
 export class PreviewService {
     public constructor(
-        private readonly eventBus: EventBus
-    ) { }
+        private readonly eventBus: EventBus,
+        private readonly imageLoader: ImageLoader,
+        private readonly imageSerializer: ImageSerializer
+    ) {
+        eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
+    }
 
     public onPreviewStart(sceneId: string, context: CanvasRenderingContext2D, resolution: { width: number, height: number }): void {
         new GameEngine({
@@ -14,15 +20,16 @@ export class PreviewService {
             resolution: {
                 width: resolution.width,
                 height: resolution.height
-            }
+            },
+            imageLoader: this.imageLoader
         });
 
-        this.eventBus.publish('PreviewViewReady', {
+        this.eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
             sceneId
         });
     }
 
     private onPreviewSceneCommand = (command: PreviewSceneCommand) => {
-        console.log('Received scene data for preview:', command.sceneData);
+        console.log('Received scene data for preview:', command.scene, command.assets);
     }
 }
