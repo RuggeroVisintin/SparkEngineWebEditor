@@ -1,9 +1,6 @@
-import { useRef } from 'react';
-import { GameEngine } from '@sparkengine';
 import { EngineView } from '../../components';
 import { FlexBox } from '../../primitives';
 import { OnEngineViewReadyCBProps } from '../../components/EngineView';
-import { useEditorService } from '../../hooks/useEditorService';
 import { usePreviewService } from '../../hooks';
 import { useParams } from 'react-router';
 
@@ -15,7 +12,9 @@ export const Preview = () => {
     const [previewService] = usePreviewService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
-        previewService.onPreviewStart(sceneId!, context, resolution);
+        console.log('Engine view is ready, starting preview for scene', sceneId);
+
+        previewService.start(sceneId!, context, resolution);
     };
 
     return (

@@ -4,18 +4,16 @@ import { FileSystemImageRepository, InMemoryImageSerializer } from "../../assets
 import { ProjectRepository } from "../../project/domain";
 import { Project } from "../../project/domain";
 import { SceneRepositoryTestDouble } from "../../../__mocks__/core/scene/SceneRepositoryTestDouble";
-import { Optional, WeakRef } from "../../common";
+import { Optional, ReactStateRepository, WeakRef } from "../../common";
 import { ObjectPickingService } from "../domain/ObjectPickingService";
 import { ColorObjectPicker } from "../infrastructure";
-import { ReactStateRepository } from "../../common/infrastructure/ReactStateRepository";
 import { StateRepository } from "../../common/ports/StateRepository";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
+import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
-import { PreviewSceneCommand } from "../../preview/application/commands";
-import { PreviewViewReadyEvent } from "../../preview/domain/events";
 
 class ProjectRepositoryTestDouble implements ProjectRepository {
     public read(): Promise<Project> {
@@ -73,7 +71,7 @@ class ScriptableBoundingBoxComponent extends BoundingBoxComponent {
 
 const sceneToLoad = new Scene();
 
-describeClass(EditorService, ({ describeMethod }) => {
+describe('EditorService', () => {
     let editorService: EditorService;
     let imageLoader: FileSystemImageRepository;
     let imageSerializer: InMemoryImageSerializer;
@@ -105,13 +103,14 @@ describeClass(EditorService, ({ describeMethod }) => {
             objectPicking,
             appState,
             contextualUiServiceDouble,
+            eventBus,
             eventBus
         );
 
         sceneRepository.save(sceneToLoad, { path: 'test-scene.spark.json', accessScope: new WeakRef<null>(null) });
     });
 
-    describeMethod('start', () => {
+    describe('.start()', () => {
         it('Should create a new engine with the given configuration', () => {
             const resolution = { width: 800, height: 600 };
 
@@ -177,7 +176,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         it.todo('Should start the engine');
     });
 
-    describeMethod('openProject', () => {
+    describe('.openProject()', () => {
         it('Should load a new project from the given repository', async () => {
             const resolution = { width: 800, height: 600 };
             projectRepositoryDouble.project = new Project({
@@ -194,7 +193,7 @@ describeClass(EditorService, ({ describeMethod }) => {
 
     });
 
-    describeMethod('handleMouseClick', () => {
+    describe('.handleMouseClick()', () => {
         describe('left mouse button', () => {
             it('Should focus on the entity at the given position if any and left mouse button', () => {
                 const resolution = { width: 800, height: 600 };
@@ -284,7 +283,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     });
 
-    describeMethod('handleMouseDrag', () => {
+    describe('.handleMouseDrag()', () => {
         describe('on left mouse button pressed', () => {
             it.each([
                 // zoom-in
@@ -378,7 +377,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         })
     });
 
-    describeMethod('handleMouseWheel', () => {
+    describe('.handleMouseWheel()', () => {
         it('Should zoom the editor camera by the given factor', () => {
             const resolution = { width: 800, height: 600 };
             editorService.start(context, resolution);
@@ -392,7 +391,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     });
 
-    describeMethod('selectEntity', () => {
+    describe('.selectEntity()', () => {
         it('Should set the given entity as the current entity', () => {
             const entity = { uuid: 'test-uuid' } as IEntity;
 
@@ -430,7 +429,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         it.todo('Should match the editor entities to the new entity');
     });
 
-    describeMethod('addEntity', () => {
+    describe('.addNewEntity()', () => {
         it('Should register the entity into the current scene', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -468,7 +467,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     });
 
-    describeMethod('removeEntity', () => {
+    describe('.removeEntity()', () => {
         it('Should remove the entity from the current scene', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -509,7 +508,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     })
 
-    describeMethod('updateCurrentEntityComponentProperty', () => {
+    describe('.updateCurrentEntityComponentProperty()', () => {
         it('Should update the given component property with the new value', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();
@@ -673,43 +672,6 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     });
 
-    describe('on PreviewViewReadyEvent', () => {
-        it('Should emit a PreviewSceneCommand with the current scene data', async () => {
-            const resolution = { width: 800, height: 600 };
-            const assetsSnapshot = {
-                'assets/test.png': {
-                    type: 'image/png',
-                    media: new Uint8Array([1, 2, 3])
-                }
-            };
-
-            imageSerializer.toSnapshot = jest.fn().mockResolvedValue(assetsSnapshot);
-
-            editorService.start(context, resolution);
-
-            eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
-                sceneId: editorService.currentScene!.uuid,
-            });
-
-            await Promise.resolve();
-
-            expect(imageSerializer.toSnapshot).toHaveBeenCalled();
-
-            const previewScene = eventBus.publishedEvents['PreviewScene'] as PreviewSceneCommand;
-
-            expect(previewScene).toEqual(expect.objectContaining({
-                assets: {
-                    'assets/test.png': {
-                        format: 'image/png',
-                        buffer: new Uint8Array([1, 2, 3])
-                    }
-                }
-            }));
-
-            expect(JSON.stringify(previewScene.scene)).toEqual(JSON.stringify(editorService.currentScene?.toJson()));
-        });
-    });
-
     describe('addComponent()', () => {
         it('Should close the components panel', () => {
             appState.update({
@@ -782,7 +744,7 @@ describeClass(EditorService, ({ describeMethod }) => {
         });
     });
 
-    describeMethod('updateCurrentEntityMaterial', () => {
+    describe('.updateCurrentEntityMaterial()', () => {
         it('Should update the material diffuseColor when a valid color is provided', () => {
             const resolution = { width: 800, height: 600 };
             const entity = new GameObject();

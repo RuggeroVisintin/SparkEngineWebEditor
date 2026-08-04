@@ -4,6 +4,7 @@ import { OpenScriptingEditorCommand } from "../domain/commands/OpenScriptingEdit
 import { ScriptingEditorReady, ScriptSaved } from "../domain/events";
 import { EventBus } from "../../common/ports/EventBus";
 import { ScriptEditorState } from "./ScriptEditorState";
+
 export class ScriptEditorService {
 
     get currentScript(): Optional<string> {
