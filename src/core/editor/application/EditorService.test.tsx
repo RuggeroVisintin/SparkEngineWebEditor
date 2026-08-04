@@ -14,6 +14,8 @@ import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBus
 import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
+import { PreviewSceneCommand } from "../../preview/application/commands";
+import { PreviewViewReadyEvent } from "../../preview/domain/events";
 
 class ProjectRepositoryTestDouble implements ProjectRepository {
     public read(): Promise<Project> {
@@ -669,6 +671,43 @@ describe('EditorService', () => {
             } as ScriptSaved);
 
             expect(scriptableComponent.onCollisionCB.call(this)).toEqual(0);
+        });
+    });
+
+    describe('on PreviewViewReadyEvent', () => {
+        it('Should emit a PreviewSceneCommand with the current scene data', async () => {
+            const resolution = { width: 800, height: 600 };
+            const assetsSnapshot = {
+                'assets/test.png': {
+                    type: 'image/png',
+                    media: new Uint8Array([1, 2, 3])
+                }
+            };
+
+            imageSerializer.toSnapshot = jest.fn().mockResolvedValue(assetsSnapshot);
+
+            editorService.start(context, resolution);
+
+            eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
+                sceneId: editorService.currentScene!.uuid,
+            });
+
+            await Promise.resolve();
+
+            expect(imageSerializer.toSnapshot).toHaveBeenCalled();
+
+            const previewScene = eventBus.publishedEvents['PreviewScene'] as PreviewSceneCommand;
+
+            expect(previewScene).toEqual(expect.objectContaining({
+                assets: {
+                    'assets/test.png': {
+                        type: 'image/png',
+                        media: new Uint8Array([1, 2, 3])
+                    }
+                }
+            }));
+
+            expect(JSON.stringify(previewScene.scene)).toEqual(JSON.stringify(editorService.currentScene?.toJson()));
         });
     });
 

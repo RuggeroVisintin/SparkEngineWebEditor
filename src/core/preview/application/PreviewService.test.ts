@@ -4,17 +4,19 @@ import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBus
 import { PreviewSceneCommand } from "./commands";
 import { PreviewService } from "./PreviewService";
 import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
+import { SerializedImageAssetSnapshot } from "../../assets";
 
 describeClass(PreviewService, ({ describeMethod }) => {
     let previewService: PreviewService;
     let eventBus: InMemoryEventBusDouble;
     let testSceneId: string;
+    let imageSerializer: ImageSerializerTestDouble;
 
     beforeEach(() => {
         testSceneId = 'test-scene-id';
 
         eventBus = new InMemoryEventBusDouble();
-        const imageSerializer = new ImageSerializerTestDouble();
+        imageSerializer = new ImageSerializerTestDouble();
         const imageLoader = new ImageLoaderTestDouble();
 
         previewService = new PreviewService(eventBus,
@@ -55,21 +57,43 @@ describeClass(PreviewService, ({ describeMethod }) => {
 
             const testCommand: PreviewSceneCommand = {
                 scene: scenePayload,
-                assets: {
-                    'assets/player.png': {
-                        buffer: new Uint8Array([1, 2, 3, 4]),
-                        format: 'image/png'
-                    },
-                    'assets/background.png': {
-                        buffer: new Uint8Array([5, 6, 7, 8]),
-                        format: 'image/png'
-                    }
-                }
+                assets: {}
             };
 
             eventBus.publish('PreviewScene', testCommand);
 
             expect(previewService.currentScene.toJson()).toEqual(scenePayload);
+        });
+
+        it('Should import assets in the image serializer', async () => {
+            const sourceScene = new Scene();
+            const assets: SerializedImageAssetSnapshot = {
+                'assets/player.png': {
+                    media: new Uint8Array([1, 2, 3, 4]),
+                    type: 'image/png'
+                },
+                'assets/background.png': {
+                    media: new Uint8Array([5, 6, 7, 8]),
+                    type: 'image/png'
+                }
+            }
+
+            sourceScene.registerEntity(new GameObject({
+                transform: {
+                    position: new Vec2(100, 200),
+                }
+            }))
+
+            const scenePayload = sourceScene.toJson();
+
+            const testCommand: PreviewSceneCommand = {
+                scene: scenePayload,
+                assets: assets
+            };
+
+            eventBus.publish('PreviewScene', testCommand);
+
+            expect(await imageSerializer.toSnapshot()).toEqual(assets);
         });
     });
 });

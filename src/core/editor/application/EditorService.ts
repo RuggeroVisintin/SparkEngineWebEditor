@@ -338,14 +338,10 @@ export class EditorService {
 
         this.previewEventBus.publish<PreviewSceneCommand>('PreviewScene', {
             scene: this.currentScene.toJson(),
-            assets: Object.fromEntries(
-                Object.entries(snapshot).map(([path, image]) => [path, {
-                    format: image.type,
-                    buffer: image.media
-                }])
-            )
+            assets: snapshot
         });
     }
+
     private deselectCurrentEntity(): void {
         this._currentEntity = undefined;
         this.contextualUiService.loseFocus();

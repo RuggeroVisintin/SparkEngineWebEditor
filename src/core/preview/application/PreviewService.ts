@@ -62,6 +62,8 @@ export class PreviewService {
         this.eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
             sceneId
         });
+
+        this._engine.run();
     }
 
     private onPreviewSceneCommand = (command: PreviewSceneCommand) => {
@@ -69,5 +71,8 @@ export class PreviewService {
 
         console.log('Current scene before loading new scene:', this._currentScene);
         this._currentScene?.loadFromJson(command.scene);
+
+        console.log("assets", command.assets);
+        this.imageSerializer.importSnapshot(command.assets);
     }
 }
