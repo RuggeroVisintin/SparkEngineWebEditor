@@ -11,6 +11,10 @@
 - MUST: Follow Conventional Commits.
 - MUST: Maintain documentation and skills updated
 
+# Additional Rules
+
+Must follow rules defined in the `./rules` directory
+
 # Skills
 
 You can find relevant skills in the `./skills` directory
