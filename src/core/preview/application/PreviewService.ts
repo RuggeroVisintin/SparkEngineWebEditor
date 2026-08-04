@@ -7,6 +7,7 @@ import { ImageSerializer } from "../../assets";
 export class PreviewService {
     private _currentScene?: Scene;
     private _engine?: GameEngine;
+    private readonly unsubscribeFromPreviewScene: () => void;
 
     public get currentScene(): Scene {
         if (!this._currentScene) {
@@ -29,7 +30,17 @@ export class PreviewService {
         private readonly imageLoader: ImageLoader,
         private readonly imageSerializer: ImageSerializer
     ) {
-        eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
+        console.log('New PreviewService instance created');
+
+        this.unsubscribeFromPreviewScene = eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
+    }
+
+    public dispose(): void {
+        this.unsubscribeFromPreviewScene();
+        this._currentScene?.dispose();
+        this._currentScene = undefined;
+        this._engine = undefined;
+        this.eventBus.dispose?.();
     }
 
     public start(sceneId: string, context: CanvasRenderingContext2D, resolution: { width: number, height: number }): void {

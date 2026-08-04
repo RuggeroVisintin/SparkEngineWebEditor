@@ -7,11 +7,15 @@ export class EventBusWithBrowserBroadcast implements EventBus {
         this.channel = new BroadcastChannel(topicName);
     }
 
-    subscribe<T>(eventName: string, callback: (event: T) => void): void {
-        this.channel.addEventListener("message", (message: MessageEvent) => {
+    subscribe<T>(eventName: string, callback: (event: T) => void): () => void {
+        const listener = (message: MessageEvent) => {
             if (eventName !== message.data.eventName) return;
             callback(message.data as T);
-        });
+        };
+
+        this.channel.addEventListener("message", listener);
+
+        return () => this.channel.removeEventListener("message", listener);
     }
 
     publish<T>(eventName: string, event: T): void {
@@ -19,6 +23,10 @@ export class EventBusWithBrowserBroadcast implements EventBus {
             ...event,
             eventName
         });
+    }
+
+    dispose(): void {
+        this.channel.close();
     }
 
 }

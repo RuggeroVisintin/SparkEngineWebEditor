@@ -9,6 +9,7 @@ import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution'
 import { PopupMenu } from '../../components/PopupMenu';
 import { useScriptEditorService } from '../../hooks';
 import { useParams } from 'react-router';
+import { ScriptEditorServiceProvider } from '../../providers';
 
 const loadESLintConfig = async (editor: monaco.editor.IStandaloneCodeEditor) => {
     const linter = new Linter({
@@ -49,20 +50,10 @@ const loadESLintConfig = async (editor: monaco.editor.IStandaloneCodeEditor) => 
     }
 };
 
-export const Scripting: FC = () => {
+const ScriptingContent: FC = () => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
-    const { entityUuid, componentUuid, callbackPropertyName } = useParams<{
-        entityUuid: string;
-        componentUuid: string;
-        callbackPropertyName: string;
-    }>();
-
-    const [service, state] = useScriptEditorService(
-        entityUuid!,
-        componentUuid!,
-        callbackPropertyName!,
-    );
+    const [service, state] = useScriptEditorService();
 
     useEffect(() => {
         if (monacoEl.current) {
@@ -127,4 +118,24 @@ export const Scripting: FC = () => {
         </FlexBox>
         <FlexBox $fill={true} ref={monacoEl} />
     </FlexBox>;
+};
+
+export const Scripting: FC = () => {
+    const { entityUuid, componentUuid, callbackPropertyName } = useParams<{
+        entityUuid: string;
+        componentUuid: string;
+        callbackPropertyName: string;
+    }>();
+
+    if (!entityUuid || !componentUuid || !callbackPropertyName) return null;
+
+    return (
+        <ScriptEditorServiceProvider
+            entityUuid={entityUuid}
+            componentUuid={componentUuid}
+            callbackPropertyName={callbackPropertyName}
+        >
+            <ScriptingContent />
+        </ScriptEditorServiceProvider>
+    );
 };

@@ -26,6 +26,9 @@ export class EditorService {
     private _editorScene?: Scene;
     private _engine?: GameEngine;
     private _project?: Project;
+    private readonly unsubscribeFromScriptingEditorReady: () => void;
+    private readonly unsubscribeFromScriptSaved: () => void;
+    private readonly unsubscribeFromPreviewReady: () => void;
 
     public get currentEntity(): Optional<IEntity> {
         return this._currentEntity;
@@ -63,9 +66,26 @@ export class EditorService {
         private readonly scriptingEventBus: EventBus,
         private readonly previewEventBus: EventBus
     ) {
-        scriptingEventBus.subscribe('ScriptingEditorReady', this.onScriptingEditorReadyEvent.bind(this));
-        scriptingEventBus.subscribe('ScriptSaved', this.onScriptSavedEvent.bind(this));
-        previewEventBus.subscribe('PreviewViewReady', this.onPreviewReadyEvent);
+        this.unsubscribeFromScriptingEditorReady = scriptingEventBus.subscribe('ScriptingEditorReady', this.onScriptingEditorReadyEvent.bind(this));
+        this.unsubscribeFromScriptSaved = scriptingEventBus.subscribe('ScriptSaved', this.onScriptSavedEvent.bind(this));
+        this.unsubscribeFromPreviewReady = previewEventBus.subscribe('PreviewViewReady', this.onPreviewReadyEvent);
+    }
+
+    public dispose(): void {
+        this.unsubscribeFromScriptingEditorReady();
+        this.unsubscribeFromScriptSaved();
+        this.unsubscribeFromPreviewReady();
+
+        this._editorScene?.dispose();
+        this._currentScene?.dispose();
+        this._editorScene = undefined;
+        this._currentScene = undefined;
+        this._currentEntity = undefined;
+        this._engine = undefined;
+        this._project = undefined;
+
+        this.scriptingEventBus.dispose?.();
+        this.previewEventBus.dispose?.();
     }
 
     public start(context: CanvasRenderingContext2D, resolution: { width: number, height: number }): void {
