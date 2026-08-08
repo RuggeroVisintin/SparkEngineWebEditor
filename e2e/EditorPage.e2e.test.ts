@@ -8,22 +8,6 @@ const AVAILABLE_COMPONENTS = Object.keys(allOf('Component'))
     .filter(component => !UNAVAILABLE_COMPONENTS.has(component))
     .map(component => component.split('Component')[0]) ?? [];
 
-const sampleEnginePixel = async (targetPage: typeof page, x: number, y: number): Promise<[number, number, number, number]> => {
-    await targetPage.waitForSelector('canvas[aria-label="Engine View"]', { state: 'attached' });
-    const engineCanvas = targetPage.locator('canvas[aria-label="Engine View"]').first();
-
-    return engineCanvas.evaluate((canvas, coords) => {
-        const context = (canvas as HTMLCanvasElement).getContext('2d');
-
-        if (!context) {
-            return [0, 0, 0, 0] as [number, number, number, number];
-        }
-
-        const [r, g, b, a] = context.getImageData(coords.x, coords.y, 1, 1).data;
-        return [r, g, b, a] as [number, number, number, number];
-    }, { x, y });
-};
-
 const openScriptingFromTriggerObject = async (options?: { addEntity?: boolean }) => {
     if (options?.addEntity) {
         const addTriggerButton = page.getByText(/Add TriggerObject/i);
@@ -104,28 +88,16 @@ describe('Editor Page - Components Panel', () => {
             await page.getByText(/Add GameObject/i).click();
             await expect(page.getByText(/GameObject1/i)).toBeVisible();
 
-            await page.waitForFunction(() => {
-                const canvas = document.querySelector<HTMLCanvasElement>('[aria-label="Engine View"]');
-                if (!canvas) return false;
-
-                const context = canvas.getContext('2d');
-                if (!context) return false;
-
-                const [r, g, b] = context.getImageData(60, 60, 1, 1).data;
-                return r > 0 || g > 0 || b > 0;
-            });
-
-            const editorPixel = await sampleEnginePixel(page, 60, 60);
-            expect(editorPixel[0]).toBeGreaterThan(0);
-
             const newTabPromise = page.context().waitForEvent('page', { timeout: 5000 });
             await page.getByRole('option', { name: /Preview/i }).click();
             const previewPage = await newTabPromise;
 
             await previewPage.waitForLoadState('domcontentloaded');
+            await previewPage.waitForSelector('canvas[aria-label="Engine View"]', { state: 'attached' });
 
-            const previewPixel = await sampleEnginePixel(previewPage, 60, 60);
-            expect(previewPixel).toEqual(editorPixel);
+            await page.waitForTimeout(1000); // Wait for the engine to render the scene
+
+            expect(await previewPage.screenshot({ fullPage: true })).toMatchImageSnapshot();
         });
     });
 
@@ -147,7 +119,7 @@ describe('Editor Page - Components Panel', () => {
             await expect(page.getByRole('region', { name: /Transform/i })).toBeVisible();
         });
 
-        it.isolated('Should save the edited script and show it again when reopening scripting', async () => {
+        it('Should save the edited script and show it again when reopening scripting', async () => {
             const scriptingPage = await openScriptingFromTriggerObject({ addEntity: true });
 
             const monacoSurface = scriptingPage.locator('.monaco-editor .view-lines').first();

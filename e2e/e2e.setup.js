@@ -1,32 +1,11 @@
-const { expect } = require('@playwright/test');
+const { expect: playwrightExpect } = require('@playwright/test');
+const { toMatchImageSnapshot } = require('jest-image-snapshot');
 
 const BASE_URL = 'http://localhost:3000';
-const ISOLATED_TEST_NAMES = new Set();
+const SNAPSHOT_DIRECTORY = 'e2e/__snapshots__';
 
-const isolatedState = {
-  page: undefined,
-  context: undefined,
-  sharedPage: undefined,
-  sharedContext: undefined,
-};
-
-const isCurrentTestIsolated = () => {
-  const currentTestName = expect.getState().currentTestName ?? '';
-
-  return Array.from(ISOLATED_TEST_NAMES).some(testName => currentTestName.endsWith(testName));
-};
-
-const registerIsolatedTest = (base) => {
-  const isolated = (name, fn, timeout) => {
-    ISOLATED_TEST_NAMES.add(name);
-    return base(name, fn, timeout);
-  };
-
-  return isolated;
-};
-
-global.it.isolated = registerIsolatedTest(global.it);
-global.test.isolated = registerIsolatedTest(global.test);
+// Save the true Jest global expect BEFORE we overwrite 'global.expect'
+const originalJestExpect = global.expect;
 
 const normalizeComparableString = (value) => {
   return (value ?? '')
@@ -35,7 +14,12 @@ const normalizeComparableString = (value) => {
     .trim();
 };
 
-expect.extend({
+const isImageBuffer = (value) => {
+  return Buffer.isBuffer(value) || value instanceof Uint8Array;
+};
+
+// 1. Register custom matchers onto Jest's original expect system
+originalJestExpect.extend({
   toLookSame(received, expected) {
     const normalizedReceived = normalizeComparableString(received);
     const normalizedExpected = normalizeComparableString(expected);
@@ -49,40 +33,37 @@ expect.extend({
           : `Expected normalized strings to match.\nReceived: ${normalizedReceived}\nExpected: ${normalizedExpected}`,
     };
   },
+  toMatchImageSnapshot,
 });
 
-beforeEach(async () => {
-  if (isCurrentTestIsolated()) {
-    isolatedState.sharedPage = global.page;
-    isolatedState.sharedContext = global.context;
-    isolatedState.context = await browser.newContext();
-    isolatedState.page = await isolatedState.context.newPage();
-
-    global.context = isolatedState.context;
-    global.page = isolatedState.page;
+// 2. Smart expect prioritizing Playwright, safely falling back to originalJestExpect
+const smartExpect = (received, ...args) => {
+  if (isImageBuffer(received)) {
+    // Use the saved original Jest expect to prevent infinite recursion
+    return originalJestExpect(received, ...args);
   }
+  return playwrightExpect(received, ...args);
+};
 
+Object.assign(smartExpect, playwrightExpect);
+
+beforeEach(async () => {
   await page.goto(BASE_URL);
   await page.waitForSelector('canvas', { timeout: 10000 });
 });
 
-afterEach(async () => {
-  if (!isCurrentTestIsolated()) {
-    return;
+afterEach(async () => {  
+  const contexts = browser.contexts();
+  for (const context of contexts) {
+    const pages = context.pages();
+    for (let idx = 0; idx < pages.length; idx++) {
+      if (idx > 0) {
+        await pages[idx].close();
+      }
+    }
   }
-
-  await isolatedState.page?.close();
-  await isolatedState.context?.close();
-
-  global.page = isolatedState.sharedPage;
-  global.context = isolatedState.sharedContext;
-
-  isolatedState.page = undefined;
-  isolatedState.context = undefined;
-  isolatedState.sharedPage = undefined;
-  isolatedState.sharedContext = undefined;
 });
 
-// Make BASE_URL available globally
 global.BASE_URL = BASE_URL;
-global.playwrightExpect = expect;
+global.expect = smartExpect;
+global.SNAPSHOT_DIRECTORY = SNAPSHOT_DIRECTORY;
