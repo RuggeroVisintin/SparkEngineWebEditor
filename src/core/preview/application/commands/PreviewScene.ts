@@ -1,9 +1,7 @@
 import { SceneJsonProps } from "sparkengineweb";
+import { SerializedImageAssetSnapshot } from "../../../assets";
 
 export interface PreviewSceneCommand {
     scene: SceneJsonProps;
-    assets: Record<string, {
-        buffer: Uint8Array;
-        format: string
-    }>
+    assets: SerializedImageAssetSnapshot;
 }

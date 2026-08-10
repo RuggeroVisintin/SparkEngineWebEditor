@@ -3,14 +3,13 @@ import { ImageSerializer, SerializedImageAssetSnapshot } from "../../../../core/
 import { LocationParameters } from "../../../../core/common";
 
 export class ImageSerializerTestDouble implements ImageSerializer {
+    private snapshot: SerializedImageAssetSnapshot = {};
+
     importSnapshot(snapshot: SerializedImageAssetSnapshot): Promise<void> {
-        throw new Error("Method not implemented.");
+        this.snapshot = snapshot;
+        return Promise.resolve();
     }
     toSnapshot(): Promise<SerializedImageAssetSnapshot> {
-        throw new Error("Method not implemented.");
+        return Promise.resolve(this.snapshot);
     }
-    save(image: ImageAsset, location: LocationParameters): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
 }

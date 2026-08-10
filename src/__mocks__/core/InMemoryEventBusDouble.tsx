@@ -5,12 +5,16 @@ export class InMemoryEventBusDouble implements EventBus {
 
     public publishedEvents: Record<string, any> = {};
 
-    subscribe<T>(eventName: string, callback: (event: T) => void): void {
+    subscribe<T>(eventName: string, callback: (event: T) => void): () => void {
         if (!this.subscribers[eventName]) {
             this.subscribers[eventName] = [];
         }
 
         this.subscribers[eventName].push(callback);
+
+        return () => {
+            this.subscribers[eventName] = this.subscribers[eventName].filter(subscriber => subscriber !== callback);
+        };
     }
 
     publish<T>(eventName: string, event: T): void {

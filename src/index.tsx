@@ -5,15 +5,18 @@ import reportWebVitals from './reportWebVitals';
 import { App } from './App';
 import { withStrictMode } from './hooks';
 import { toRouterBasename } from './config/routerBase';
+import { PreviewServiceProvider } from './providers';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 const routerBasename = toRouterBasename(import.meta.env.BASE_URL ?? '/');
 root.render(
-    withStrictMode(
-        <BrowserRouter basename={routerBasename}>
-            <App />
-        </BrowserRouter>
-    )
+    <PreviewServiceProvider>
+        {withStrictMode(
+            <BrowserRouter basename={routerBasename}>
+                <App />
+            </BrowserRouter>
+        )}
+    </PreviewServiceProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
