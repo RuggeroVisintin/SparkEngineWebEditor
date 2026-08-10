@@ -45,8 +45,6 @@ export class InMemoryImageSerializer implements ImageLoader, ImageSerializer, Im
     }
 
     public async importSnapshot(snapshot: SerializedImageAssetSnapshot): Promise<void> {
-        console.log('Importing snapshot into InMemoryImageSerializer:', snapshot);
-
         Object.entries(snapshot).forEach(([path, image]) => {
             this.images.set(path, InMemoryImageAsset.fromSerializedImageAsset(image));
         });
@@ -71,10 +69,6 @@ export class InMemoryImageSerializer implements ImageLoader, ImageSerializer, Im
     }
 
     public async load(src: string): Promise<ImageAsset> {
-        console.log(`Loading image from src: ${src}`);
-        console.log('Current images in memory:', this.images);
-        console.log('image Loader:', this.imageLoader);
-
         if (this.imageLoader) {
             const loaded = await this.imageLoader.load(src);
             this.images.set(src, await InMemoryImageAsset.fromImageAsset(loaded));

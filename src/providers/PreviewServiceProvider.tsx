@@ -6,8 +6,6 @@ import { InMemoryImageSerializer } from "../core/assets";
 const PreviewServiceContext = createContext<PreviewService | null>(null);
 
 const createPreviewService = (): PreviewService => {
-    console.log('Creating new PreviewService instance');
-
     const imageSerializer = new InMemoryImageSerializer();
 
     return new PreviewService(

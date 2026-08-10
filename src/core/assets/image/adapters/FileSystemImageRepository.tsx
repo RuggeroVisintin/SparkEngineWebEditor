@@ -25,7 +25,6 @@ export class FileSystemImageRepository extends FileSystemRepository implements I
     }
 
     public async load(src?: string): Promise<ImageAsset> {
-        console.log('Loading image from FileSystemImageRepository with src:', src);
         let fileHandle: FileSystemFileHandle;
 
         if (!src) {

@@ -12,8 +12,6 @@ export const Preview = () => {
     const [previewService] = usePreviewService();
 
     const onEngineViewReady = async ({ context, resolution }: OnEngineViewReadyCBProps) => {
-        console.log('Engine view is ready, starting preview for scene', sceneId);
-
         previewService.start(sceneId!, context, resolution);
     };
 
