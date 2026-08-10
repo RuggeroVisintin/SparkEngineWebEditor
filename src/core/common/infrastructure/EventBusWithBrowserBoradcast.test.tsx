@@ -54,5 +54,29 @@ describeClass(EventBusWithBrowserBroadcast, ({ describeMethod, describeConstruct
 
             expect(callback).not.toHaveBeenCalled();
         });
+
+        it('Should return an unsubscribe callback', () => {
+            const eventBus = new EventBusWithBrowserBroadcast('test-channel');
+            const callback = jest.fn();
+
+            const unsubscribe = eventBus.subscribe('testEvent', callback);
+
+            unsubscribe();
+
+            expect(getTestBroadcastChannel()?.removeEventListener).toHaveBeenCalledWith(
+                'message',
+                expect.any(Function)
+            );
+        });
+    });
+
+    describeMethod('dispose', () => {
+        it('Should close the broadcast channel', () => {
+            const eventBus = new EventBusWithBrowserBroadcast('test-channel');
+
+            eventBus.dispose();
+
+            expect(getTestBroadcastChannel()?.close).toHaveBeenCalled();
+        });
     });
 });

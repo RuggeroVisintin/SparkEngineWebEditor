@@ -4,7 +4,9 @@ import { OpenScriptingEditorCommand } from "../domain/commands/OpenScriptingEdit
 import { ScriptingEditorReady, ScriptSaved } from "../domain/events";
 import { EventBus } from "../../common/ports/EventBus";
 import { ScriptEditorState } from "./ScriptEditorState";
+
 export class ScriptEditorService {
+    private readonly unsubscribeFromOpenCommand: () => void;
 
     get currentScript(): Optional<string> {
         return this.state.get().currentScript;
@@ -23,7 +25,12 @@ export class ScriptEditorService {
         private readonly callbackPropertyName: string,
         private readonly state: StateRepository<ScriptEditorState>
     ) {
-        this.eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', this.handle.bind(this));
+        this.unsubscribeFromOpenCommand = this.eventBus.subscribe<OpenScriptingEditorCommand>('OpenScriptingEditorCommand', this.handle.bind(this));
+    }
+
+    public dispose(): void {
+        this.unsubscribeFromOpenCommand();
+        this.eventBus.dispose?.();
     }
 
     public onEditorReady(): void {
