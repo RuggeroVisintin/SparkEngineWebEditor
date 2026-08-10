@@ -16,6 +16,9 @@ module.exports = {
     transformIgnorePatterns: [
         'node_modules/(?!(sparkengineweb|uuid)/)'
     ],
+    moduleNameMapper: {
+        '^@sparkengine(.*)$': '<rootDir>/../node_modules/sparkengineweb$1'
+    },
     reporters: [
         'default',
         ['<rootDir>/../jest-todo-reporter.js', { maxTodos: 0 }]
