@@ -31,7 +31,7 @@ jobs:
         run: npm run build
   check_release:
     name: Check Release
-    runs-on: ubuntu-
+    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'release-please--') }}
     steps:
       - uses: actions/checkout@v4
