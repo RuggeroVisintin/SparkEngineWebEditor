@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.1](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.0...sparkenginewebeditor-v0.1.1) (2026-08-10)
+
+
+### Features
+
+* **preview:** add dedicated preview page route (https://github.com/RuggeroVisintin/SparkEngineWebEditor/pull/363) ([7b26c7e](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/7b26c7e6dd302320e82ec357cea0cb3ad46037b5))
+* **preview:** add support to image assets sync in preview- [#385](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/385) ([eedf38f](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/eedf38fdfb5936b062122d2b4bb48fa1737d2211))
+* **preview:** open preview in a new tab ([265bbad](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/265bbad2426adf8f13defdda0d79d58e692cff6c))
+
+
+### Bug Fixes
+
+* **editor:** ensure in game cameras are not used by editor renderer ([#388](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/388)) ([9101518](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/910151851bcb2ea068beedac9712b9c63d2fc670))
+
 ## [0.1.0](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.0.17...sparkenginewebeditor-v0.1.0) (2026-08-02)
 
 
