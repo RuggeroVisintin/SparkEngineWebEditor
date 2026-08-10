@@ -4,8 +4,9 @@ import { Factory, Optional } from "../../../common/";
 import { ObjectPicker } from "../../domain/ports/ObjectPicker";
 import Pivot from "../../domain/entities/Pivot";
 import { EntityOutline } from "../../domain/entities";
+import { EditorRenderSystem } from "../../domain/EditorRenderSystem";
 
-export class ColorObjectPicker extends RenderSystem implements ObjectPicker {
+export class ColorObjectPicker extends EditorRenderSystem implements ObjectPicker {
     private colorToEntityMap: Map<string, IEntity> = new Map();
     private readonly context: CanvasRenderingContext2D;
 

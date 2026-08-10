@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create } from "@sparkengine";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create, Renderer } from "@sparkengine";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
@@ -19,6 +19,7 @@ import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
 import { EditorCamera } from "../domain/entities/EditrorCamera";
 import { PreviewViewReadyEvent } from "../../preview/domain/events";
 import { PreviewSceneCommand } from "../../preview/application/commands";
+import { EditorRenderSystem } from "../domain/EditorRenderSystem";
 
 export class EditorService {
     private _currentEntity?: IEntity;
@@ -113,8 +114,6 @@ export class EditorService {
         const newScene = this._project.scenes[0];
 
         this._currentScene?.dispose();
-        // FIXME: hiding the scene causes the camera to no longer being added to the renderer loop
-        // call ContextualUiService.loseFocus instead to avoid issues for now
         this.contextualUiService.loseFocus();
 
         this._engine && newScene?.draw(this._engine);
@@ -368,6 +367,7 @@ export class EditorService {
                 height: resolution.height
             },
             imageLoader: this.imageLoader,
+            renderSystem: (renderer: Renderer, imageLoader: ImageLoader) => new EditorRenderSystem(renderer, imageLoader),
             additionalRenderSystems: () => [
                 this.objectPicking.getRenderSystem()
             ]
