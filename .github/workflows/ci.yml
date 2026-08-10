@@ -29,9 +29,26 @@ jobs:
 
       - name: build
         run: npm run build
+  check_release:
+    name: Check Release
+    runs-on: ubuntu-
+    if: ${{ github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'release-please--') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: check release files
+        # ensure the only files changed in a release PR are the ones that should be changed
+        run: |
+          git diff --name-only origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }} | grep -vE '^(package.json|package-lock.json|CHANGELOG.md|.release-please-manifest.json)$' && echo "Release PR contains unexpected file changes" && exit 1 || echo "Release PR file changes are valid"
   react_doctor:
     name: React Doctor
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && !startsWith(github.event.pull_request.head.ref, 'release-please--') }}
     permissions:
       pull-requests: write
       contents: read
@@ -154,7 +171,6 @@ jobs:
 
       - name: run e2e tests
         run: npm run test:e2e
-
   code_scan:
     name: "Code Scan"
     uses: "./.github/workflows/codeql.yml"
