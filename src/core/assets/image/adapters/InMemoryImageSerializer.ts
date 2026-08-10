@@ -1,4 +1,4 @@
-import { ImageAsset, ImageLoader } from "sparkengineweb";
+import { ImageAsset, ImageLoader } from "@sparkengine";
 import { bitmapToBlob, LocationParameters, WeakRef } from "../../../common";
 import { ImageSerializer, SerializedImageAsset, SerializedImageAssetSnapshot } from "../ports/ImageSerializer";
 import { ImageRepository } from "../ports";

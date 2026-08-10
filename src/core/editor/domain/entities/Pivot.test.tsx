@@ -1,4 +1,4 @@
-import { GameObject, Rgb, Vec2 } from "sparkengineweb";
+import { GameObject, Rgb, Vec2 } from "@sparkengine";
 import Pivot from "./Pivot";
 
 describeClass(Pivot, ({ describeMethod }) => {

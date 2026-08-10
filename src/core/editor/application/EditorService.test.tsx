@@ -1,4 +1,4 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "sparkengineweb";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "@sparkengine";
 import { EditorService } from "./EditorService";
 import { FileSystemImageRepository, InMemoryImageSerializer } from "../../assets";
 import { ProjectRepository } from "../../project/domain";

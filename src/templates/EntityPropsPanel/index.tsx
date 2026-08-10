@@ -1,5 +1,5 @@
 import { IEntity } from "@sparkengine";
-import { typeOf } from "sparkengineweb";
+import { typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";

@@ -1,5 +1,5 @@
 
-import { IEntity, RenderSystem } from "sparkengineweb";
+import { IEntity, RenderSystem } from "@sparkengine";
 import { ObjectPicker } from "./ports/ObjectPicker";
 import { Function, MouseClickEvent, Optional } from "../../common";
 

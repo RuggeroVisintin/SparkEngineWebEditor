@@ -1,4 +1,4 @@
-import { AnimationFrame } from "sparkengineweb";
+import { AnimationFrame } from "@sparkengine";
 
 export const isAnimationFrame = (value: unknown): value is AnimationFrame => {
     if (value === null || typeof value !== 'object') return false;

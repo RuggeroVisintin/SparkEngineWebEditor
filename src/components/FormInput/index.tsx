@@ -3,7 +3,7 @@ import { BackgroundColor, FlexBox } from "../../primitives";
 import { WithDataTestId } from "../../core/common";
 import { v4 } from "uuid";
 import { FileSystemImageRepository } from "../../core/assets/image/adapters";
-import { ImageAsset } from "sparkengineweb";
+import { ImageAsset } from "@sparkengine";
 
 
 type InputValue = string | number | boolean;

@@ -1,4 +1,4 @@
-import { MaterialComponent } from "sparkengineweb";
+import { MaterialComponent } from "@sparkengine";
 import { ImageRepository } from "../../assets";
 import { SceneRepository } from "../../scene";
 import { Project, ProjectRepository } from "../domain";

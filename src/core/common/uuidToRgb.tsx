@@ -1,4 +1,4 @@
-import { Rgb } from "sparkengineweb";
+import { Rgb } from "@sparkengine";
 
 function hashCode(str: string): number {
     let hash = 0;

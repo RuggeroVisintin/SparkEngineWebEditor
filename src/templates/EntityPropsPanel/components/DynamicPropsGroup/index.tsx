@@ -1,4 +1,4 @@
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf, SerializableCallback } from "sparkengineweb"
+import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf, SerializableCallback } from "@sparkengine"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";

@@ -1,4 +1,4 @@
-import { GameObject } from "sparkengineweb";
+import { GameObject } from "@sparkengine";
 import { ObjectPickingService } from "./ObjectPickingService";
 
 

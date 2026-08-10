@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { AnimationFrame, Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "sparkengineweb";
+import { AnimationFrame, Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "@sparkengine";
 import { DynamicPropsGroup } from ".";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { setMockedFile } from "../../../../__mocks__/fs-api.mock";

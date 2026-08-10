@@ -1,4 +1,4 @@
-import { GameObject, IEntity, incrementallyUnique, Rgb, TransformComponent, Type, Vec2 } from "sparkengineweb";
+import { GameObject, IEntity, incrementallyUnique, Rgb, TransformComponent, Type, Vec2 } from "@sparkengine";
 import IDebuggerEntity from "./IDebuggerEntity";
 
 @Type('EntityOutline')

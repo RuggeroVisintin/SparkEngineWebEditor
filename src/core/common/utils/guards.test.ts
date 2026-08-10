@@ -1,5 +1,5 @@
 import { isAnimationFrame } from './guards';
-import { Rgb } from 'sparkengineweb';
+import { Rgb } from '@sparkengine';
 
 describe('isAnimationFrame', () => {
     it('Should return true for valid object with only duration', () => {

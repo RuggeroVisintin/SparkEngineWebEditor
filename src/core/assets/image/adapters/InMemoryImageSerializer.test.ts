@@ -1,4 +1,4 @@
-import { ImageAsset } from "sparkengineweb";
+import { ImageAsset } from "@sparkengine";
 import { InMemoryImageSerializer } from "./InMemoryImageSerializer";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { bitmapToBlob, WeakRef } from "../../../common";

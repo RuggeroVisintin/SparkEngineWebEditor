@@ -1,4 +1,4 @@
-import { SerializableCallback } from "sparkengineweb";
+import { SerializableCallback } from "@sparkengine";
 
 export function toJsonString(value: any): string {
     const functionKeys: string[] = [];

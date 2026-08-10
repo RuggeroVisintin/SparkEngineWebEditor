@@ -1,4 +1,4 @@
-import { BlendMethod, CanvasDevice, DrawPrimitiveCommand, IEntity, ImageLoader, PrimitiveType, Renderer, RenderSystem, Rgb, SetBlendingMethodCommand } from "sparkengineweb";
+import { BlendMethod, CanvasDevice, DrawPrimitiveCommand, IEntity, ImageLoader, PrimitiveType, Renderer, RenderSystem, Rgb, SetBlendingMethodCommand } from "@sparkengine";
 import { uuidToRgb } from "../../../common/uuidToRgb";
 import { Factory, Optional } from "../../../common/";
 import { ObjectPicker } from "../../domain/ports/ObjectPicker";

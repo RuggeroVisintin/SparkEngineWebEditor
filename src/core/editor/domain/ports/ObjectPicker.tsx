@@ -1,4 +1,4 @@
-import { IEntity, RenderSystem } from "sparkengineweb";
+import { IEntity, RenderSystem } from "@sparkengine";
 import { Optional } from "../../../common";
 
 export interface ObjectPicker extends RenderSystem {

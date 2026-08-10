@@ -1,4 +1,4 @@
-import { GameObject } from 'sparkengineweb';
+import { GameObject } from '@sparkengine';
 import { ReactStateRepository } from './ReactStateRepository';
 
 interface TestState {

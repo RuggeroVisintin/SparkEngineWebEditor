@@ -1,4 +1,4 @@
-import { SceneJsonProps } from "sparkengineweb";
+import { SceneJsonProps } from "@sparkengine";
 import { SerializedImageAssetSnapshot } from "../../../assets";
 
 export interface PreviewSceneCommand {

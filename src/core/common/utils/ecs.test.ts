@@ -1,4 +1,4 @@
-import { BaseEntity, GameObject, SoundComponent, StaticObject, TransformComponent, TriggerEntity } from "sparkengineweb";
+import { BaseEntity, GameObject, SoundComponent, StaticObject, TransformComponent, TriggerEntity } from "@sparkengine";
 import { getAllAvailableComponents, getRequiredComponents, isComponentRequired, isComponentUnavaible } from "./ecs";
 
 describe('core/common/utils/ecs', () => {

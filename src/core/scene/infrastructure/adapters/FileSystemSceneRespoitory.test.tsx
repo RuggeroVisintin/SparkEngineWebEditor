@@ -2,7 +2,7 @@ import { FileSystemSceneRepository } from "./FileSystemSceneRepository";
 import testSceneJson from '../../../../__mocks__/assets/test-scene.json';
 import { createDirectoryHandleMock, FileSystemWritableFileStreamMock, setMockedFile } from "../../../../__mocks__/fs-api.mock";
 import { parseJsonString, WeakRef } from "../../../common";
-import { Scene } from "sparkengineweb";
+import { Scene } from "@sparkengine";
 
 describeClass(FileSystemSceneRepository, ({ describeMethod }) => {
     afterEach(() => {

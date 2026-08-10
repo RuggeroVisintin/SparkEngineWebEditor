@@ -3,7 +3,7 @@ import { ColorObjectPicker, ObjectPickingService, ReactStateRepository } from ".
 import { EditorService } from "../core/editor/application";
 import { EditorState } from "../core/editor/application/EditorState";
 import { FileSystemImageRepository } from "../core/assets";
-import { Renderer } from "sparkengineweb";
+import { Renderer } from "@sparkengine";
 import { Project } from "../core/project/domain";
 import { FileSystemProjectRepository } from "../core/project/infrastructure/adapters";
 import { FileSystemSceneRepository } from "../core/scene";

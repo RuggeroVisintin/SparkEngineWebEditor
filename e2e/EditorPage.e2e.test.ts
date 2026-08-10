@@ -1,5 +1,5 @@
 
-import { allOf } from 'sparkengineweb'
+import { allOf } from '@sparkengine'
 import { describeWithFeature } from './featureFlags';
 
 const UNAVAILABLE_COMPONENTS = new Set(['AnimationComponent', 'SoundComponent']);

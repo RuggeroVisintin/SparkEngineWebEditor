@@ -1,4 +1,4 @@
-import { GameObject, Scene, Vec2 } from "sparkengineweb";
+import { GameObject, Scene, Vec2 } from "@sparkengine";
 import { ImageLoaderTestDouble } from "../../../__mocks__/core/assets/image/ImageLoaderTestDouble";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { PreviewSceneCommand } from "./commands";
