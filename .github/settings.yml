@@ -28,6 +28,8 @@ branches:
           - "Code Scan / Analyze (javascript-typescript)"
           - "Unit Tests"
           - "React Doctor"
+          - "Release Please Dry Run with Feature Flag Filtering"
+          - "Check Release"
 
       enforce_admins: false
       bypass_pull_request_allowances:
