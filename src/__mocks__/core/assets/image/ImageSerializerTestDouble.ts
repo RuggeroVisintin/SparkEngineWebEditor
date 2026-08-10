@@ -1,4 +1,4 @@
-import { ImageAsset } from "sparkengineweb";
+import { ImageAsset } from "@sparkengine";
 import { ImageSerializer, SerializedImageAssetSnapshot } from "../../../../core/assets";
 import { LocationParameters } from "../../../../core/common";
 

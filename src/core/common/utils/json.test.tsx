@@ -1,4 +1,4 @@
-import { SerializableCallback } from "sparkengineweb";
+import { SerializableCallback } from "@sparkengine";
 import { parseJsonString, toJsonString } from "./json";
 
 describe('core/common/utiles/json', () => {

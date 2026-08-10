@@ -1,4 +1,4 @@
-import { Scene } from "sparkengineweb";
+import { Scene } from "@sparkengine";
 import { RefConfigParams } from "../../../core/common";
 import { SceneRepository } from "../../../core/scene";
 

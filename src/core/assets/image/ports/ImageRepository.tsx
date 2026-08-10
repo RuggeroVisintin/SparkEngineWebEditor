@@ -1,4 +1,4 @@
-import { ImageAsset } from "sparkengineweb";
+import { ImageAsset } from "@sparkengine";
 import { LocationParameters, WeakRef } from "../../../common";
 
 export interface ImageRepository {

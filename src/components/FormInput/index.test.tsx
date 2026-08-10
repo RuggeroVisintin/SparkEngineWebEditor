@@ -1,7 +1,7 @@
 import { FormInput } from ".";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
-import { ImageAsset } from "sparkengineweb";
+import { ImageAsset } from "@sparkengine";
 
 describe('FormInput', () => {
     describe('image', () => {

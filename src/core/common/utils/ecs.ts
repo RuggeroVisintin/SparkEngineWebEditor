@@ -1,4 +1,4 @@
-import { allOf, IComponent, IEntity, typeOf, create } from "sparkengineweb";
+import { allOf, IComponent, IEntity, typeOf, create } from "@sparkengine";
 
 function isComponentUnavaibleFromType(componentType: string): boolean {
     return componentType === 'AnimationComponent' || componentType === 'SoundComponent';

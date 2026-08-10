@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create } from "sparkengineweb";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create } from "@sparkengine";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";

@@ -1,4 +1,4 @@
-import { GameEngine, ImageLoader, Scene } from "sparkengineweb";
+import { GameEngine, ImageLoader, Scene } from "@sparkengine";
 import { EventBus } from "../../common/ports";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewViewReadyEvent } from "../domain/events";
@@ -30,8 +30,6 @@ export class PreviewService {
         private readonly imageLoader: ImageLoader,
         private readonly imageSerializer: ImageSerializer
     ) {
-        console.log('New PreviewService instance created');
-
         this.unsubscribeFromPreviewScene = eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
     }
 
@@ -57,8 +55,6 @@ export class PreviewService {
         this._currentScene = new Scene();
         this._currentScene.draw(this._engine);
 
-        console.log('PreviewService: Starting preview for scene', sceneId);
-
         this.eventBus.publish<PreviewViewReadyEvent>('PreviewViewReady', {
             sceneId
         });
@@ -67,12 +63,7 @@ export class PreviewService {
     }
 
     private onPreviewSceneCommand = (command: PreviewSceneCommand) => {
-        console.log('PreviewService: Received PreviewSceneCommand', command);
-
-        console.log('Current scene before loading new scene:', this._currentScene);
         this._currentScene?.loadFromJson(command.scene);
-
-        console.log("assets", command.assets);
         this.imageSerializer.importSnapshot(command.assets);
     }
 }
