@@ -2,7 +2,6 @@ name: Release Integrity Check
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - release-please--*
 
@@ -10,7 +9,6 @@ jobs:
   check_release_integrity:
     name: Check Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'release-please--') }}
     steps:
       - uses: actions/checkout@v4
         with:
