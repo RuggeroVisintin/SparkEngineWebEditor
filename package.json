@@ -23,22 +23,19 @@
     "test:scripts": "jest --config jest.scripts.config.js --watch",
     "test:ci": "bash ./scripts/test-ci.sh",
     "license-check": "bash ./scripts/check-licenses.sh",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "postinstall": "bash ./scripts/post-install.sh",
     "adr": "./vendors/adr-tools/src/adr",
     "prepare": "husky",
     "test:e2e": "bash ./scripts/run-e2e.sh",
     "test:e2e:watch": "bash ./scripts/run-e2e.sh --watch",
-    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand",
-    "react-doctor": "bash ./scripts/react-doctor-check.sh",
-    "react-doctor:report": "bash ./scripts/react-doctor-report.sh"
+    "test:e2e:debug": "PWDEBUG=1 bash ./scripts/run-e2e.sh --runInBand"
   },
   "dependencies": {
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "eslint-linter-browserify": "^10.2.0",
-    "globals": "^17.4.0",
     "monaco-editor": "^0.55.1",
     "react": "^19.0.0",
     "react-dom": "^19.2.4",
@@ -72,8 +69,10 @@
     "esbuild-jest": "^0.5.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-doctor": "^0.9.12",
     "eslint-plugin-react-hooks": "^7.0.1",
     "expect-playwright": "^0.8.0",
+    "globals": "^17.11.0",
     "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
     "jest-canvas-mock": "^2.5.2",
@@ -86,6 +85,7 @@
     "ts-jest": "^29.4.6",
     "ts-jest-mock-import-meta": "^1.3.1",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.67.0",
     "vite": "^8.0.8"
   }
 }
