@@ -3,6 +3,7 @@ import { EventBus } from "../../common/ports";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewViewReadyEvent } from "../domain/events";
 import { ImageSerializer } from "../../assets";
+import { parseJsonString } from "../../common";
 
 export class PreviewService {
     private _currentScene?: Scene;
@@ -63,7 +64,7 @@ export class PreviewService {
     }
 
     private onPreviewSceneCommand = (command: PreviewSceneCommand) => {
-        this._currentScene?.loadFromJson(command.scene);
+        this._currentScene?.loadFromJson(parseJsonString(command.scene));
         this.imageSerializer.importSnapshot(command.assets);
     }
 }

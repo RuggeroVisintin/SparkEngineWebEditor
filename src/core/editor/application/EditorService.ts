@@ -1,5 +1,5 @@
 import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create, Renderer } from "@sparkengine";
-import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional } from "../../common";
+import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional, toJsonString } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
 import { SceneRepository } from "../../scene";
@@ -336,7 +336,7 @@ export class EditorService {
         const snapshot = await this.imageSerializer.toSnapshot();
 
         this.previewEventBus.publish<PreviewSceneCommand>('PreviewScene', {
-            scene: this.currentScene.toJson(),
+            scene: toJsonString(this.currentScene.toJson()),
             assets: snapshot
         });
     }

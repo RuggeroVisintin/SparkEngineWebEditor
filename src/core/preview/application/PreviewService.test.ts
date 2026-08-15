@@ -5,6 +5,7 @@ import { PreviewSceneCommand } from "./commands";
 import { PreviewService } from "./PreviewService";
 import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
 import { SerializedImageAssetSnapshot } from "../../assets";
+import { toJsonString } from "../../common";
 
 describeClass(PreviewService, ({ describeMethod }) => {
     let previewService: PreviewService;
@@ -56,7 +57,7 @@ describeClass(PreviewService, ({ describeMethod }) => {
             const scenePayload = sourceScene.toJson();
 
             const testCommand: PreviewSceneCommand = {
-                scene: scenePayload,
+                scene: toJsonString(scenePayload),
                 assets: {}
             };
 
@@ -87,7 +88,7 @@ describeClass(PreviewService, ({ describeMethod }) => {
             const scenePayload = sourceScene.toJson();
 
             const testCommand: PreviewSceneCommand = {
-                scene: scenePayload,
+                scene: toJsonString(scenePayload),
                 assets: assets
             };
 
