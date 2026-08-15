@@ -1,0 +1,24 @@
+name: Release Integrity Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - release-please--*
+
+jobs:
+  check_release_integrity:
+    name: Check Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'release-please--') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: check release files
+        run: |
+          git diff --name-only origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }} | grep -vE '^(package.json|package-lock.json|CHANGELOG.md|.release-please-manifest.json)$' && echo "Release PR contains unexpected file changes" && exit 1 || echo "Release PR file changes are valid"
