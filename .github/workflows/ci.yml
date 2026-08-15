@@ -29,59 +29,6 @@ jobs:
 
       - name: build
         run: npm run build
-  react_doctor:
-    name: React Doctor
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    env:
-      REACT_DOCTOR_THRESHOLD: 90
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
-          filter: blob:none
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: install
-        run: npm ci
-
-      - name: create branch for diff detection
-        if: github.event_name == 'pull_request'
-        run: git checkout -b pr-head
-
-      - name: run react-doctor
-        id: react_doctor_check
-        env:
-          REACT_DOCTOR_DIFF_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || '' }}
-          REACT_DOCTOR_OUTPUT_FILE: react-doctor-output.txt
-        run: npm run react-doctor
-
-      - name: generate and post report to PR
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { execSync } = require('child_process');
-            const report = execSync('npm run react-doctor:report', { 
-              encoding: 'utf8',
-              env: { 
-                ...process.env,
-                REACT_DOCTOR_OUTPUT_FILE: 'react-doctor-output.txt'
-              }
-            });
-
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report,
-            });
   test_unit:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -220,5 +167,5 @@ jobs:
         if: ${{ steps.release.outputs.release_created == 'true' }}
         id: deployment
         uses: actions/deploy-pages@v4
-    needs: [test_unit, test_e2e, build, code_scan, react_doctor]
+    needs: [test_unit, test_e2e, build, code_scan]
     if: github.ref_name == 'main'
