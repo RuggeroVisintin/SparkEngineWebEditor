@@ -4,7 +4,7 @@ import { FileSystemImageRepository, InMemoryImageSerializer } from "../../assets
 import { ProjectRepository } from "../../project/domain";
 import { Project } from "../../project/domain";
 import { SceneRepositoryTestDouble } from "../../../__mocks__/core/scene/SceneRepositoryTestDouble";
-import { Optional, ReactStateRepository, WeakRef } from "../../common";
+import { Optional, ReactStateRepository, toJsonString, WeakRef } from "../../common";
 import { ObjectPickingService } from "../domain/ObjectPickingService";
 import { ColorObjectPicker } from "../infrastructure";
 import { StateRepository } from "../../common/ports/StateRepository";
@@ -707,7 +707,7 @@ describe('EditorService', () => {
                 }
             }));
 
-            expect(JSON.stringify(previewScene.scene)).toEqual(JSON.stringify(editorService.currentScene?.toJson()));
+            expect(previewScene.scene).toEqual(toJsonString(editorService.currentScene?.toJson()));
         });
     });
 
