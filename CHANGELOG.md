@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.1...sparkenginewebeditor-v0.1.2) (2026-08-15)
+
+
+### Bug Fixes
+
+* **preview:** use string scene representation to prevent native functions issue ([613b938](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/613b93800637c63fb1c7705e8ffdcd56f68c9628))
+
 ## [0.1.1](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.0...sparkenginewebeditor-v0.1.1) (2026-08-15)
 
 
