@@ -17,4 +17,5 @@ npm run test:scripts -- \
     --watchAll=false \
     --coverageReporters=json \
     --coverageReporters=text \
-    --coverageReporters=json-summary
+    --coverageReporters=json-summary \
+    --passWithNoTests
