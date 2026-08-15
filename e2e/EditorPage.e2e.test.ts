@@ -85,8 +85,22 @@ describe('Editor Page - Components Panel', () => {
         });
 
         it('Should render the current scene in preview', async () => {
-            await page.getByText(/Add GameObject/i).click();
-            await expect(page.getByText(/GameObject1/i)).toBeVisible();
+            const scriptingPage = await openScriptingFromTriggerObject({ addEntity: true });
+
+            const monacoSurface = scriptingPage.locator('.monaco-editor .view-lines').first();
+            await monacoSurface.click();
+
+            const updatedScript = 'function test () { return 42; }';
+            await scriptingPage.keyboard.press(`${process.platform === 'darwin' ? 'Meta' : 'Control'}+A`);
+            await scriptingPage.keyboard.press('Delete');
+            await scriptingPage.keyboard.insertText(updatedScript);
+
+            // wait 500ms
+            await scriptingPage.waitForTimeout(500);
+            await scriptingPage.getByText(/^Save$/).click();
+
+            // The scripting tab name is reused; close it so reopening creates a fresh tab.
+            await scriptingPage.close();
 
             const newTabPromise = page.context().waitForEvent('page', { timeout: 5000 });
             await page.getByRole('option', { name: /Preview/i }).click();
