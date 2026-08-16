@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.2...sparkenginewebeditor-v0.1.3) (2026-08-16)
+
+
+### Features
+
+* add input component scripting support ([02a1aa7](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/02a1aa755fc0fb48b6b46a8d3a1043df0457a9c1))
+
 ## [0.1.2](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.1...sparkenginewebeditor-v0.1.2) (2026-08-15)
 
 
