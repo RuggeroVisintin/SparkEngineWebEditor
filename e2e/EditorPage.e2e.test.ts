@@ -125,6 +125,7 @@ describe('Editor Page - Components Panel', () => {
 
     it('Should remove a GameObject from the scene', async () => {
         const initialScreenshot = await page.screenshot({ fullPage: true });
+
         const addEntityButton = page.getByText(/Add GameObject/i);
         await addEntityButton.click();
 

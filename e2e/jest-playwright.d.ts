@@ -1,3 +1,4 @@
+import { MatchImageSnapshotOptions } from 'jest-image-snapshot';
 import 'jest-playwright-preset';
 import { Page, Browser, BrowserContext, } from 'playwright';
 
@@ -11,7 +12,7 @@ declare global {
       toBeVisible(): Promise<R>;
       toHaveText(expected: string): Promise<R>;
       toLookSame(expected: string | null | undefined): R;
-      toMatchImageSnapshot(options?: any): R;
+      toMatchImageSnapshot(options?: MatchImageSnapshotOptions): R;
     }
   }
 }

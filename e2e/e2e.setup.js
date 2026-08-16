@@ -49,6 +49,8 @@ Object.assign(smartExpect, playwrightExpect);
 
 beforeEach(async () => {
     await page.goto(BASE_URL);
+    // Move the mouse to the center of the page
+    await page.mouse.move(await page.evaluate(() => window.innerWidth / 2), await page.evaluate(() => window.innerHeight / 2));
     await page.waitForSelector('canvas', { timeout: 10000 });
 });
 
