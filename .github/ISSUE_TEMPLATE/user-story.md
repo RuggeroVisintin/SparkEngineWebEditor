@@ -7,6 +7,7 @@ assignees: ''
 
 ---
 
-AS A <UserPersona>
-I WANT TO <DesiredFeature>
-SO THAT <PieceOfValue>
+> [!NOTE]
+> AS A <UserPersona>
+> I WANT TO <DesiredFeature>
+> SO THAT <PieceOfValue>
