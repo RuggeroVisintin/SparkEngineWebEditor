@@ -5,19 +5,18 @@ module.exports = {
             2,
             'always',
             [
-                'components',
-                'core',
-                'hooks',
-                'pages',
-                'primitives',
-                'providers',
-                'templates',
-                'config',
-                'types',
-                'docs',
+                // User facing
+                'assets',
+                'preview',
+                'project',
+                'scene',
+                'scripting',
+                // Technical
+                'deps',
+                'deps-dev',
                 'e2e',
                 'ci',
-                'deps',
+                'docs',
                 'release',
                 'scripts'
             ]

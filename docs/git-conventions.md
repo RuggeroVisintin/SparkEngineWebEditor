@@ -27,6 +27,26 @@ the commit message is checked against the conventional commit configuration. Whe
 **spell check**\
 a spell check is performed against the commit message to ensure the message does not contain any grammar issue. Any potential issue will be highlighted and will make the commit fail. If the issue turns out to be a false positive you can add exceptions in the `.git-dictionary.txt` file
 
+### Allowed Scopes
+
+The commit scope must adhere to the predefined allowlist defined in `commitlint.config.js`. Scopes are divided into **user-facing** (used to derive user-visible changelogs) and **technical** (tooling and developer workflows):
+
+#### User-facing Scopes
+- `assets`: Asset management, import pipelines, and asset browser
+- `preview`: Preview engine, canvas rendering, and viewport controls
+- `project`: Project management, configuration, and settings
+- `scene`: Scene graph, node hierarchy, and entity management
+- `scripting`: Script editor, scripting runtime, and bindings
+
+#### Technical Scopes
+- `deps`: Production dependencies updates
+- `deps-dev`: Development dependencies and build tools updates
+- `e2e`: End-to-end testing, fixtures, and browser suites
+- `ci`: CI workflows, action configurations, and pipeline definitions
+- `docs`: Documentation guides, manuals, and API references
+- `release`: Release automation and changelog configuration
+- `scripts`: Build scripts, repository automation, and development utilities
+
 ## Commit Footers
 
 ### Feature Flag Integration
@@ -61,4 +81,3 @@ Refs: #123
 ```
 
 The `Feature-Flag:` footer can be combined with other conventional commit footers like `Refs:`, `Closes:`, or `BREAKING CHANGE:`.
-
