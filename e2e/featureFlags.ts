@@ -6,7 +6,6 @@
 
 // Define available feature flags - keep in sync with src/core/featureFlags.ts
 export type FeatureFlag =
-    | 'ADD_COMPONENTS'
     | 'PREVIEW_MODE';
 
 // Read feature flags from environment at test time
@@ -75,6 +74,6 @@ export function testWithFeature(
  * Get all enabled features (for debugging)
  */
 export function getEnabledFeatures(): FeatureFlag[] {
-    const allFlags: FeatureFlag[] = ['ADD_COMPONENTS', 'PREVIEW_MODE'];
+    const allFlags: FeatureFlag[] = ['PREVIEW_MODE'];
     return allFlags.filter(flag => isFeatureEnabled(flag));
 }

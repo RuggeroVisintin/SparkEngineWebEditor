@@ -3,7 +3,6 @@ import { typeOf } from "@sparkengine";
 import { Box, Button, FlexBox, Spacing } from "../../primitives";
 import { ExpandablePanel } from "../../components/ExpandablePanel";
 import { Function, isComponentUnavaible, isComponentRequired } from "../../core/common";
-import { isFeatureEnabled } from "../../core/featureFlags";
 import { DynamicPropsGroup } from "./components/DynamicPropsGroup";
 
 interface EntityPropsPanelProps {
@@ -38,7 +37,7 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
 
                 return (
                     <ExpandablePanel key={index} title={componentType} $divide={index > 0} suffix={
-                        isFeatureEnabled('ADD_COMPONENTS') && <Button disabled={isRequired} onClick={() => onComponentRemove(component.uuid)}> X </Button>
+                        <Button disabled={isRequired} onClick={() => onComponentRemove(component.uuid)}> X </Button>
                     }>
                         <DynamicPropsGroup 
                             component={component} 
@@ -65,13 +64,11 @@ export const EntityPropsPanel = ({ currentEntity, onAddComponent, onComponentUpd
                 )
             })}
 
-            {isFeatureEnabled('ADD_COMPONENTS') && <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
+            <Box $spacing={Spacing.md} $hSpacing={Spacing.none}>
                 <FlexBox >
                     <Button onClick={() => onAddComponent?.()}> Add Component </Button>
                 </FlexBox>
             </Box>
-            }
-
         </Box>
     )
 }

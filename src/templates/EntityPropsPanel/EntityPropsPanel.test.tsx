@@ -2,7 +2,6 @@ import { BaseEntity, BoundingBoxComponent, GameObject, SoundComponent, Transform
 import { EntityPropsPanel } from ".";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WithMemoryRouter } from "../../hooks";
-import { disableFeature, enableFeature } from "../../core/featureFlags";
 
 const noOp = () => { };
 
@@ -125,12 +124,7 @@ describe('EntityPropsPanel', () => {
     })
 
     describe('Add Component', () => {
-        describe('Feature Flag ENABLED', () => {
-            beforeAll(() => {
-                enableFeature('ADD_COMPONENTS');
-            })
-
-            it('Should have an "Add component" button', () => {
+        it('Should have an "Add component" button', () => {
                 const entity = new GameObject();
 
                 renderEntityPropsPanel(entity);
@@ -202,30 +196,5 @@ describe('EntityPropsPanel', () => {
 
                 expect(cb).toHaveBeenCalledWith(entity.components[3].uuid);
             });
-        });
-
-        describe('Feature Flag DISABLED', () => {
-            beforeAll(() => {
-                disableFeature('ADD_COMPONENTS');
-            });
-
-            it('Should not have an "Add component" button', () => {
-                const entity = new GameObject();
-
-                renderEntityPropsPanel(entity);
-
-                const addComponentButton = screen.queryByRole('button', { name: 'Add Component' });
-                expect(addComponentButton).not.toBeInTheDocument();
-            });
-
-            it('Should not show a component delete button', () => {
-                const entity = new GameObject();
-                entity.addComponent(new TransformComponent());
-
-                renderEntityPropsPanel(entity);
-
-                expect(screen.queryByRole('button', { name: 'X' })).not.toBeInTheDocument();
-            });
-        });
     });
 })
