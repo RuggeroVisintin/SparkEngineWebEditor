@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.3...sparkenginewebeditor-v0.1.4) (2026-08-16)
+
+
+### Bug Fixes
+
+* **editor:** bump sparkengine to fix entities still being rendered after their deletion from scene ([#405](https://github.com/RuggeroVisintin/SparkEngineWebEditor/issues/405)) ([89edd0c](https://github.com/RuggeroVisintin/SparkEngineWebEditor/commit/89edd0c029c2bfcdb01f44cc1ee8d7b845af7ceb))
+
 ## [0.1.3](https://github.com/RuggeroVisintin/SparkEngineWebEditor/compare/sparkenginewebeditor-v0.1.2...sparkenginewebeditor-v0.1.3) (2026-08-16)
 
 
