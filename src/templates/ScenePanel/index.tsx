@@ -22,6 +22,7 @@ export const ScenePanel = ({ entities = [], currentEntity, onRemoveEntity, onFoc
                     button={{
                         "data-testid": `RemoveEntityButton.${entity.uuid}`,
                         text: 'X',
+                        label: `Remove ${entity.name}`,
                         onClick: (e) => {
                             e.stopPropagation();
                             onRemoveEntity(entity);

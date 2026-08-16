@@ -122,6 +122,25 @@ describe('Editor Page - Components Panel', () => {
         await expect(page.getByText(/GameObject1/i)).toBeVisible();
     });
 
+
+    it('Should remove a GameObject from the scene', async () => {
+        const initialScreenshot = await page.screenshot({ fullPage: true });
+
+        const addEntityButton = page.getByText(/Add GameObject/i);
+        await addEntityButton.click();
+
+        const addComponentButton = page.getByText(/Add Component/i);
+        await addComponentButton.click();
+
+        await page.getByRole('listbox', { name: /Components Panel/i }).getByRole('option', { name: /Shape/i }).click();
+
+        const deleteButton = page.getByRole('button', { name: /Remove GameObject1/i });
+        await deleteButton.click();
+
+        await expect(page.getByText(/GameObject1/i)).not.toBeVisible();
+        expect(await page.screenshot({ fullPage: true })).toEqual(initialScreenshot);
+    });
+
     describe('Entity Props', () => {
         it('Should show Entity Props Panel when an entity is selected', async () => {
             const addEntityButton = page.getByText(/Add GameObject/i);

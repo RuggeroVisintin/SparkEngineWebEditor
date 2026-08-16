@@ -26,6 +26,7 @@ const Text = styled.span`
 `
 
 interface ListButton extends WithDataTestId {
+    label?: string,
     text?: string,
     onClick?: MouseEventHandler<HTMLElement>
 }
@@ -61,6 +62,7 @@ export const ListItem = ({
                 <Text>{text}</Text>
                 {button &&
                     <Button
+                        aria-label={button.label ?? button.text}
                         onClick={(e) => {
                             button.onClick?.(e);
                         }}
