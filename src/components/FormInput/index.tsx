@@ -3,7 +3,7 @@ import { BackgroundColor, FlexBox } from "../../primitives";
 import { WithDataTestId } from "../../core/common";
 import { v4 } from "uuid";
 import { FileSystemImageRepository } from "../../core/assets/image/adapters";
-import { ImageAsset } from "@sparkengine";
+import { ImageAsset, SoundAsset } from "@sparkengine";
 
 
 type InputValue = string | number | boolean;
@@ -38,6 +38,7 @@ const typesMap: Record<string, string> = {
     'number': 'number',
     'string': 'text',
     'image': 'file',
+    'sound': 'file',
     'color': 'color',
     'boolean': 'checkbox',
 }
@@ -74,6 +75,16 @@ export const FormInput = ({ label, onChange, defaultValue, "data-testid": dataTe
                 }}>{label}</button>
             }
 
+        </FlexBox>
+    }
+
+    if (type === 'sound') { 
+        return <FlexBox $direction="row" $fill $fillMethod="flex">
+            {
+                label && <button data-testid={`${dataTestId}.InputField`} onClick={() => {
+                    // TODO: implement a sound loader similar to the image loader
+                }}>{label}</button>
+            }
         </FlexBox>
     }
 
