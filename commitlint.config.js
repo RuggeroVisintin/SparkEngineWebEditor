@@ -11,6 +11,7 @@ module.exports = {
                 'project',
                 'scene',
                 'scripting',
+                'editor',
                 // Technical
                 'deps',
                 'deps-dev',

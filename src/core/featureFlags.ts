@@ -20,7 +20,8 @@
 declare const __FEATURE_FLAGS__: Record<string, boolean>;
 
 export type FeatureFlag =
-    | 'PREVIEW_MODE';
+    | 'PREVIEW_MODE'
+    | 'SOUND_EDITING';
 
 
 const flagsStatus: Record<string, string | undefined> = {};

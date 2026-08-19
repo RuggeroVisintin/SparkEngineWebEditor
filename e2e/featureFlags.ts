@@ -6,7 +6,8 @@
 
 // Define available feature flags - keep in sync with src/core/featureFlags.ts
 export type FeatureFlag =
-    | 'PREVIEW_MODE';
+    | 'PREVIEW_MODE'
+    | 'SOUND_EDITING';
 
 // Read feature flags from environment at test time
 function getFeatureFlags(): Record<string, boolean> {

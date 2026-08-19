@@ -1,5 +1,6 @@
 import { BaseEntity, GameObject, SoundComponent, StaticObject, TransformComponent, TriggerEntity } from "@sparkengine";
 import { getAllAvailableComponents, getRequiredComponents, isComponentRequired, isComponentUnavaible } from "./ecs";
+import { enableFeature } from "../../featureFlags";
 
 describe('core/common/utils/ecs', () => {
     describe('component availability', () => {
@@ -13,6 +14,16 @@ describe('core/common/utils/ecs', () => {
             const availableComponents = getAllAvailableComponents();
 
             expect(availableComponents.SoundComponent).toBeUndefined();
+        });
+
+        describe('FeatureFlag SOUND_EDITING is enabled', () => {
+            it('Should mark SoundComponent as available', () => {
+                enableFeature('SOUND_EDITING');
+
+                const soundComponent = new SoundComponent({});
+
+                expect(isComponentUnavaible(soundComponent)).toBe(false);
+            });
         });
     });
 
