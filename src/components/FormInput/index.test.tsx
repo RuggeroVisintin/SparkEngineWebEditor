@@ -1,7 +1,7 @@
 import { FormInput } from ".";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { setMockedFile } from "../../__mocks__/fs-api.mock";
-import { ImageAsset } from "@sparkengine";
+import { ImageAsset, SoundAsset } from "@sparkengine";
 
 describe('FormInput', () => {
     describe('image', () => {
@@ -23,6 +23,27 @@ describe('FormInput', () => {
             });
 
             await promise;
+        });
+    })
+
+    describe('sound', () => {
+        it('Should load a SoundAsset from the file system when clicked', async () => { 
+            setMockedFile('assets/test.mp3');
+            
+            const receivedSound = await new Promise((resolve, reject) => {
+                const inputItem = <FormInput type="sound" data-testid="test-input" label="Sound" onChange={(sound: SoundAsset) => {
+                    resolve(sound);
+                }} />;
+
+                render(inputItem);
+
+                screen.findByTestId('test-input.InputField').then((inputField) => {
+                    inputField.click();
+                    reject('Sound input clicked, but no sound asset was returned');
+                });
+            });
+
+            expect(receivedSound).toBeInstanceOf(SoundAsset);
         });
     })
 

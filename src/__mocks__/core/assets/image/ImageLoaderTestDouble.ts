@@ -1,5 +1,4 @@
 import { ImageAsset, ImageLoader } from "@sparkengine";
-import { FakeBitmap } from "../../../bitmap.mock";
 
 export class ImageLoaderTestDouble implements ImageLoader {
     public images = new Map<string, ImageAsset>();

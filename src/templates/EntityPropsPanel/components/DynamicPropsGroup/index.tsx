@@ -1,4 +1,4 @@
-import { EcsUtils, getOptionalType, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf, SerializableCallback } from "@sparkengine"
+import { EcsUtils, IComponent, ImageAsset, MaterialComponentProps, Rgb, typeOf, Enum, isOptionallyInstanceOf, SerializableCallback, SoundAsset } from "@sparkengine"
 import { Inputs } from "../../../../primitives/Inputs";
 import { FormInput } from "../../../../components";
 import { capitalize } from "../../../../core/common";
@@ -7,7 +7,7 @@ import { isArrayOf } from "../../../../core/common/utils/array";
 import { isAnimationFrame } from "../../../../core/common/utils/guards";
 
 type PrimitiveProp = string | number;
-type ComplexProp = ImageAsset | Rgb | Enum | object;
+type ComplexProp = ImageAsset | SoundAsset | Rgb | Enum | object;
 type ComponentProp = PrimitiveProp | ComplexProp;
 
 export interface DynamicPropsGroupProps {
@@ -69,9 +69,22 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
                 onChange={(newDiffuseTexture: ImageAsset) => { onChange?.('diffuseTexture', newDiffuseTexture) }}
             />
         </>
+    } else if (isOptionallyInstanceOf(component, propertyName, SoundAsset)) { 
+        return <>
+            <FormInput
+                data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
+                type="sound"
+                label={value ? 'Replace' : 'Add'}
+                onChange={(newSoundAsset: SoundAsset) => { console.log('New sound asset:', newSoundAsset); }}
+            />
+        </>
     } else if (Array.isArray(value) && isArrayOf(value, isAnimationFrame)) {
         return <Button data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}>Edit</Button>
     } else if (typeof value === 'object') {
+        if (value === null) { 
+            return;
+        }
+
         return Object.entries(value).map(([key, val]: [string, PrimitiveProp]) => {
             const originalNestedValue = (originalValue as any)?.[key];
             return valueToFormInput(propertyName, val, originalNestedValue, (_: string, newVal: PrimitiveProp) => {
@@ -105,6 +118,10 @@ export const DynamicPropsGroup = ({ component, onChange, onOpenScripting }: Dyna
 
     if (typeOf(component) === 'MaterialComponent') {
         delete (props as MaterialComponentProps).diffuseTexturePath;
+    }
+
+    if(typeOf(component) === 'SoundComponent') {
+        delete (props as any).filePath;
     }
 
     return (

@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { AnimationFrame, Enum, IComponent, ImageAsset, MaterialComponent, Rgb, Vec2 } from "@sparkengine";
+import { AnimationFrame, DOMSoundLoader, Enum, IComponent, ImageAsset, MaterialComponent, Rgb, SoundAsset, SoundComponent, Vec2 } from "@sparkengine";
 import { DynamicPropsGroup } from ".";
 import { FakeBitmap } from "../../../../__mocks__/bitmap.mock";
 import { setMockedFile } from "../../../../__mocks__/fs-api.mock";
+import { SoundLoaderTestDouble } from "../../../../__mocks__/core/assets/image/SoundLoaderTestDouble";
 
 describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
     describe('Primitives', () => {
@@ -172,6 +173,36 @@ describe('EntityPropsPanel/components/DynamicPropsGroup', () => {
                 });
 
                 expect(onChangeMock).toHaveBeenCalled();
+            });
+        });
+
+        describe('SoundAsset', () => { 
+            it('Should render sound asset as file input', async () => { 
+                const audio = new Audio('assets/test.mp3');
+
+                const soundLoaderDouble = new SoundLoaderTestDouble();
+                soundLoaderDouble.sounds.set(audio.src, new SoundAsset(audio));
+
+                const soundComponent = new SoundComponent({ filePath: audio.src });
+                soundComponent.load(soundLoaderDouble);
+
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                render(<DynamicPropsGroup component={soundComponent} />);
+
+                const soundGroup = screen.getByRole('group', { name: 'Asset' });
+                const soundInput = within(soundGroup).getByRole('button', { name: /replace/i });
+                expect(soundInput).toBeVisible();
+            });
+
+            it('Should render sound asset load button when asset is missing on component', () => { 
+                const soundComponent = new SoundComponent();
+
+                render(<DynamicPropsGroup component={soundComponent} />);
+
+                const soundGroup = screen.getByRole('group', { name: 'Asset' });
+                const soundInput = within(soundGroup).getByRole('button', { name: /add/i });
+                expect(soundInput).toBeVisible();
             });
         });
 
