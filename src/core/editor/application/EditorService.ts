@@ -262,9 +262,8 @@ export class EditorService {
 
         if (asset) {
             soundComponent.filePath = `assets/${asset.id}.mp3`;
+            soundComponent['_asset'] = asset;
         }
-
-        console.log('Updating sound component with asset:', soundComponent);
     }
 
     public openComponentsSelection(): void {
