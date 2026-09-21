@@ -1,7 +1,7 @@
 import { ImageAsset, ImageLoader } from "@sparkengine";
 import { bitmapToBlob, FileSystemLocationParameters, WeakRef } from "../../../common";
-import { ImageSerializer, SerializedImageAsset, SerializedImageAssetSnapshot } from "../ports/ImageSerializer";
 import { ImageRepository } from "../ports";
+import { AssetSerializer, SerializedAsset, SerializedAssetSnapshot } from "../../common/ports";
 
 class InMemoryImageAsset {
     constructor(
@@ -15,7 +15,7 @@ class InMemoryImageAsset {
         return new InMemoryImageAsset(blob, image.type);
     }
 
-    static fromSerializedImageAsset(image: SerializedImageAsset): InMemoryImageAsset {
+    static fromSerializedImageAsset(image: SerializedAsset): InMemoryImageAsset {
         const mediaBytes = Uint8Array.from(image.media);
 
         return new InMemoryImageAsset(new Blob([mediaBytes], { type: image.type }), image.type);
@@ -26,7 +26,7 @@ class InMemoryImageAsset {
         return new ImageAsset(bitmap, this.type);
     }
 
-    public async toSerializedImageAsset(): Promise<SerializedImageAsset> {
+    public async toSerializedImageAsset(): Promise<SerializedAsset> {
         return {
             type: this.type,
             media: new Uint8Array(await this.media.arrayBuffer())
@@ -34,7 +34,7 @@ class InMemoryImageAsset {
     }
 }
 
-export class InMemoryImageSerializer implements ImageLoader, ImageSerializer, ImageRepository {
+export class InMemoryImageSerializer implements ImageLoader, AssetSerializer, ImageRepository {
     private readonly images: Map<string, InMemoryImageAsset> = new Map();
 
     public constructor(
@@ -44,13 +44,13 @@ export class InMemoryImageSerializer implements ImageLoader, ImageSerializer, Im
 
     }
 
-    public async importSnapshot(snapshot: SerializedImageAssetSnapshot): Promise<void> {
+    public async importSnapshot(snapshot: SerializedAssetSnapshot): Promise<void> {
         Object.entries(snapshot).forEach(([path, image]) => {
             this.images.set(path, InMemoryImageAsset.fromSerializedImageAsset(image));
         });
     }
 
-    public async toSnapshot(): Promise<SerializedImageAssetSnapshot> {
+    public async exportSnapshot(): Promise<SerializedAssetSnapshot> {
         const entries = await Promise.all(
             Array.from(this.images.entries()).map(async ([path, image]) => {
                 return [path, await image.toSerializedImageAsset()] as const;

@@ -9,7 +9,6 @@ import { v4 } from 'uuid';
 import { SaveProjectUseCase } from "../../project/application";
 import { WeakRef } from "../../common";
 import { ImageRepository } from "../../assets";
-import { ImageSerializer } from "../../assets/image/ports";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";
 import { EventBus } from "../../common/ports/EventBus";
@@ -19,6 +18,7 @@ import { EditorCamera } from "../domain/entities/EditrorCamera";
 import { PreviewViewReadyEvent } from "../../preview/domain/events";
 import { PreviewSceneCommand } from "../../preview/application/commands";
 import { EditorRenderSystem } from "../domain/EditorRenderSystem";
+import { AssetSerializer } from "../../assets/common/ports";
 
 export class EditorService {
     private _currentEntity?: IEntity;
@@ -57,7 +57,7 @@ export class EditorService {
     constructor(
         private readonly imageLoader: ImageLoader,
         private readonly imageRepository: ImageRepository,
-        private readonly imageSerializer: ImageSerializer,
+        private readonly imageSerializer: AssetSerializer,
         private readonly soundLoader: SoundLoader,
         private readonly projectRepository: ProjectRepository,
         private readonly sceneRepository: SceneRepository,
@@ -342,7 +342,7 @@ export class EditorService {
     private onPreviewReadyEvent = async (e: PreviewViewReadyEvent): Promise<void> => {
         if (!this.currentScene || this.currentScene.uuid !== e.sceneId) return;
 
-        const snapshot = await this.imageSerializer.toSnapshot();
+        const snapshot = await this.imageSerializer.exportSnapshot();
 
         this.previewEventBus.publish<PreviewSceneCommand>('PreviewScene', {
             scene: toJsonString(this.currentScene.toJson()),

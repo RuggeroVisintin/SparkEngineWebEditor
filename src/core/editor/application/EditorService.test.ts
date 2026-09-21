@@ -785,7 +785,7 @@ describe('EditorService', () => {
                 }
             };
 
-            imageSerializer.toSnapshot = jest.fn().mockResolvedValue(assetsSnapshot);
+            imageSerializer.exportSnapshot = jest.fn().mockResolvedValue(assetsSnapshot);
 
             editorService.start(context, resolution);
 
@@ -795,7 +795,7 @@ describe('EditorService', () => {
 
             await Promise.resolve();
 
-            expect(imageSerializer.toSnapshot).toHaveBeenCalled();
+            expect(imageSerializer.exportSnapshot).toHaveBeenCalled();
 
             const previewScene = eventBus.publishedEvents['PreviewScene'] as PreviewSceneCommand;
 

@@ -3,21 +3,21 @@ import { ImageLoaderTestDouble } from "../../../__mocks__/core/assets/image/Imag
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewService } from "./PreviewService";
-import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
-import { SerializedImageAssetSnapshot } from "../../assets";
+import { AssetSerializerTestDouble } from "../../../__mocks__/core/assets/common/ImageSerializerTestDouble";
 import { toJsonString } from "../../common";
+import { SerializedAssetSnapshot } from "../../assets/common/ports";
 
 describeClass(PreviewService, ({ describeMethod }) => {
     let previewService: PreviewService;
     let eventBus: InMemoryEventBusDouble;
     let testSceneId: string;
-    let imageSerializer: ImageSerializerTestDouble;
+    let imageSerializer: AssetSerializerTestDouble;
 
     beforeEach(() => {
         testSceneId = 'test-scene-id';
 
         eventBus = new InMemoryEventBusDouble();
-        imageSerializer = new ImageSerializerTestDouble();
+        imageSerializer = new AssetSerializerTestDouble();
         const imageLoader = new ImageLoaderTestDouble();
 
         previewService = new PreviewService(eventBus,
@@ -68,7 +68,7 @@ describeClass(PreviewService, ({ describeMethod }) => {
 
         it('Should import assets in the image serializer', async () => {
             const sourceScene = new Scene();
-            const assets: SerializedImageAssetSnapshot = {
+            const assets: SerializedAssetSnapshot = {
                 'assets/player.png': {
                     media: new Uint8Array([1, 2, 3, 4]),
                     type: 'image/png'
@@ -94,7 +94,7 @@ describeClass(PreviewService, ({ describeMethod }) => {
 
             eventBus.publish('PreviewScene', testCommand);
 
-            expect(await imageSerializer.toSnapshot()).toEqual(assets);
+            expect(await imageSerializer.exportSnapshot()).toEqual(assets);
         });
     });
 });

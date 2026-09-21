@@ -2,8 +2,8 @@ import { GameEngine, ImageLoader, Scene } from "@sparkengine";
 import { EventBus } from "../../common/ports";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewViewReadyEvent } from "../domain/events";
-import { ImageSerializer } from "../../assets";
 import { parseJsonString } from "../../common";
+import { AssetSerializer } from "../../assets/common/ports";
 
 export class PreviewService {
     private _currentScene?: Scene;
@@ -29,7 +29,7 @@ export class PreviewService {
     public constructor(
         private readonly eventBus: EventBus,
         private readonly imageLoader: ImageLoader,
-        private readonly imageSerializer: ImageSerializer
+        private readonly imageSerializer: AssetSerializer
     ) {
         this.unsubscribeFromPreviewScene = eventBus.subscribe<PreviewSceneCommand>('PreviewScene', this.onPreviewSceneCommand);
     }

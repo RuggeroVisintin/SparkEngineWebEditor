@@ -89,7 +89,7 @@ describeClass(InMemoryImageSerializer, ({ describeMethod }) => {
 
             const loaded = await imageSerializer.load(IMAGE_PATH);
 
-            expect(await imageSerializer.toSnapshot()).toEqual({
+            expect(await imageSerializer.exportSnapshot()).toEqual({
                 [IMAGE_PATH]: {
                     type: 'image/png',
                     media: new Uint8Array(await (await bitmapToBlob(loaded.media)).arrayBuffer())
@@ -98,7 +98,7 @@ describeClass(InMemoryImageSerializer, ({ describeMethod }) => {
         });
     });
 
-    describeMethod('toSnapshot', () => {
+    describeMethod('exportSnapshot', () => {
         it('Should return a snapshot of the stored images using the stored blob bytes', async () => {
             const imageSerializer = new InMemoryImageSerializer();
             const expectedMedia = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
@@ -112,7 +112,7 @@ describeClass(InMemoryImageSerializer, ({ describeMethod }) => {
                 path: IMAGE_PATH
             });
 
-            expect(await imageSerializer.toSnapshot()).toEqual({
+            expect(await imageSerializer.exportSnapshot()).toEqual({
                 [IMAGE_PATH]: {
                     type: 'image/png',
                     media: expectedMedia
