@@ -3,7 +3,7 @@ import { ImageLoaderTestDouble } from "../../../__mocks__/core/assets/image/Imag
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
 import { PreviewSceneCommand } from "./commands";
 import { PreviewService } from "./PreviewService";
-import { AssetSerializerTestDouble } from "../../../__mocks__/core/assets/common/ImageSerializerTestDouble";
+import { AssetSerializerTestDouble } from "../../../__mocks__/core/assets/common/AssetSerializerTestDouble";
 import { toJsonString } from "../../common";
 import { SerializedAssetSnapshot } from "../../assets/common/ports";
 
