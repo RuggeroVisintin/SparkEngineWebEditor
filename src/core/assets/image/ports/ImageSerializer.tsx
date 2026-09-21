@@ -1,5 +1,3 @@
-import { ImageRepository } from "./ImageRepository";
-
 export interface SerializedImageAsset {
     type: string;
     media: Uint8Array;

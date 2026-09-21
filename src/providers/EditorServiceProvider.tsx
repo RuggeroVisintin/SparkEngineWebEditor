@@ -2,14 +2,13 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { ColorObjectPicker, ObjectPickingService, ReactStateRepository } from "../core/editor";
 import { EditorService } from "../core/editor/application";
 import { EditorState } from "../core/editor/application/EditorState";
-import { FileSystemImageRepository } from "../core/assets";
+import { FileSystemImageRepository, FileSystemSoundRepository, InMemoryImageSerializer } from "../core/assets";
 import { Renderer } from "@sparkengine";
 import { Project } from "../core/project/domain";
 import { FileSystemProjectRepository } from "../core/project/infrastructure/adapters";
 import { FileSystemSceneRepository } from "../core/scene";
 import { ContextualUiService } from "../core/editor/domain/ContextualUiService";
 import { EventBusWithBrowserBroadcast, WeakRef } from "../core/common";
-import { InMemoryImageSerializer } from "../core/assets/image/adapters";
 import { useAppState } from "../hooks/useAppState";
 
 interface EditorServiceContextValue {
@@ -27,6 +26,8 @@ const createEditorService = (stateRepo: ReactStateRepository<EditorState>): Edit
     const sceneRepo = new FileSystemSceneRepository();
     const imageRepository = new FileSystemImageRepository(project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
     const imageSerializer = new InMemoryImageSerializer(imageRepository, imageRepository);
+    const soundRepository = new FileSystemSoundRepository(project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
+
     const objectPikcer = new ColorObjectPicker((...params) => new Renderer(...params), { width: 1920, height: 1080 }, imageRepository);
     const objectPickingService = new ObjectPickingService(objectPikcer);
     const contextualUiService = new ContextualUiService();
@@ -37,6 +38,7 @@ const createEditorService = (stateRepo: ReactStateRepository<EditorState>): Edit
         imageSerializer,
         imageSerializer,
         imageSerializer,
+        soundRepository,
         projectRepo,
         sceneRepo,
         objectPickingService,

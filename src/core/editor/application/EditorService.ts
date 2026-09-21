@@ -1,4 +1,4 @@
-import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create, Renderer, SoundAsset } from "@sparkengine";
+import { GameEngine, IEntity, ImageLoader, Scene, TransformComponent, Vec2, Rgb, ImageAsset, MaterialComponent, typeOf, SerializableCallback, toRounded, IComponent, create, Renderer, SoundAsset, SoundComponent, SoundLoader } from "@sparkengine";
 import { MouseClickEvent, MouseDragEvent, MouseWheelEvent, Optional, toJsonString } from "../../common";
 import { Project } from "../../project/domain";
 import { ProjectRepository } from "../../project/domain";
@@ -7,7 +7,6 @@ import { ObjectPickingService } from "../domain/ObjectPickingService";
 import { StateRepository } from "../../common/ports/StateRepository";
 import { v4 } from 'uuid';
 import { SaveProjectUseCase } from "../../project/application";
-import { FileSystemImageRepository } from "../../assets/image/adapters";
 import { WeakRef } from "../../common";
 import { ImageRepository } from "../../assets";
 import { ImageSerializer } from "../../assets/image/ports";
@@ -59,6 +58,7 @@ export class EditorService {
         private readonly imageLoader: ImageLoader,
         private readonly imageRepository: ImageRepository,
         private readonly imageSerializer: ImageSerializer,
+        private readonly soundLoader: SoundLoader,
         private readonly projectRepository: ProjectRepository,
         private readonly sceneRepository: SceneRepository,
         private readonly objectPicking: ObjectPickingService,
@@ -109,7 +109,7 @@ export class EditorService {
         this._project = await this.projectRepository.read();
         await this._project.loadScenes(this.sceneRepository);
 
-        (this.imageLoader as FileSystemImageRepository).changeScope(this._project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
+        this.imageRepository.changeScope(this._project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
 
         const newScene = this._project.scenes[0];
 
@@ -215,15 +215,13 @@ export class EditorService {
     public updateCurrentEntityComponentProperty(component: IComponent, propertyName: string, newValue: any): void {
         if (!component) return;
 
-        if (typeOf(component) === 'MaterialComponent' && newValue !== undefined) {
+        if (typeOf(component) === 'MaterialComponent') {
             this.updateCurrentEntityMaterial({ [propertyName]: newValue });
-        }
-
-        if (typeOf(component) === 'SoundComponent' && newValue !== undefined) {
+        } else if (typeOf(component) === 'SoundComponent' && newValue !== undefined) {
             this.updateCurrentEntitySoundComponent({ [propertyName]: newValue });
+        } else {
+            (component as any)[propertyName] = newValue;
         }
-
-        (component as any)[propertyName] = newValue;
 
         if (typeOf(component) === 'TransformComponent') {
             this._editorScene && this.contextualUiService.focusOnEntity(this._currentEntity!);
@@ -234,7 +232,7 @@ export class EditorService {
         });
     }
 
-    public updateCurrentEntityMaterial({ diffuseColor, opacity, diffuseTexture }: {
+    private updateCurrentEntityMaterial({ diffuseColor, opacity, diffuseTexture }: {
         diffuseColor?: Rgb,
         opacity?: number,
         diffuseTexture?: ImageAsset,
@@ -255,10 +253,17 @@ export class EditorService {
             material.diffuseTexturePath = `assets/${v4()}.png`;
             material.diffuseTexture = diffuseTexture;
         }
+    }
 
-        this.stateRepository.update({
-            currentEntity: this._currentEntity
-        });
+    private updateCurrentEntitySoundComponent({ asset }: { asset?: SoundAsset }): void {
+        const soundComponent = this._currentEntity?.getComponent<SoundComponent>('SoundComponent');
+
+        if (!soundComponent) return;
+
+        if (asset) {
+            soundComponent.filePath = `assets/${asset.id}.mp3`;
+            soundComponent['_asset'] = asset;
+        }
     }
 
     public openComponentsSelection(): void {
@@ -287,11 +292,6 @@ export class EditorService {
         this.stateRepository.update({
             currentEntity: this._currentEntity
         });
-    }
-
-    private updateCurrentEntitySoundComponent({ asset }: { asset?: SoundAsset }): void {
-        // TODO
-        console.log('Updating current entity sound component with asset:', asset);
     }
 
     private onScriptingEditorReadyEvent(e: ScriptingEditorReady): void {
@@ -376,6 +376,7 @@ export class EditorService {
                 height: resolution.height
             },
             imageLoader: this.imageLoader,
+            soundLoader: this.soundLoader,
             renderSystem: (renderer: Renderer, imageLoader: ImageLoader) => new EditorRenderSystem(renderer, imageLoader),
             additionalRenderSystems: () => [
                 this.objectPicking.getRenderSystem()

@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { BackgroundColor, FlexBox } from "../../primitives";
 import { WithDataTestId } from "../../core/common";
 import { v4 } from "uuid";
-import { FileSystemImageRepository, FileSystemSoundRepository } from "../../core/assets/image/adapters";
 import { ImageAsset, SoundAsset } from "@sparkengine";
+import { FileSystemImageRepository, FileSystemSoundRepository } from "../../core/assets";
 
 
 type InputValue = string | number | boolean;

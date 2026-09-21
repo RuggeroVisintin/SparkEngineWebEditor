@@ -32,7 +32,6 @@ export default [
             "@typescript-eslint": tseslint.plugin,
             react: reactPlugin,
             "react-hooks": reactHooksPlugin,
-            "react-doctor": reactDoctor,
         },
         languageOptions: {
             parser: tseslint.parser,
@@ -82,21 +81,31 @@ export default [
                 }
             ],
             "@typescript-eslint/no-unsafe-function-type": "warn",
-            "@typescript-eslint/no-unused-expressions": "warn",
+            "@typescript-eslint/no-unused-expressions": "warn"
+        }
+    },
 
-            // --- React Doctor rules ---
+    // 2. React Doctor Configuration Block (Strict - runs on standard app source files)
+    {
+        files: ["src/**/*.{ts,tsx}"],
+        ignores: ["src/test-utils/**", "src/**/*.test.{ts,tsx}", "src/core/**/*.{ts,tsx}"],
+        plugins: {
+            "react-doctor": reactDoctor,
+        },
+        rules: {
             ...Object.fromEntries(
                 Object.entries(reactDoctor.configs.recommended.rules).map(([key, value]) => [
                     key,
-                    Array.isArray(value) 
-                        ? ["warn", ...value.slice(1)] 
+                    Array.isArray(value)
+                        ? ["warn", ...value.slice(1)]
                         : "warn"
                 ])
             )
         }
     },
 
-    // 2. Relaxed Configuration Block (For test-utils and test files)
+
+    // 3. Relaxed Configuration Block (For test-utils and test files)
     {
         files: ["src/test-utils/**/*.{ts,tsx}"],
         plugins: {

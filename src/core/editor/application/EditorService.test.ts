@@ -1,6 +1,6 @@
-import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "@sparkengine";
+import { BoundingBoxComponent, CanvasDevice, DOMImageLoader, GameObject, IEntity, MaterialComponent, Renderer, RenderSystem, Rgb, Scene, SerializableCallback, SoundAsset, SoundComponent, StaticObject, TransformComponent, TriggerEntity, typeOf, Vec2 } from "@sparkengine";
 import { EditorService } from "./EditorService";
-import { FileSystemImageRepository, InMemoryImageSerializer } from "../../assets";
+import { FileSystemImageRepository, FileSystemSoundRepository, InMemoryImageSerializer } from "../../assets";
 import { ProjectRepository } from "../../project/domain";
 import { Project } from "../../project/domain";
 import { SceneRepositoryTestDouble } from "../../../__mocks__/core/scene/SceneRepositoryTestDouble";
@@ -11,7 +11,6 @@ import { StateRepository } from "../../common/ports/StateRepository";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";
 import { InMemoryEventBusDouble } from "../../../__mocks__/core/InMemoryEventBusDouble";
-import { ImageSerializerTestDouble } from "../../../__mocks__/core/assets/image/ImageSerializerTestDouble";
 import { ScriptingEditorReady, ScriptSaved } from "../../scripting/domain/events";
 import { OpenScriptingEditorCommand } from "../../scripting/domain/commands";
 import { PreviewSceneCommand } from "../../preview/application/commands";
@@ -77,6 +76,7 @@ describe('EditorService', () => {
     let editorService: EditorService;
     let imageLoader: FileSystemImageRepository;
     let imageSerializer: InMemoryImageSerializer;
+    let soundRepository: FileSystemSoundRepository;
     let context: CanvasRenderingContext2D;
     let projectRepositoryDouble: ProjectRepositoryTestDouble;
     let sceneRepository: SceneRepositoryTestDouble;
@@ -88,6 +88,7 @@ describe('EditorService', () => {
     beforeEach(() => {
         projectRepositoryDouble = new ProjectRepositoryTestDouble();
         sceneRepository = new SceneRepositoryTestDouble();
+        soundRepository = new FileSystemSoundRepository();
         context = new CanvasRenderingContext2D();
         imageLoader = new FileSystemImageRepository();
         imageSerializer = new InMemoryImageSerializer(imageLoader, imageLoader);
@@ -100,6 +101,7 @@ describe('EditorService', () => {
             imageSerializer,
             imageSerializer,
             imageSerializer,
+            soundRepository,
             projectRepositoryDouble,
             sceneRepository,
             objectPicking,
@@ -547,8 +549,103 @@ describe('EditorService', () => {
             expect(contextualUiServiceDouble.lastFocusedEntity?.uuid).toEqual(entity.uuid);
         });
 
-        describe('When updating a SoundComponent', () => { 
-            
+        describe('When updating a SoundComponent', () => {
+            it('Should assign the new asset to the given sound component', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const soundComponent = new SoundComponent();
+
+                entity.addComponent(soundComponent);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                const newAsset = new SoundAsset(new Audio('test.mp3'));
+
+                editorService.updateCurrentEntityComponentProperty(
+                    soundComponent,
+                    'asset',
+                    newAsset
+                );
+
+                expect(soundComponent.filePath).toEqual(`assets/${newAsset.id}.mp3`);
+            });
+        });
+
+        describe('When updating a MaterialComponent', () => {
+            it('Should update the material diffuseColor when a valid color is provided', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const material = new MaterialComponent();
+                entity.addComponent(material);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                const newColor = new Rgb(255, 0, 0);
+                editorService.updateCurrentEntityComponentProperty(material, 'diffuseColor', newColor);
+
+                expect(material.diffuseColor).toEqual(newColor);
+            });
+
+            it('Should remove the diffuseColor when null is provided', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const material = new MaterialComponent();
+                material.diffuseColor = new Rgb(255, 0, 0);
+                entity.addComponent(material);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                editorService.updateCurrentEntityComponentProperty(material, 'diffuseColor', null);
+
+                expect(material.diffuseColor).toBeUndefined();
+            });
+
+            it('Should update the material opacity when a non-zero value is provided', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const material = new MaterialComponent();
+                entity.addComponent(material);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                editorService.updateCurrentEntityComponentProperty(material, 'opacity', 0.5);
+
+                expect(material.opacity).toBe(0.5);
+            });
+
+            it('Should update the material opacity when value is 0', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const material = new MaterialComponent();
+                material.opacity = 1.0;
+                entity.addComponent(material);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                editorService.updateCurrentEntityComponentProperty(material, 'opacity', 0);
+
+                expect(material.opacity).toBe(0);
+            });
+
+            it('Should not update the material opacity when undefined is provided', () => {
+                const resolution = { width: 800, height: 600 };
+                const entity = new GameObject();
+                const material = new MaterialComponent();
+                material.opacity = 0.7;
+                entity.addComponent(material);
+
+                editorService.start(context, resolution);
+                editorService.selectEntity(entity);
+
+                editorService.updateCurrentEntityComponentProperty(material, 'opacity', undefined);
+
+                expect(material.opacity).toBe(0.7);
+            });
         });
     });
 
@@ -787,79 +884,4 @@ describe('EditorService', () => {
         });
     });
 
-    describe('.updateCurrentEntityMaterial()', () => {
-        it('Should update the material diffuseColor when a valid color is provided', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-            const material = new MaterialComponent();
-            entity.addComponent(material);
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            const newColor = new Rgb(255, 0, 0);
-            editorService.updateCurrentEntityMaterial({ diffuseColor: newColor });
-
-            expect(material.diffuseColor).toEqual(newColor);
-        });
-
-        it('Should remove the diffuseColor when null is provided', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-            const material = new MaterialComponent();
-            material.diffuseColor = new Rgb(255, 0, 0);
-            entity.addComponent(material);
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            editorService.updateCurrentEntityMaterial({ diffuseColor: null as any });
-
-            expect(material.diffuseColor).toBeUndefined();
-        });
-
-        it('Should update the material opacity when a non-zero value is provided', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-            const material = new MaterialComponent();
-            entity.addComponent(material);
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            editorService.updateCurrentEntityMaterial({ opacity: 0.5 });
-
-            expect(material.opacity).toBe(0.5);
-        });
-
-        it('Should update the material opacity when value is 0', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-            const material = new MaterialComponent();
-            material.opacity = 1.0;
-            entity.addComponent(material);
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            editorService.updateCurrentEntityMaterial({ opacity: 0 });
-
-            expect(material.opacity).toBe(0);
-        });
-
-        it('Should not update the material opacity when undefined is provided', () => {
-            const resolution = { width: 800, height: 600 };
-            const entity = new GameObject();
-            const material = new MaterialComponent();
-            material.opacity = 0.7;
-            entity.addComponent(material);
-
-            editorService.start(context, resolution);
-            editorService.selectEntity(entity);
-
-            editorService.updateCurrentEntityMaterial({ opacity: undefined });
-
-            expect(material.opacity).toBe(0.7);
-        });
-    });
 });

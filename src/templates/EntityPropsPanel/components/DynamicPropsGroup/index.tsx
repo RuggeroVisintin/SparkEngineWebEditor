@@ -65,6 +65,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
                 type="image"
+                // TODO: check the filePath instead, as loading the asset may be deferred to when the image is rendered, and the value may be null even if the asset is set
                 label={value ? 'Replace' : 'Add'}
                 onChange={(newDiffuseTexture: ImageAsset) => { onChange?.('diffuseTexture', newDiffuseTexture) }}
             />
@@ -74,6 +75,7 @@ const valueToFormInput = (propertyName: string, value: ComponentProp, component:
             <FormInput
                 data-testid={`EntityPropsPanel.${capitalize(propertyName)}`}
                 type="sound"
+                // TODO: check the filePath instead, as loading the asset may be deferred to when the sound is played, and the value may be null even if the asset is set
                 label={value ? 'Replace' : 'Add'}
                 onChange={(newSoundAsset: SoundAsset) => { onChange?.('asset', newSoundAsset) }}
             />
