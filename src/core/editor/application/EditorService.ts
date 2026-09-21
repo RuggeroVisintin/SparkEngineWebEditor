@@ -223,8 +223,8 @@ export class EditorService {
             (component as any)[propertyName] = newValue;
         }
 
-        if (typeOf(component) === 'TransformComponent') {
-            this._editorScene && this.contextualUiService.focusOnEntity(this._currentEntity!);
+        if (typeOf(component) === 'TransformComponent' && this.editorScene) {
+            this.contextualUiService.focusOnEntity(this._currentEntity!);
         }
 
         this.stateRepository.update({
