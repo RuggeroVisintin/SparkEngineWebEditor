@@ -34,7 +34,7 @@ class InMemoryImageAsset {
     }
 }
 
-export class InMemoryImageSerializer implements ImageLoader, AssetSerializer, ImageRepository {
+export class InMemoryImageSerializer implements ImageLoader, AssetSerializer<ImageAsset>, ImageRepository {
     private readonly images: Map<string, InMemoryImageAsset> = new Map();
 
     public constructor(
@@ -42,6 +42,10 @@ export class InMemoryImageSerializer implements ImageLoader, AssetSerializer, Im
         private readonly imageLoader?: ImageLoader
     ) {
 
+    }
+
+    public async serialize(asset: ImageAsset, key: string): Promise<void> {
+        this.images.set(key, await InMemoryImageAsset.fromImageAsset(asset));
     }
 
     public async importSnapshot(snapshot: SerializedAssetSnapshot): Promise<void> {
@@ -60,6 +64,7 @@ export class InMemoryImageSerializer implements ImageLoader, AssetSerializer, Im
         return Object.fromEntries(entries);
     }
 
+    // TOOD: no need to intercept saves, this should only intercept loads
     public async save(image: ImageAsset, location: FileSystemLocationParameters): Promise<void> {
         this.images.set(location.path, await InMemoryImageAsset.fromImageAsset(image));
 

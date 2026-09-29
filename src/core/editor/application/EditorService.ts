@@ -8,7 +8,7 @@ import { StateRepository } from "../../common/ports/StateRepository";
 import { v4 } from 'uuid';
 import { SaveProjectUseCase } from "../../project/application";
 import { WeakRef } from "../../common";
-import { ImageRepository } from "../../assets";
+import { ImageRepository, SoundRepository } from "../../assets";
 import { ContextualUiService } from "../domain/ContextualUiService";
 import { EditorState } from "./EditorState";
 import { EventBus } from "../../common/ports/EventBus";
@@ -58,7 +58,7 @@ export class EditorService {
         private readonly imageLoader: ImageLoader,
         private readonly imageRepository: ImageRepository,
         private readonly imageSerializer: AssetSerializer,
-        private readonly soundLoader: SoundLoader,
+        private readonly soundLoader: SoundLoader & SoundRepository,
         private readonly projectRepository: ProjectRepository,
         private readonly sceneRepository: SceneRepository,
         private readonly objectPicking: ObjectPickingService,
@@ -110,6 +110,7 @@ export class EditorService {
         await this._project.loadScenes(this.sceneRepository);
 
         this.imageRepository.changeScope(this._project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
+        this.soundLoader.changeScope(this._project.scopeRef as WeakRef<FileSystemDirectoryHandle>);
 
         const newScene = this._project.scenes[0];
 
@@ -250,8 +251,10 @@ export class EditorService {
         if (opacity !== undefined && opacity !== null) material.opacity = opacity;
 
         if (diffuseTexture) {
-            material.diffuseTexturePath = `assets/${v4()}.png`;
+            material.diffuseTexturePath = `assets/${diffuseTexture.id}.png`;
             material.diffuseTexture = diffuseTexture;
+
+            this.imageSerializer.serialize(material.diffuseTexture, material.diffuseTexturePath);
         }
     }
 
